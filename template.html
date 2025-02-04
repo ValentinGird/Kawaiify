@@ -15,10 +15,10 @@
          <meta name="twitter:title" content="{TITLE}">
          <meta name="twitter:description" content="{DESCRIPTION}">
          <meta name="twitter:image" content="{IMAGE_URL}">
-   </head>
-   <!-- Favicon -->
-   <link rel="icon" type="image/png" href="https://i.ibb.co/XZJbQPYm/favicon-32x32.png">
-   <link rel="stylesheet" href="styles.css">
+         <!-- Favicon -->
+         <link rel="icon" type="image/png" href="https://i.ibb.co/XZJbQPYm/favicon-32x32.png">
+         <link rel="stylesheet" href="styles.css">
+      </head>
    <style>
       /* Dark mode */
       * {
@@ -125,21 +125,32 @@
       text-decoration: underline;
       }
       /* ✅ Free Pack Offer - Alignement parfait */
+/* Grid for offers layout */
+         .offers {
+         display: grid;
+         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+         gap: 20px;
+         padding: 20px;
+         justify-items: center; /* Center the elements in the grid */
+         align-items: stretch; /* Ensure elements have the same height */
+         margin-bottom: 0px; /* Réduction maximale sans être collé */
+         padding-bottom: 0px !important; /* Supprime tout padding en bas */
+         }
       .offer {
-      background-color: #1e1e1e;
-      border: 1px solid #444;
-      border-radius: 10px;
-      padding: 20px;
-      width: 100%;  /* ✅ Aligné avec les autres sections */
-      max-width: 320px; /* ✅ Même taille que les images de la galerie */
-      text-align: center;
-      margin: 0 auto; /* ✅ Centre parfaitement */
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 100%; /* Ensure all sections have the same height */
-      }
+         background-color: #1e1e1e;
+         border: 1px solid #444;
+         border-radius: 10px;
+         padding: 20px;
+         margin: 0;
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between;
+         align-items: center;
+         width: 100%;
+         max-width: 320px; /* Limit width to avoid large blocks on PC */
+         height: 100%; /* Ensure all sections have the same height */
+         margin-bottom: 10px; /* Réduction de l’espace en dessous */
+         }
       /* ✅ Titre */
       .offer h2 {
       color: #FF69B4;
@@ -379,6 +390,7 @@
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
       }
       /* ✅ Style du popup CENTRÉ */
       .popup-container {
@@ -670,6 +682,7 @@
          <input type="text" id="searchBar" class="search-bar" placeholder="🔍 Search wallpapers...">
       </div>
       <!-- ✅ Section de l'image principale -->
+      <div class="offers">
       <div class="image-box">
          <h2>{TITLE}</h2>
          <img src="{IMAGE_URL}" alt="Wallpaper">
@@ -686,6 +699,7 @@
             <strong>Download in HD</strong>
             </button>
          </div>
+      </div>
       </div>
       <!-- ✅ Popup Principal 4K -->
       <div class="popup-overlay" id="popup-4k-main-overlay">
@@ -741,6 +755,7 @@
          </div>
       </div>
       <!-- Free Pack Offer -->
+      <div class="offers">
       <div class="offer" id="free-offer-section">
          <h2>Unlock 100+ Stunning 4K Wallpapers for Free!</h2>
          <p>Get a free pack of over <strong>100 high-quality anime wallpapers</strong> in <strong>ultra-sharp 4K</strong> resolution to enhance your device! 📲</p>
@@ -751,6 +766,7 @@
                <button type="submit" id="email-submit-button" class="email-input-button">Claim Your Free Pack</button>
             </form>
          </div>
+      </div>
       </div>
       <h2 class="section-title">Similar Wallpapers</h2>
       <div class="gallery" id="gallery"></div>
@@ -938,25 +954,20 @@
                     
                     
                     document.addEventListener("DOMContentLoaded", function () {
-                        const lazyImages = document.querySelectorAll("img[loading='lazy']");
-                    
-                        const observer = new IntersectionObserver(
-                            (entries, observer) => {
-                                entries.forEach((entry) => {
-                                    if (entry.isIntersecting) {
-                                        const img = entry.target;
-                                        img.src = img.dataset.src; // Remplace l'attribut data-src par src
-                                        observer.unobserve(img);
-                                    }
-                                });
-                            },
-                            { rootMargin: "100px" } // Déclenche un peu avant l'affichage
-                        );
-                    
-                        lazyImages.forEach((img) => {
-                            observer.observe(img);
-                        });
-                    });
+    const lazyImages = document.querySelectorAll("img[loading='lazy']");
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                observer.unobserve(img);
+            }
+        });
+    }, { rootMargin: "100px" });
+
+    lazyImages.forEach(img => observer.observe(img));
+});
+
                     
                     document.addEventListener("DOMContentLoaded", async function () {
             let isLoading = false;
