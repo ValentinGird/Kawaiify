@@ -685,7 +685,7 @@
       <div class="offers">
       <div class="image-box">
          <h2>{TITLE}</h2>
-         <img src="{IMAGE_URL}" alt="Wallpaper">
+         <img id="main-image" src="{IMAGE_URL}" alt="Wallpaper">
          <!-- ✅ Ajout de la description -->
          <p class="image-description">{DESCRIPTION}</p>
          <!-- ✅ Ajout des tags dynamiques -->
@@ -1480,7 +1480,26 @@ window.closeMainPopup4K = closeMainPopup4K;
          });
          
          
-         
+         document.addEventListener("DOMContentLoaded", function () {
+    // Récupère l'URL de l'image principale
+    const mainImageElement = document.getElementById("main-image");
+    if (!mainImageElement) {
+        console.error("⚠️ Image principale non trouvée !");
+        return;
+    }
+    const mainImageUrl = mainImageElement.src;
+
+    // Supprime les images en double de la galerie
+    const galleryItems = document.querySelectorAll(".gallery-offer img");
+    galleryItems.forEach(item => {
+        if (item.src === mainImageUrl) {
+            item.closest(".gallery-offer").remove(); // Supprime l'image en double
+        }
+    });
+
+    console.log("✅ Images en double supprimées !");
+});
+
          
          
          
