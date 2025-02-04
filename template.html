@@ -1527,7 +1527,52 @@
          });
          
          
-         
+         // ✅ Vérifie si l'utilisateur a déjà soumis son email
+function hasSubmittedEmail() {
+    return localStorage.getItem("emailSubmitted") === "true" || document.cookie.includes("emailSubmitted=true");
+}
+
+// ✅ Enregistre l'email soumis dans localStorage et cookie pour ne plus afficher le popup
+function setEmailSubmitted() {
+    localStorage.setItem("emailSubmitted", "true");
+    document.cookie = "emailSubmitted=true; path=/; domain=kawaiify.art; max-age=31536000"; 
+}
+
+// ✅ Vérifie avant d'afficher le popup
+function openPopup4K(imageUrlHD, imageUrl4K) {
+    if (hasSubmittedEmail()) {
+        forceDownload(imageUrl4K); // ✅ Télécharge directement si l'email a été entré
+    } else {
+        document.getElementById("popup-4k-overlay").style.display = "flex";
+        document.body.style.overflow = "hidden";
+        document.getElementById("popup-4k-gallery-image").src = imageUrlHD;
+        setPopupDownloadUrl(imageUrlHD, imageUrl4K);
+    }
+}
+
+// ✅ Capture la soumission du formulaire pour empêcher de réafficher le popup
+document.addEventListener("DOMContentLoaded", function () {
+    const popupForm = document.getElementById("popup-4k-form");
+    if (popupForm) {
+        popupForm.addEventListener("submit", function () {
+            setEmailSubmitted(); // ✅ Stocke l'information
+            closePopup4K();
+        });
+    }
+
+    // ✅ Ajoute l'événement au bouton si présent
+    const mainDownload4KButton = document.getElementById("popup-4k-main-btn");
+    if (mainDownload4KButton) {
+        mainDownload4KButton.addEventListener("click", function () {
+            if (hasSubmittedEmail()) {
+                forceDownload("{IMAGE_URL_4K}"); // ✅ Télécharge direct si l'email est déjà entré
+            } else {
+                openPopup4K("{IMAGE_URL}", "{IMAGE_URL_4K}");
+            }
+        });
+    }
+});
+
             
       </script>
    </body>
