@@ -1196,13 +1196,14 @@
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    // ✅ Sauvegarde la position du scroll avant la soumission du formulaire
     document.querySelectorAll("form").forEach(form => {
         form.addEventListener("submit", function () {
-            localStorage.setItem("scrollPosition", window.scrollY); // 🔥 Enregistre la position actuelle
+            // 🔥 Sauvegarde la position exacte de scroll avant la redirection
+            localStorage.setItem("scrollPosition", window.scrollY);
         });
     });
 });
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -1216,6 +1217,24 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.setItem("previousPage", window.location.href); // Stocke la page précédente
         });
     });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Vérifie si on revient depuis la thank-you page
+    if (window.location.hash === "#scroll-back") {
+        const scrollPosition = localStorage.getItem("scrollPosition");
+
+        if (scrollPosition) {
+            console.log("🔄 Restauration du scroll à la position :", scrollPosition);
+
+            setTimeout(() => {
+                window.scrollTo({ top: parseInt(scrollPosition), behavior: "smooth" });
+            }, 500); // 🔥 Petit délai pour s'assurer que tout est bien chargé
+
+            localStorage.removeItem("scrollPosition"); // Nettoie après utilisation
+        }
+    }
 });
 
 
