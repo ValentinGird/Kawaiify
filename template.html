@@ -1564,6 +1564,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Sauvegarde la position du scroll avant la soumission du formulaire
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function () {
+            localStorage.setItem("scrollPosition", window.scrollY); // 🔥 Enregistre la position actuelle
+        });
+    });
+});
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Sélectionne tous les boutons de téléchargement nécessitant un email
