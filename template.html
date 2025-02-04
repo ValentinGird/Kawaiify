@@ -649,7 +649,7 @@
       /* ✅ Pour réactiver l'image mettre "display: block;" */
       /* ✅ Pour désactiver l'image mettre "display: none;" */
       .popup-image {
-      display: block; /* Cache l'image */
+      display: none; /* Cache l'image */
       }
       /* ✅ Tags non cliquables sous l'image principale */
       .non-clickable {
@@ -664,11 +664,11 @@
       opacity: 0.9; /* Légèrement différent visuellement */
       }
       /* ✅ Empêche le clic droit et le drag & drop sur toutes les images */
-img {
-    pointer-events: none; /* Désactive toute interaction avec la souris */
-    user-select: none; /* Empêche la sélection */
-    -webkit-user-drag: none; /* Désactive le glisser-déposer sur Webkit (Chrome, Safari) */
-}
+      img {
+      pointer-events: none; /* Désactive toute interaction avec la souris */
+      user-select: none; /* Empêche la sélection */
+      -webkit-user-drag: none; /* Désactive le glisser-déposer sur Webkit (Chrome, Safari) */
+      }
 
    </style>
    </head>
@@ -709,58 +709,81 @@ img {
       </div>
       </div>
       <!-- ✅ Popup Principal 4K -->
-      <div class="popup-overlay" id="popup-4k-main-overlay">
+<div class="popup-overlay" id="popup-4k-main-overlay">
     <div class="popup-container" id="popup-4k-main">
         <span class="popup-close" onclick="closeMainPopup4K()">✖</span>
-            <!-- ✅ Image fixe pour comparer HD vs 4K -->
-            <img id="popup-4k-main-image" src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K Wallpaper Preview" class="popup-image">
-            <!-- ✅ Titre et description fixes -->
-            <h3>🎁 Download Your 4K Anime Wallpaper!</h3>
-            <p>Enter your email to <strong>instantly download this wallpaper in ultra-sharp 4K</strong>.</p>
-            <ul class="popup-benefits">
-               <li>Get <strong>5 new exclusive 4K wallpapers</strong> every month</li>
-               <li>Access <strong>secret wallpapers</strong> only available to subscribers</li>
-               <li>Be the first to get <strong>new ultra-HD drops</strong></li>
-            </ul>
-            <!-- ✅ Formulaire d'inscription -->
-            <form id="popup-4k-main-form">
-               <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-               <button type="submit" class="popup-button">📥 Download in 4K (Free)</button>
-            </form>
-            <!-- ✅ Téléchargement sans email -->
-            <p class="popup-alt-download">
-               Prefer not to enter your email? <br>
-               <a href="#" id="popup-4k-main-hd-download" class="popup-alt-button">Download in HD (No email)</a>
-            </p>
-         </div>
-      </div>
+
+        <!-- ✅ Image d'illustration 4K -->
+        <img src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K vs HD Comparison" class="popup-image">
+
+        <!-- ✅ Nouveau Titre -->
+        <h3>🎁 Get This 4K Anime Wallpaper & Unlock Daily Surprises! ✨</h3>
+
+        <!-- ✅ Nouveau Texte -->
+        <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and **get access to daily exclusive content**:</p>
+
+        <!-- ✅ Liste des avantages mis à jour -->
+        <ul class="popup-benefits">
+            <li>🎨 <strong>Receive a new premium anime wallpaper every day on Telegram</strong></li>
+            <li>💎 <strong>Unlock secret wallpapers</strong> not available anywhere else</li>
+            <li>🚀 <strong>Be the first to grab ultra-HD anime drops</strong></li>
+        </ul>
+
+        <!-- ✅ Nouveau Formulaire avec Flodesk -->
+        <form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
+            <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+            <button type="submit" class="popup-button">📥 Download in 4K & Get 1 Exclusive Wallpaper Every Day!</button>
+        </form>
+
+        <!-- ✅ Option sans email modifiée -->
+<p class="popup-alt-download">
+    Prefer not to enter your email? <br>
+    <a href="https://t.me/votre_groupe_telegram" class="popup-alt-button" target="_blank" rel="noopener noreferrer">
+        Join Telegram & Get Free Wallpapers!
+    </a>
+</p>
+
+    </div>
+</div>
+
       <!-- ✅ Popup 4K Gallery -->
-      <div class="popup-overlay" id="popup-4k-overlay">
-         <div class="popup-container" id="popup-4k">
-            <span class="popup-close" onclick="closePopup4K()">✖</span>
-            <!-- ✅ Image d'illustration 4K vs HD -->
-            <img src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K vs HD Comparison" class="popup-image">
-            <!-- ✅ Titre du popup -->
-            <h3>🎁 Download Your 4K Anime Wallpaper!</h3>
-            <!-- ✅ Description rapide -->
-            <p>Enter your email to <strong>instantly download this wallpaper in ultra-sharp 4K</strong> and get exclusive benefits:</p>
-            <!-- ✅ Liste des avantages -->
-            <ul class="popup-benefits">
-               <li>Get <strong>5 new exclusive 4K wallpapers</strong> every month</li>
-               <li>Access <strong>secret wallpapers</strong> only available to subscribers</li>
-               <li>Be the first to get <strong>new ultra-HD drops</strong></li>
-            </ul>
-            <!-- ✅ Formulaire d'inscription -->
-            <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
-               <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-               <button type="submit" class="popup-button">📥 Download in 4K (Free)</button>
-            </form>
-            <!-- ✅ Option sans email -->
-            <p class="popup-alt-download">Prefer not to enter your email? <br>
-               <a href="#" id="download-hd-button" class="popup-alt-button" data-url="">Download in HD (No email)</a>
-            </p>
-         </div>
-      </div>
+<div class="popup-overlay" id="popup-4k-overlay">
+    <div class="popup-container" id="popup-4k">
+        <span class="popup-close" onclick="closePopup4K()">✖</span>
+
+        <!-- ✅ Image d'illustration 4K vs HD -->
+        <img src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K vs HD Comparison" class="popup-image">
+
+        <!-- ✅ Nouveau Titre -->
+        <h3>🎁 Get This 4K Anime Wallpaper & Unlock Daily Surprises! ✨</h3>
+
+        <!-- ✅ Nouveau Texte -->
+        <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and **get access to daily exclusive content**:</p>
+
+        <!-- ✅ Liste des avantages mis à jour -->
+        <ul class="popup-benefits">
+            <li>🎨 <strong>Receive a new premium anime wallpaper every day on Telegram</strong></li>
+            <li>💎 <strong>Unlock secret wallpapers</strong> not available anywhere else</li>
+            <li>🚀 <strong>Be the first to grab ultra-HD anime drops</strong></li>
+        </ul>
+
+        <!-- ✅ Nouveau Formulaire avec Flodesk -->
+        <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
+            <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+            <button type="submit" class="popup-button">📥 Download in 4K & Get 1 Exclusive Wallpaper Every Day!</button>
+        </form>
+
+        <!-- ✅ Option sans email modifiée -->
+<p class="popup-alt-download">
+    Prefer not to enter your email? <br>
+    <a href="https://t.me/votre_groupe_telegram" class="popup-alt-button" target="_blank" rel="noopener noreferrer">
+        Join Telegram & Get Free Wallpapers!
+    </a>
+</p>
+
+    </div>
+</div>
+
       <!-- Free Pack Offer -->
       <div class="offers">
       <div class="offer" id="free-offer-section">
@@ -1527,6 +1550,88 @@ document.addEventListener("dragstart", function(event) {
         event.preventDefault();
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const forms = [
+        { form: document.getElementById("popup-4k-main-form"), popup: "popup-4k-main-overlay" },
+        { form: document.getElementById("popup-4k-form"), popup: "popup-4k-overlay" }
+    ];
+
+    forms.forEach(({ form, popup }) => {
+        if (form) {
+            form.addEventListener("submit", function (event) {
+                event.preventDefault(); // Empêche le rechargement de la page
+
+                const emailInput = form.querySelector("input[name='email']");
+                if (!emailInput.value) {
+                    alert("Please enter a valid email!");
+                    return;
+                }
+
+                // ✅ Stocker l'email en localStorage pour éviter de redemander
+                localStorage.setItem("emailSubmitted", "true");
+
+                // ✅ Envoyer l'email à Flodesk
+                fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form)
+                }).then(response => {
+                    if (response.ok) {
+                        console.log("✅ Email envoyé avec succès à Flodesk");
+                        
+                        // ✅ Télécharger automatiquement le wallpaper 4K
+                        const imageUrl4K = "{IMAGE_URL_4K}"; // Remplace par ta variable dynamique
+                        forceDownload(imageUrl4K);
+
+                        // ✅ Fermer le popup
+                        document.getElementById(popup).style.display = "none";
+
+                        // ✅ Redirection vers Telegram après le téléchargement
+                        setTimeout(function () {
+                            window.open("https://t.me/votre_groupe_telegram", "_blank");// Remplace par ton lien Telegram
+                        }, 3000);
+                    } else {
+                        alert("❌ Error sending email. Please try again.");
+                    }
+                }).catch(error => {
+                    console.error("❌ Erreur lors de l'envoi de l'email :", error);
+                    alert("❌ Failed to submit email.");
+                });
+            });
+        }
+    });
+});
+
+// ✅ Fonction de téléchargement automatique
+async function forceDownload(imageUrl) {
+    try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = "wallpaper-4k.jpg";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+        }, 1000);
+    } catch (error) {
+        console.error("❌ Error downloading the image:", error);
+    }
+}
+
+// ✅ Fonction pour fermer les popups
+function closeMainPopup4K() {
+    document.getElementById("popup-4k-main-overlay").style.display = "none";
+}
+
+function closePopup4K() {
+    document.getElementById("popup-4k-overlay").style.display = "none";
+}
 
          
             
