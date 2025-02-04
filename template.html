@@ -720,9 +720,10 @@
 
             <!-- ✅ Formulaire d'inscription -->
             <form id="popup-4k-main-form">
-               <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-               <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
-            </form>
+   <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+   <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
+</form>
+
             <!-- ✅ Téléchargement sans email -->
             <p class="popup-alt-download">
                Prefer not to enter your email? <br>
@@ -1447,13 +1448,13 @@
          
             // ✅ Capture la soumission du formulaire du popup principal
             const mainPopupForm = document.getElementById("popup-4k-main-form");
-            if (mainPopupForm) {
-                mainPopupForm.addEventListener("submit", function (event) {
-                    event.preventDefault();
-                    setEmailSubmitted();
-                    closeMainPopup4K();
-                });
-            }
+if (mainPopupForm) {
+    mainPopupForm.addEventListener("submit", function () {
+        setEmailSubmitted(); // ✅ Enregistre que l'email a été soumis
+        closeMainPopup4K(); // ✅ Ferme le popup
+    });
+}
+
          });
          
          // ✅ Fonction pour vérifier si l'utilisateur a déjà soumis son email
