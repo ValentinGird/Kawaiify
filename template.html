@@ -663,6 +663,13 @@
       pointer-events: none;
       opacity: 0.9; /* Légèrement différent visuellement */
       }
+      /* ✅ Empêche le clic droit et le drag & drop sur toutes les images */
+img {
+    pointer-events: none; /* Désactive toute interaction avec la souris */
+    user-select: none; /* Empêche la sélection */
+    -webkit-user-drag: none; /* Désactive le glisser-déposer sur Webkit (Chrome, Safari) */
+}
+
    </style>
    </head>
    <body>
@@ -1507,7 +1514,20 @@ window.closeMainPopup4K = closeMainPopup4K;
          
 
          
-         
+         // ✅ Bloque le clic droit uniquement sur les images
+document.addEventListener("contextmenu", function(event) {
+    if (event.target.tagName === "IMG") {
+        event.preventDefault();
+    }
+});
+
+// ✅ Désactive le glisser-déposer des images
+document.addEventListener("dragstart", function(event) {
+    if (event.target.tagName === "IMG") {
+        event.preventDefault();
+    }
+});
+
          
             
       </script>
