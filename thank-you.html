@@ -23,32 +23,35 @@
     <p class="redirect-message">You will be redirected to your wallpaper in a few seconds...</p>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-       // Récupère l'URL du wallpaper sauvegardé
-       const wallpaperUrl = localStorage.getItem("wallpaperUrl");
+   document.addEventListener("DOMContentLoaded", function () {
+       // Fonction pour récupérer l'URL et forcer le téléchargement
+       function downloadWallpaper() {
+           const wallpaperUrl = localStorage.getItem("wallpaperUrl");
 
-       if (wallpaperUrl) {
-           // Crée un lien de téléchargement
-           const downloadLink = document.createElement("a");
-           downloadLink.href = wallpaperUrl;
-           downloadLink.download = "wallpaper.jpg";
-           downloadLink.style.display = "none";
-           document.body.appendChild(downloadLink);
-           
-           // Simule un clic pour déclencher le téléchargement
-           downloadLink.click();
-           
-           // Supprime le lien après téléchargement
-           document.body.removeChild(downloadLink);
-           
-           // Supprime l'URL du localStorage pour éviter des téléchargements futurs involontaires
-           localStorage.removeItem("wallpaperUrl");
-       } else {
-           // Affiche un message d'erreur si aucune image n'a été trouvée
-           document.body.innerHTML += `<p style="color: red; text-align: center;">❌ Oops! We couldn't find your wallpaper. Try again.</p>`;
+           if (wallpaperUrl) {
+               // Crée un lien de téléchargement temporaire
+               const downloadLink = document.createElement("a");
+               downloadLink.href = wallpaperUrl;
+               downloadLink.download = "wallpaper.jpg";
+               downloadLink.style.display = "none";
+               document.body.appendChild(downloadLink);
+
+               // Simule un clic pour télécharger l’image
+               downloadLink.click();
+
+               // Nettoie le localStorage après téléchargement
+               localStorage.removeItem("wallpaperUrl");
+               document.body.removeChild(downloadLink);
+           } else {
+               // Si l’URL est introuvable, essaye à nouveau après 1 seconde
+               setTimeout(downloadWallpaper, 1000);
+           }
        }
-   });
 
-    </script>
+       // Lance la vérification après 500ms pour s'assurer que l'URL est bien récupérée
+       setTimeout(downloadWallpaper, 500);
+   });
+</script>
+
 </body>
 </html>

@@ -1154,25 +1154,63 @@
          });
          
 
+
    document.addEventListener("DOMContentLoaded", function () {
-       // Fonction pour sauvegarder l'URL avant redirection
+       console.log("✅ Script de sauvegarde du wallpaper chargé.");
+
+       // Fonction pour sauvegarder l'URL avant la redirection
        function saveWallpaperUrl(imageUrl) {
-           localStorage.setItem("wallpaperUrl", imageUrl);
+           if (imageUrl) {
+               console.log("💾 URL enregistrée:", imageUrl);
+               localStorage.setItem("wallpaperUrl", imageUrl);
+           } else {
+               console.warn("⚠️ Aucune URL trouvée pour sauvegarde.");
+           }
+       }
+
+       // Récupère l'URL de l'image affichée sur la page (si disponible)
+       const mainImage = document.querySelector(".gallery-offer img");
+       if (mainImage) {
+           saveWallpaperUrl(mainImage.src); // Sauvegarde l'image affichée dès le chargement de la page
        }
 
        // Ajoute un événement sur chaque bouton de téléchargement 4K
        document.querySelectorAll(".download-button-4k").forEach(button => {
            button.addEventListener("click", function () {
-               const imageUrl = this.getAttribute("data-url-4k"); // Récupère l'URL 4K associée
-               if (imageUrl) {
-                   saveWallpaperUrl(imageUrl);
-               }
+               const imageUrl = this.getAttribute("data-url-4k");
+               saveWallpaperUrl(imageUrl);
            });
        });
+
+       // Vérifie si un utilisateur est redirigé depuis Flodesk et lance le téléchargement
+       function downloadWallpaper() {
+           const wallpaperUrl = localStorage.getItem("wallpaperUrl");
+
+           if (wallpaperUrl) {
+               console.log("📥 Téléchargement automatique du wallpaper:", wallpaperUrl);
+
+               const downloadLink = document.createElement("a");
+               downloadLink.href = wallpaperUrl;
+               downloadLink.download = "wallpaper.jpg";
+               downloadLink.style.display = "none";
+               document.body.appendChild(downloadLink);
+
+               downloadLink.click();
+
+               // Nettoyage du localStorage après le téléchargement
+               localStorage.removeItem("wallpaperUrl");
+               document.body.removeChild(downloadLink);
+           } else {
+               console.error("❌ Aucun wallpaper trouvé dans le stockage.");
+           }
+       }
+
+       // Vérifie si on est sur la page de remerciement et lance le téléchargement
+       if (window.location.pathname.includes("thank-you.html")) {
+           setTimeout(downloadWallpaper, 1000); // Attente avant exécution pour laisser le temps au localStorage d'être rempli
+       }
    });
 
-
-         
          
          document.addEventListener("DOMContentLoaded", function () {
              console.log("📊 Google Analytics Debug: Tracking initialized ✅");
