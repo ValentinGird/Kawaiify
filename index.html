@@ -1155,108 +1155,85 @@
          
 
 
+   
+
+
+
+
+
+
    document.addEventListener("DOMContentLoaded", function () {
-       console.log("✅ Script de sauvegarde du wallpaper chargé.");
+    console.log("✅ Script de gestion du téléchargement et de la redirection chargé.");
 
-       // Fonction pour sauvegarder l'URL avant la redirection
-       function saveWallpaperUrl(imageUrl) {
-           if (imageUrl) {
-               console.log("💾 URL enregistrée:", imageUrl);
-               localStorage.setItem("wallpaperUrl", imageUrl);
-           } else {
-               console.warn("⚠️ Aucune URL trouvée pour sauvegarde.");
-           }
-       }
+    // ✅ Fonction pour sauvegarder l'URL de l'image avant la redirection
+    function saveWallpaperUrl(imageUrl) {
+        if (imageUrl) {
+            console.log("💾 URL enregistrée :", imageUrl);
+            localStorage.setItem("wallpaperUrl", imageUrl);
+        } else {
+            console.warn("⚠️ Aucune URL trouvée pour sauvegarde.");
+        }
+    }
 
-       // Récupère l'URL de l'image affichée sur la page (si disponible)
-       const mainImage = document.querySelector(".gallery-offer img");
-       if (mainImage) {
-           saveWallpaperUrl(mainImage.src); // Sauvegarde l'image affichée dès le chargement de la page
-       }
+    // ✅ Capture l'URL de l'image principale
+    const mainImage = document.querySelector("#main-image");
+    if (mainImage) {
+        saveWallpaperUrl(mainImage.src); // Enregistre l’image affichée sur la page
+    }
 
-       // Ajoute un événement sur chaque bouton de téléchargement 4K
-       document.querySelectorAll(".download-button-4k").forEach(button => {
-           button.addEventListener("click", function () {
-               const imageUrl = this.getAttribute("data-url-4k");
-               saveWallpaperUrl(imageUrl);
-           });
-       });
+    // ✅ Capture les clics sur les boutons de téléchargement 4K
+    document.querySelectorAll(".download-button-4k").forEach(button => {
+        button.addEventListener("click", function () {
+            const imageUrl = this.getAttribute("data-url-4k");
+            saveWallpaperUrl(imageUrl);
+        });
+    });
 
-       // Vérifie si un utilisateur est redirigé depuis Flodesk et lance le téléchargement
-       function downloadWallpaper() {
-           const wallpaperUrl = localStorage.getItem("wallpaperUrl");
+    // ✅ Vérifie si l'on est sur `thank-you.html` et déclenche le téléchargement
+    function downloadWallpaper() {
+        const wallpaperUrl = localStorage.getItem("wallpaperUrl");
 
-           if (wallpaperUrl) {
-               console.log("📥 Téléchargement automatique du wallpaper:", wallpaperUrl);
+        if (wallpaperUrl) {
+            console.log("📥 Téléchargement automatique du wallpaper :", wallpaperUrl);
 
-               const downloadLink = document.createElement("a");
-               downloadLink.href = wallpaperUrl;
-               downloadLink.download = "wallpaper.jpg";
-               downloadLink.style.display = "none";
-               document.body.appendChild(downloadLink);
+            const downloadLink = document.createElement("a");
+            downloadLink.href = wallpaperUrl;
+            downloadLink.download = "wallpaper.jpg";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
 
-               downloadLink.click();
+            // ✅ Supprime l'URL du localStorage après téléchargement
+            localStorage.removeItem("wallpaperUrl");
+        } else {
+            console.warn("⚠️ Aucun wallpaper trouvé, réessai dans 1s...");
+            setTimeout(downloadWallpaper, 1000);
+        }
+    }
 
-               // Nettoyage du localStorage après le téléchargement
-               localStorage.removeItem("wallpaperUrl");
-               document.body.removeChild(downloadLink);
-           } else {
-               console.error("❌ Aucun wallpaper trouvé dans le stockage.");
-           }
-       }
+    // ✅ Si on est sur `thank-you.html`, télécharge l’image et redirige
+    if (window.location.pathname.includes("thank-you.html")) {
+        setTimeout(downloadWallpaper, 1000); // ✅ Téléchargement automatique après 1s
 
-       // Vérifie si on est sur la page de remerciement et lance le téléchargement
-       if (window.location.pathname.includes("thank-you.html")) {
-           setTimeout(downloadWallpaper, 1000); // Attente avant exécution pour laisser le temps au localStorage d'être rempli
-       }
-   });
+        // ✅ Après 2 secondes, redirige l'utilisateur vers la page précédente
+        setTimeout(() => {
+            const previousPage = localStorage.getItem("previousPage");
+            if (previousPage) {
+                console.log("🔄 Redirection vers la page précédente :", previousPage);
+                window.location.href = previousPage;
+            } else {
+                console.warn("⚠️ Aucune page précédente trouvée, redirection vers l'accueil.");
+                window.location.href = "https://kawaiify.art"; // 🔥 URL par défaut si aucune page trouvée
+            }
+        }, 2000);
+    }
 
-         
-         document.addEventListener("DOMContentLoaded", function () {
-             console.log("📊 Google Analytics Debug: Tracking initialized ✅");
-         
-             // ✅ Vérifie si gtag est bien défini avant d'envoyer des événements
-             if (typeof gtag !== "function") {
-                 console.error("❌ Google Analytics (gtag) n'est pas défini !");
-                 return;
-             }
-         
-             // ✅ Track les clics sur les boutons Patreon
-             document.body.addEventListener("click", function (event) {
-                 let button = event.target.closest(".patreon-track");
-                 if (button) {
-                     gtag("event", "click", {
-                         event_category: "Buttons",
-                         event_label: "Patreon Click",
-                         value: 1
-                     });
-                     console.log("📊 Patreon click tracked! ✅");
-                 }
-             });
-         
-             // ✅ Track les soumissions d'email (form principal + popup)
-             document.querySelectorAll("#email-form, #popup-email-form").forEach(form => {
-                 form.addEventListener("submit", function (event) {
-                     event.preventDefault();
-                     gtag("event", "sign_up", {
-                         event_category: "Forms",
-                         event_label: "Email Submission",
-                         value: 1
-                     });
-                     console.log("📊 Email submission tracked! ✅");
-                     form.submit();
-                 });
-             });
-         
-             // ✅ Test event pour vérifier si Google Analytics fonctionne
-             gtag("event", "test_event", {
-                 event_category: "Debug",
-                 event_label: "Test Event",
-                 value: 1
-             });
-             console.log("📊 Test event sent to Google Analytics ✅");
-         });
-         
+    // ✅ Sauvegarde la page actuelle avant la redirection (uniquement si on n'est pas sur `thank-you.html`)
+    if (!window.location.pathname.includes("thank-you.html")) {
+        localStorage.setItem("previousPage", window.location.href);
+    }
+});
+
 
 
              

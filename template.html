@@ -1528,6 +1528,83 @@
          
 
 
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Script de gestion du téléchargement et de la redirection chargé.");
+
+    // ✅ Fonction pour sauvegarder l'URL de l'image avant la redirection
+    function saveWallpaperUrl(imageUrl) {
+        if (imageUrl) {
+            console.log("💾 URL enregistrée :", imageUrl);
+            localStorage.setItem("wallpaperUrl", imageUrl);
+        } else {
+            console.warn("⚠️ Aucune URL trouvée pour sauvegarde.");
+        }
+    }
+
+    // ✅ Capture l'URL de l'image principale
+    const mainImage = document.querySelector("#main-image");
+    if (mainImage) {
+        saveWallpaperUrl(mainImage.src); // Enregistre l’image affichée sur la page
+    }
+
+    // ✅ Capture les clics sur les boutons de téléchargement 4K
+    document.querySelectorAll(".download-button-4k").forEach(button => {
+        button.addEventListener("click", function () {
+            const imageUrl = this.getAttribute("data-url-4k");
+            saveWallpaperUrl(imageUrl);
+        });
+    });
+
+    // ✅ Vérifie si l'on est sur `thank-you.html` et déclenche le téléchargement
+    function downloadWallpaper() {
+        const wallpaperUrl = localStorage.getItem("wallpaperUrl");
+
+        if (wallpaperUrl) {
+            console.log("📥 Téléchargement automatique du wallpaper :", wallpaperUrl);
+
+            const downloadLink = document.createElement("a");
+            downloadLink.href = wallpaperUrl;
+            downloadLink.download = "wallpaper.jpg";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            // ✅ Supprime l'URL du localStorage après téléchargement
+            localStorage.removeItem("wallpaperUrl");
+        } else {
+            console.warn("⚠️ Aucun wallpaper trouvé, réessai dans 1s...");
+            setTimeout(downloadWallpaper, 1000);
+        }
+    }
+
+    // ✅ Si on est sur `thank-you.html`, télécharge l’image et redirige
+    if (window.location.pathname.includes("thank-you.html")) {
+        setTimeout(downloadWallpaper, 1000); // ✅ Téléchargement automatique après 1s
+
+        // ✅ Après 2 secondes, redirige l'utilisateur vers la page précédente
+        setTimeout(() => {
+            const previousPage = localStorage.getItem("previousPage");
+            if (previousPage) {
+                console.log("🔄 Redirection vers la page précédente :", previousPage);
+                window.location.href = previousPage;
+            } else {
+                console.warn("⚠️ Aucune page précédente trouvée, redirection vers l'accueil.");
+                window.location.href = "https://kawaiify.art"; // 🔥 URL par défaut si aucune page trouvée
+            }
+        }, 2000);
+    }
+
+    // ✅ Sauvegarde la page actuelle avant la redirection (uniquement si on n'est pas sur `thank-you.html`)
+    if (!window.location.pathname.includes("thank-you.html")) {
+        localStorage.setItem("previousPage", window.location.href);
+    }
+});
+
+
+
             
       </script>
    </body>
