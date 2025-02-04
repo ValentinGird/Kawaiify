@@ -1154,7 +1154,17 @@
          });
          
          
-         
+    function openPopup4K(imageUrlHD, imageUrl4K) {
+        if (hasSubmittedEmail()) {
+            forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
+        } else {
+            localStorage.setItem("lastPage", window.location.href); // ✅ Stocke l’URL actuelle
+            localStorage.setItem("selectedImage4K", imageUrl4K); // ✅ Stocke l’image choisie
+            
+            // ✅ Redirige vers Flodesk
+            window.location.href = "https://flodesk.com/forms/679762dbb32b1d435468220c/submit";
+        }
+    }
          
          
          document.addEventListener("DOMContentLoaded", function () {
@@ -1203,7 +1213,7 @@
          });
          
 
-   
+
              
       </script>
    </body>

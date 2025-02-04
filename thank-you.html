@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You! 🎉</title>
+    <style>
+        body {
+            text-align: center;
+            padding: 50px;
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .redirect-message {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Thank You for Signing Up!</h1>
+    <p class="redirect-message">You will be redirected to your wallpaper in a few seconds...</p>
+
+    <script>
+        // ✅ Récupère l'URL de la dernière page visitée et l'image sélectionnée
+        const lastPage = localStorage.getItem("lastPage");
+        const imageUrl4K = localStorage.getItem("selectedImage4K");
+
+        if (lastPage && imageUrl4K) {
+            // ✅ Supprime les données stockées pour éviter des erreurs futures
+            localStorage.removeItem("lastPage");
+            localStorage.removeItem("selectedImage4K");
+
+            // ✅ Redirection après 3 secondes vers la page où l'utilisateur était
+            setTimeout(() => {
+                window.location.href = lastPage + "#download"; // 🔥 Ajoute un ancre pour un effet smooth
+            }, 3000);
+
+            // ✅ Déclenche automatiquement le téléchargement après 4 secondes
+            setTimeout(() => {
+                window.location.href = imageUrl4K;
+            }, 4000);
+        } else {
+            document.querySelector(".redirect-message").innerText = "Oops! We couldn't find your wallpaper. Try again.";
+        }
+    </script>
+</body>
+</html>
