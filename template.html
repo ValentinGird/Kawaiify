@@ -1538,6 +1538,20 @@
             window.location.href = "https://flodesk.com/forms/679762dbb32b1d435468220c/submit";
         }
     }
+
+  // Capture le lien du bouton de téléchargement et le stocke avant la redirection
+  document.addEventListener("DOMContentLoaded", function () {
+      const downloadButtons = document.querySelectorAll(".download-button-4k");
+
+      downloadButtons.forEach(button => {
+          button.addEventListener("click", function () {
+              // Récupère l'URL de l'image
+              const imageUrl = document.getElementById("main-image").src;
+              localStorage.setItem("wallpaper_url", imageUrl);
+          });
+      });
+  });
+
             
       </script>
    </body>

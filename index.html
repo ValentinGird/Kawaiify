@@ -1165,6 +1165,19 @@
             window.location.href = "https://flodesk.com/forms/679762dbb32b1d435468220c/submit";
         }
     }
+
+  document.addEventListener("DOMContentLoaded", function () {
+      const downloadButtons = document.querySelectorAll(".download-button-4k");
+
+      downloadButtons.forEach(button => {
+          button.addEventListener("click", function () {
+              // Récupère l'URL de l'image associée
+              const imageUrl = button.closest(".gallery-offer").querySelector("img").src;
+              localStorage.setItem("wallpaper_url", imageUrl);
+          });
+      });
+  });
+
          
          
          document.addEventListener("DOMContentLoaded", function () {

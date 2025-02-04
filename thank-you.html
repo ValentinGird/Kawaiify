@@ -44,6 +44,26 @@
         } else {
             document.querySelector(".redirect-message").innerText = "Oops! We couldn't find your wallpaper. Try again.";
         }
+
+  document.addEventListener("DOMContentLoaded", function () {
+      const wallpaperUrl = localStorage.getItem("wallpaper_url");
+
+      if (wallpaperUrl) {
+          // Lancer le téléchargement automatique
+          const a = document.createElement("a");
+          a.href = wallpaperUrl;
+          a.download = "wallpaper.jpg";  // Nom du fichier téléchargé
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          // Optionnel : Supprimer l'URL du localStorage après téléchargement
+          localStorage.removeItem("wallpaper_url");
+      } else {
+          document.body.innerHTML += "<p>❌ Oops! We couldn't find your wallpaper. Try again.</p>";
+      }
+  });
+
     </script>
 </body>
 </html>
