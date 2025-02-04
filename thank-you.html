@@ -32,19 +32,14 @@
         if (wallpaperUrl) {
             console.log("📥 Téléchargement en cours :", wallpaperUrl);
 
-            // ✅ Création d'un lien invisible pour forcer le téléchargement
             const link = document.createElement("a");
             link.href = wallpaperUrl;
             link.setAttribute("download", "wallpaper.jpg");
-            link.style.display = "none";
             document.body.appendChild(link);
-
-            // ✅ Clique sur le lien pour télécharger l'image
             link.click();
-
-            // ✅ Nettoyage après téléchargement
             document.body.removeChild(link);
-            localStorage.removeItem("wallpaperUrl");
+
+            localStorage.removeItem("wallpaperUrl"); // Nettoie après téléchargement
 
             console.log("✅ Téléchargement déclenché !");
         } else {
@@ -53,10 +48,10 @@
         }
     }
 
-    // ✅ Lance le téléchargement après un délai de 1 seconde
+    // Lance le téléchargement après un délai de 1 seconde
     setTimeout(downloadWallpaper, 1000);
 
-    // ✅ Après 3 secondes, redirige l'utilisateur vers la page précédente
+    // Après 3 secondes, redirige l'utilisateur vers la page précédente
     setTimeout(() => {
         const previousPage = localStorage.getItem("previousPage");
         if (previousPage) {
@@ -68,6 +63,7 @@
         }
     }, 3000);
 });
+
 
 
     </script>
