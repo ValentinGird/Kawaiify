@@ -23,46 +23,31 @@
     <p class="redirect-message">You will be redirected to your wallpaper in a few seconds...</p>
 
     <script>
-        // ✅ Récupère l'URL de la dernière page visitée et l'image sélectionnée
-        const lastPage = localStorage.getItem("lastPage");
-        const imageUrl4K = localStorage.getItem("selectedImage4K");
+        document.addEventListener("DOMContentLoaded", function () {
+       // Récupère l'URL du wallpaper sauvegardé
+       const wallpaperUrl = localStorage.getItem("wallpaperUrl");
 
-        if (lastPage && imageUrl4K) {
-            // ✅ Supprime les données stockées pour éviter des erreurs futures
-            localStorage.removeItem("lastPage");
-            localStorage.removeItem("selectedImage4K");
-
-            // ✅ Redirection après 3 secondes vers la page où l'utilisateur était
-            setTimeout(() => {
-                window.location.href = lastPage + "#download"; // 🔥 Ajoute un ancre pour un effet smooth
-            }, 3000);
-
-            // ✅ Déclenche automatiquement le téléchargement après 4 secondes
-            setTimeout(() => {
-                window.location.href = imageUrl4K;
-            }, 4000);
-        } else {
-            document.querySelector(".redirect-message").innerText = "Oops! We couldn't find your wallpaper. Try again.";
-        }
-
-  document.addEventListener("DOMContentLoaded", function () {
-      const wallpaperUrl = localStorage.getItem("wallpaper_url");
-
-      if (wallpaperUrl) {
-          // Lancer le téléchargement automatique
-          const a = document.createElement("a");
-          a.href = wallpaperUrl;
-          a.download = "wallpaper.jpg";  // Nom du fichier téléchargé
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-
-          // Optionnel : Supprimer l'URL du localStorage après téléchargement
-          localStorage.removeItem("wallpaper_url");
-      } else {
-          document.body.innerHTML += "<p>❌ Oops! We couldn't find your wallpaper. Try again.</p>";
-      }
-  });
+       if (wallpaperUrl) {
+           // Crée un lien de téléchargement
+           const downloadLink = document.createElement("a");
+           downloadLink.href = wallpaperUrl;
+           downloadLink.download = "wallpaper.jpg";
+           downloadLink.style.display = "none";
+           document.body.appendChild(downloadLink);
+           
+           // Simule un clic pour déclencher le téléchargement
+           downloadLink.click();
+           
+           // Supprime le lien après téléchargement
+           document.body.removeChild(downloadLink);
+           
+           // Supprime l'URL du localStorage pour éviter des téléchargements futurs involontaires
+           localStorage.removeItem("wallpaperUrl");
+       } else {
+           // Affiche un message d'erreur si aucune image n'a été trouvée
+           document.body.innerHTML += `<p style="color: red; text-align: center;">❌ Oops! We couldn't find your wallpaper. Try again.</p>`;
+       }
+   });
 
     </script>
 </body>
