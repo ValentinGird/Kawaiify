@@ -30,43 +30,45 @@
         const wallpaperUrl = localStorage.getItem("wallpaperUrl");
 
         if (wallpaperUrl) {
-            console.log("📥 Téléchargement du wallpaper :", wallpaperUrl);
+            console.log("📥 Téléchargement en cours :", wallpaperUrl);
 
-            const downloadLink = document.createElement("a");
-            downloadLink.href = wallpaperUrl;
-            downloadLink.download = "wallpaper.jpg";
-            downloadLink.style.display = "none";
-            document.body.appendChild(downloadLink);
+            // ✅ Création d'un lien invisible pour forcer le téléchargement
+            const link = document.createElement("a");
+            link.href = wallpaperUrl;
+            link.setAttribute("download", "wallpaper.jpg");
+            link.style.display = "none";
+            document.body.appendChild(link);
 
-            downloadLink.click(); // Simule le clic pour forcer le téléchargement
+            // ✅ Clique sur le lien pour télécharger l'image
+            link.click();
 
-            // Nettoyage après téléchargement
+            // ✅ Nettoyage après téléchargement
+            document.body.removeChild(link);
             localStorage.removeItem("wallpaperUrl");
-            document.body.removeChild(downloadLink);
 
-            return true; // Indique que le téléchargement a été lancé
+            console.log("✅ Téléchargement déclenché !");
         } else {
-            console.warn("⚠️ Aucune URL trouvée, réessaie dans 1s...");
-            setTimeout(downloadWallpaper, 1000); // Réessaie après 1 seconde
-            return false;
+            console.warn("⚠️ Aucune image trouvée, réessaie dans 1s...");
+            setTimeout(downloadWallpaper, 1000);
         }
     }
 
-    // ✅ Tente de télécharger immédiatement
-    let downloadStarted = downloadWallpaper();
+    // ✅ Lance le téléchargement après un délai de 1 seconde
+    setTimeout(downloadWallpaper, 1000);
 
-    // ✅ Attendre 2 secondes avant de rediriger (évite d'interrompre le téléchargement)
+    // ✅ Après 3 secondes, redirige l'utilisateur vers la page précédente
     setTimeout(() => {
         const previousPage = localStorage.getItem("previousPage");
         if (previousPage) {
-            console.log("🔄 Redirection vers la page précédente :", previousPage);
+            console.log("🔄 Redirection vers :", previousPage);
             window.location.href = previousPage;
         } else {
-            console.warn("⚠️ Aucune page précédente trouvée, redirection vers l'accueil.");
-            window.location.href = "https://kawaiify.art"; // 🔥 URL par défaut si aucune page trouvée
+            console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
+            window.location.href = "https://kawaiify.art";
         }
-    }, downloadStarted ? 2000 : 4000); // Redirection après 2s si téléchargement réussi, sinon 4s
+    }, 3000);
 });
+
 
     </script>
 </body>
