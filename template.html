@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-   <html lang="en">
-      <head>
-         <meta charset="UTF-8">
-         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-         <title>{TITLE}</title>
-         <meta name="description" content="{DESCRIPTION}">
-         <meta name="keywords" content="{TAGS}, anime wallpaper, 4K background, HD anime art">
-         <meta property="og:title" content="{TITLE}">
-         <meta property="og:description" content="{DESCRIPTION}">
-         <meta property="og:image" content="{IMAGE_URL}">
-         <meta property="og:type" content="website">
-         <meta property="og:url" content="{PAGE_URL}">
-         <meta name="twitter:card" content="summary_large_image">
-         <meta name="twitter:title" content="{TITLE}">
-         <meta name="twitter:description" content="{DESCRIPTION}">
-         <meta name="twitter:image" content="{IMAGE_URL}">
-         <!-- Favicon -->
-         <link rel="icon" type="image/png" href="https://i.ibb.co/XZJbQPYm/favicon-32x32.png">
-         <link rel="stylesheet" href="styles.css">
-      </head>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>{TITLE}</title>
+      <meta name="description" content="{DESCRIPTION}">
+      <meta name="keywords" content="{TAGS}, anime wallpaper, 4K background, HD anime art">
+      <meta property="og:title" content="{TITLE}">
+      <meta property="og:description" content="{DESCRIPTION}">
+      <meta property="og:image" content="{IMAGE_URL}">
+      <meta property="og:type" content="website">
+      <meta property="og:url" content="{PAGE_URL}">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="{TITLE}">
+      <meta name="twitter:description" content="{DESCRIPTION}">
+      <meta name="twitter:image" content="{IMAGE_URL}">
+      <!-- Favicon -->
+      <link rel="icon" type="image/png" href="https://i.ibb.co/XZJbQPYm/favicon-32x32.png">
+      <link rel="stylesheet" href="styles.css">
+   </head>
    <style>
       /* Dark mode */
       * {
@@ -125,32 +125,32 @@
       text-decoration: underline;
       }
       /* ✅ Free Pack Offer - Alignement parfait */
-/* Grid for offers layout */
-         .offers {
-         display: grid;
-         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-         gap: 20px;
-         padding: 20px;
-         justify-items: center; /* Center the elements in the grid */
-         align-items: stretch; /* Ensure elements have the same height */
-         margin-bottom: 0px; /* Réduction maximale sans être collé */
-         padding-bottom: 0px !important; /* Supprime tout padding en bas */
-         }
+      /* Grid for offers layout */
+      .offers {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      justify-items: center; /* Center the elements in the grid */
+      align-items: stretch; /* Ensure elements have the same height */
+      margin-bottom: 0px; /* Réduction maximale sans être collé */
+      padding-bottom: 0px !important; /* Supprime tout padding en bas */
+      }
       .offer {
-         background-color: #1e1e1e;
-         border: 1px solid #444;
-         border-radius: 10px;
-         padding: 20px;
-         margin: 0;
-         display: flex;
-         flex-direction: column;
-         justify-content: space-between;
-         align-items: center;
-         width: 100%;
-         max-width: 400px; /* Limit width to avoid large blocks on PC */
-         height: 100%; /* Ensure all sections have the same height */
-         margin-bottom: 10px; /* Réduction de l’espace en dessous */
-         }
+      background-color: #1e1e1e;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 400px; /* Limit width to avoid large blocks on PC */
+      height: 100%; /* Ensure all sections have the same height */
+      margin-bottom: 10px; /* Réduction de l’espace en dessous */
+      }
       /* ✅ Titre */
       .offer h2 {
       color: #FF69B4;
@@ -461,7 +461,7 @@
       }
       /* ✅ Ajout d'une icône devant chaque point */
       .popup-benefits li::before {
-      content: "✅"; /* Emoji Checkmark */
+      content: ""; /* Emoji Checkmark */
       position: absolute;
       left: 0;
       }
@@ -473,12 +473,13 @@
       }
       /* ✅ Style de l'image du popup */
       .popup-image {
-      width: 100%; /* Prend toute la largeur du popup */
-      max-width: 300px; /* Taille max pour ne pas être trop grande */
-      display: block;
-      margin: 0 auto 15px; /* Centrage + espace sous l'image */
-      border-radius: 8px; /* Coins arrondis pour un meilleur rendu */
-      }
+    width: 40%; /* Réduit à 80% de la largeur du popup */
+    max-width: 250px; /* ✅ Limite la taille maximale */
+    height: auto; /* ✅ Garde le ratio d’origine */
+    display: block; /* ✅ Assure un bon affichage */
+    margin: 0 auto 10px; /* ✅ Centre l’image et ajoute un espace en dessous */
+    border-radius: 8px; /* ✅ Garde des bords arrondis pour le style */
+}
       .popup-container h3 {
       margin-top: 0px; /* ✅ Réduit l’espace au-dessus du titre */
       margin-bottom: 0px; /* ✅ Réduit l’espace sous le titre */
@@ -664,12 +665,11 @@
       opacity: 0.9; /* Légèrement différent visuellement */
       }
       /* ✅ Empêche le clic droit et le drag & drop sur toutes les images */
-img {
-    pointer-events: none; /* Désactive toute interaction avec la souris */
-    user-select: none; /* Empêche la sélection */
-    -webkit-user-drag: none; /* Désactive le glisser-déposer sur Webkit (Chrome, Safari) */
-}
-
+      img {
+      pointer-events: none; /* Désactive toute interaction avec la souris */
+      user-select: none; /* Empêche la sélection */
+      -webkit-user-drag: none; /* Désactive le glisser-déposer sur Webkit (Chrome, Safari) */
+      }
    </style>
    </head>
    <body>
@@ -690,42 +690,42 @@ img {
       </div>
       <!-- ✅ Section de l'image principale -->
       <div class="offers">
-      <div class="image-box">
-         <h2>{TITLE}</h2>
-         <img id="main-image" src="{IMAGE_URL}" alt="Wallpaper">
-         <!-- ✅ Ajout de la description -->
-         <p class="image-description">{DESCRIPTION}</p>
-         <!-- ✅ Ajout des tags dynamiques -->
-         <div class="tags-container" id="main-image-tags"></div>
-         <!-- ✅ Boutons Download -->
-         <div class="button-container">
-            <button class="download-button download-button-4k" id="popup-4k-main-btn">
-            <strong>Download in 4K (Free)</strong>
-            </button>
-            <button class="download-button download-button-hd" onclick="forceDownload('{IMAGE_URL}')">
-            <strong>Download in HD</strong>
-            </button>
+         <div class="image-box">
+            <h2>{TITLE}</h2>
+            <img id="main-image" src="{IMAGE_URL}" alt="Wallpaper">
+            <!-- ✅ Ajout de la description -->
+            <p class="image-description">{DESCRIPTION}</p>
+            <!-- ✅ Ajout des tags dynamiques -->
+            <div class="tags-container" id="main-image-tags"></div>
+            <!-- ✅ Boutons Download -->
+            <div class="button-container">
+               <button class="download-button download-button-4k" id="popup-4k-main-btn">
+               <strong>Download in 4K (Free)</strong>
+               </button>
+               <button class="download-button download-button-hd" onclick="forceDownload('{IMAGE_URL}')">
+               <strong>Download in HD</strong>
+               </button>
+            </div>
          </div>
-      </div>
       </div>
       <!-- ✅ Popup Principal 4K -->
       <div class="popup-overlay" id="popup-4k-main-overlay">
-    <div class="popup-container" id="popup-4k-main">
-        <span class="popup-close" onclick="closeMainPopup4K()">✖</span>
+         <div class="popup-container" id="popup-4k-main">
+            <span class="popup-close" onclick="closeMainPopup4K()">✖</span>
             <!-- ✅ Image fixe pour comparer HD vs 4K -->
-            <img id="popup-4k-main-image" src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K Wallpaper Preview" class="popup-image">
+            <img id="popup-4k-main-image" src="{IMAGE_URL}" alt="4K Wallpaper Preview" class="popup-image">
             <!-- ✅ Titre et description fixes -->
-            <h3>🎁 Download Your 4K Anime Wallpaper!</h3>
-            <p>Enter your email to <strong>instantly download this wallpaper in ultra-sharp 4K</strong>.</p>
+            <h3>🎁 Get This 4K Anime Wallpaper & Unlock Daily Surprises! ✨</h3>
+            <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>:</p>
             <ul class="popup-benefits">
-               <li>Get <strong>5 new exclusive 4K wallpapers</strong> every month</li>
-               <li>Access <strong>secret wallpapers</strong> only available to subscribers</li>
-               <li>Be the first to get <strong>new ultra-HD drops</strong></li>
+               <li>🎨 <strong>Receive a new premium anime wallpaper every day on Telegram</strong></li>
+               <li>💎 <strong>Unlock secret wallpapers</strong> not available anywhere else</li>
+               <li>🚀 <strong>Be the first to grab ultra-HD anime drops</strong></li>
             </ul>
             <!-- ✅ Formulaire d'inscription -->
             <form id="popup-4k-main-form">
                <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-               <button type="submit" class="popup-button">📥 Download in 4K (Free)</button>
+               <button type="submit" class="popup-button">📥 Download in 4K & Get 1 Exclusive Wallpaper Every Day!</button>
             </form>
             <!-- ✅ Téléchargement sans email -->
             <p class="popup-alt-download">
@@ -739,21 +739,19 @@ img {
          <div class="popup-container" id="popup-4k">
             <span class="popup-close" onclick="closePopup4K()">✖</span>
             <!-- ✅ Image d'illustration 4K vs HD -->
-            <img src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K vs HD Comparison" class="popup-image">
+            <img id="popup-4k-gallery-image" src="" alt="4K Wallpaper Preview" class="popup-image">
             <!-- ✅ Titre du popup -->
-            <h3>🎁 Download Your 4K Anime Wallpaper!</h3>
-            <!-- ✅ Description rapide -->
-            <p>Enter your email to <strong>instantly download this wallpaper in ultra-sharp 4K</strong> and get exclusive benefits:</p>
-            <!-- ✅ Liste des avantages -->
+            <h3>🎁 Get This 4K Anime Wallpaper & Unlock Daily Surprises! ✨</h3>
+            <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>:</p>
             <ul class="popup-benefits">
-               <li>Get <strong>5 new exclusive 4K wallpapers</strong> every month</li>
-               <li>Access <strong>secret wallpapers</strong> only available to subscribers</li>
-               <li>Be the first to get <strong>new ultra-HD drops</strong></li>
+               <li>🎨 <strong>Receive a new premium anime wallpaper every day on Telegram</strong></li>
+               <li>💎 <strong>Unlock secret wallpapers</strong> not available anywhere else</li>
+               <li>🚀 <strong>Be the first to grab ultra-HD anime drops</strong></li>
             </ul>
             <!-- ✅ Formulaire d'inscription -->
             <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
                <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-               <button type="submit" class="popup-button">📥 Download in 4K (Free)</button>
+               <button type="submit" class="popup-button">📥 Download in 4K & Get 1 Exclusive Wallpaper Every Day!</button>
             </form>
             <!-- ✅ Option sans email -->
             <p class="popup-alt-download">Prefer not to enter your email? <br>
@@ -763,17 +761,17 @@ img {
       </div>
       <!-- Free Pack Offer -->
       <div class="offers">
-      <div class="offer" id="free-offer-section">
-         <h2>Unlock 100+ Stunning 4K Wallpapers for Free!</h2>
-         <p>Get a free pack of over <strong>100 high-quality anime wallpapers</strong> in <strong>ultra-sharp 4K</strong> resolution to enhance your device! 📲</p>
-         <img src="https://i.ibb.co/FmT37qd/Banner-Patreon-Website-V2.png" alt="Free pack preview">
-         <div class="email-input-container">
-            <form id="email-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
-               <input type="email" name="email" class="email-input" placeholder="Enter your email" required>
-               <button type="submit" id="email-submit-button" class="email-input-button">Claim Your Free Pack</button>
-            </form>
+         <div class="offer" id="free-offer-section">
+            <h2>Unlock 100+ Stunning 4K Wallpapers for Free!</h2>
+            <p>Get a free pack of over <strong>100 high-quality anime wallpapers</strong> in <strong>ultra-sharp 4K</strong> resolution to enhance your device! 📲</p>
+            <img src="https://i.ibb.co/FmT37qd/Banner-Patreon-Website-V2.png" alt="Free pack preview">
+            <div class="email-input-container">
+               <form id="email-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
+                  <input type="email" name="email" class="email-input" placeholder="Enter your email" required>
+                  <button type="submit" id="email-submit-button" class="email-input-button">Claim Your Free Pack</button>
+               </form>
+            </div>
          </div>
-      </div>
       </div>
       <h2 class="section-title">Similar Wallpapers</h2>
       <div class="gallery" id="gallery"></div>
@@ -805,16 +803,25 @@ img {
          
             // ✅ Fonction pour ouvrir le popup 4K et stocker l’URL de l’image
             function openPopup4K(imageUrlHD, imageUrl4K) {
-                if (localStorage.getItem("emailSubmitted") === "true") {
-                    forceDownload(imageUrl4K); // ✅ Si l'email est déjà soumis, on télécharge directement en 4K
-                } else {
-                    document.getElementById("popup-4k-overlay").style.display = "flex";
-                    document.body.style.overflow = "hidden";
+         if (localStorage.getItem("emailSubmitted") === "true") {
+         forceDownload(imageUrl4K); // ✅ Si l'email est déjà soumis, on télécharge directement en 4K
+         } else {
+         document.getElementById("popup-4k-overlay").style.display = "flex";
+         document.body.style.overflow = "hidden";
          
-                    // ✅ Mise à jour du bouton dans le popup avec l'URL correcte
-                    setPopupDownloadUrl(imageUrlHD, imageUrl4K);
-                }
-            }
+         // ✅ Met à jour l’image du popup avec l’image sélectionnée
+         document.getElementById("popup-4k-gallery-image").src = imageUrlHD;
+         // ✅ Réduit la taille de l’image dans le popup
+         const popupImage = document.getElementById("popup-4k-gallery-image");
+         popupImage.style.width = "50%"; // Réduit à 50% de la largeur du conteneur
+         popupImage.style.maxWidth = "250px"; // Limite la taille maximale
+         popupImage.style.height = "auto"; // Garde le ratio de l’image
+
+         
+         // ✅ Mise à jour du bouton dans le popup avec l'URL correcte
+         setPopupDownloadUrl(imageUrlHD, imageUrl4K);
+         }
+         }
          
             // ✅ Fonction pour mettre à jour le bouton HD dans le popup
             function setPopupDownloadUrl(imageUrlHD, imageUrl4K) {
@@ -961,77 +968,77 @@ img {
                     
                     
                     document.addEventListener("DOMContentLoaded", function () {
-    const lazyImages = document.querySelectorAll("img[loading='lazy']");
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
+         const lazyImages = document.querySelectorAll("img[loading='lazy']");
+         const observer = new IntersectionObserver((entries, observer) => {
+         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const img = entry.target;
                 img.src = img.dataset.src;
                 observer.unobserve(img);
             }
-        });
-    }, { rootMargin: "100px" });
-
-    lazyImages.forEach(img => observer.observe(img));
-});
-
+         });
+         }, { rootMargin: "100px" });
+         
+         lazyImages.forEach(img => observer.observe(img));
+         });
+         
                     
                     document.addEventListener("DOMContentLoaded", async function () {
-    let isLoading = false;
-    const imagesPerLoad = 10;
-    let loadedImages = new Set();
-    const gallery = document.getElementById("gallery");
-    let imageUrls = [];
-    let nextImageIndex = 0;
-
-    // ✅ Récupère les tags de l’image principale
-    const mainTagsContainer = document.getElementById("main-image-tags");
-    const mainTags = mainTagsContainer ? 
-        Array.from(mainTagsContainer.querySelectorAll(".tag")).map(tag => tag.textContent.toLowerCase()) 
-        : [];
-
-    console.log("🔎 Tags de l'image principale :", mainTags);
-
-    // ✅ Récupère l'URL de l'image principale
-    const mainImageElement = document.getElementById("main-image");
-    const mainImageUrl = mainImageElement ? mainImageElement.src : null;
-
-    console.log("📌 Image principale détectée :", mainImageUrl);
-
-    // ✅ Fonction pour charger les images
-    async function fetchImages() {
-        if (isLoading || nextImageIndex >= imageUrls.length) return;
-        isLoading = true;
-
-        try {
+         let isLoading = false;
+         const imagesPerLoad = 10;
+         let loadedImages = new Set();
+         const gallery = document.getElementById("gallery");
+         let imageUrls = [];
+         let nextImageIndex = 0;
+         
+         // ✅ Récupère les tags de l’image principale
+         const mainTagsContainer = document.getElementById("main-image-tags");
+         const mainTags = mainTagsContainer ? 
+         Array.from(mainTagsContainer.querySelectorAll(".tag")).map(tag => tag.textContent.toLowerCase()) 
+         : [];
+         
+         console.log("🔎 Tags de l'image principale :", mainTags);
+         
+         // ✅ Récupère l'URL de l'image principale
+         const mainImageElement = document.getElementById("main-image");
+         const mainImageUrl = mainImageElement ? mainImageElement.src : null;
+         
+         console.log("📌 Image principale détectée :", mainImageUrl);
+         
+         // ✅ Fonction pour charger les images
+         async function fetchImages() {
+         if (isLoading || nextImageIndex >= imageUrls.length) return;
+         isLoading = true;
+         
+         try {
             // ✅ Sélectionne le prochain lot d'images à charger
             const imagesToLoad = imageUrls.slice(nextImageIndex, nextImageIndex + imagesPerLoad);
             nextImageIndex += imagesPerLoad;
-
+         
             imagesToLoad.forEach(imgData => {
                 if (!loadedImages.has(imgData.url) && imgData.url !== mainImageUrl) { 
                     // ✅ Vérifie que l'image n'est pas déjà ajoutée et qu'elle ne correspond pas à l'image principale
                     loadedImages.add(imgData.url);
-
+         
                     const offerDiv = document.createElement("div");
                     offerDiv.className = "offer gallery-offer";
-
+         
                     // ✅ Image
                     const imgElement = document.createElement("img");
                     imgElement.src = imgData.url;
                     imgElement.alt = imgData.title;
                     imgElement.loading = "lazy";
-
+         
                     // ✅ Titre
                     const titleElement = document.createElement("h3");
                     titleElement.className = "image-title";
                     titleElement.textContent = imgData.title;
-
+         
                     // ✅ Description
                     const descriptionElement = document.createElement("p");
                     descriptionElement.className = "image-description";
                     descriptionElement.textContent = imgData.description;
-
+         
                     // ✅ Génération des tags cliquables
                     const tagsContainer = document.createElement("div");
                     tagsContainer.className = "tags-container";
@@ -1039,27 +1046,27 @@ img {
                         const tagSpan = document.createElement("span");
                         tagSpan.className = "tag";
                         tagSpan.textContent = tag;
-
+         
                         // ✅ Active/Désactive le tag au clic
                         tagSpan.addEventListener("click", function () {
                             this.classList.toggle("active");
                             filterByTag(tag);
                         });
-
+         
                         tagsContainer.appendChild(tagSpan);
                     });
-
+         
                     // ✅ Compteur de téléchargements
                     let storedCount = localStorage.getItem(`clickCount_${imgData.url}`);
                     if (storedCount === null) {
                         storedCount = Math.floor(Math.random() * (15000 - 900 + 1)) + 900;
                         localStorage.setItem(`clickCount_${imgData.url}`, storedCount);
                     }
-
+         
                     const downloadCounter = document.createElement("p");
                     downloadCounter.className = "counter-text";
                     downloadCounter.innerHTML = `🔥 Downloaded by ${storedCount.toLocaleString()} people!`;
-
+         
                     // ✅ Bouton HD
                     const downloadButtonHD = document.createElement("button");
                     downloadButtonHD.className = "download-button download-button-hd";
@@ -1067,15 +1074,15 @@ img {
                     downloadButtonHD.addEventListener("click", function () {
                         forceDownload(imgData.url);
                     });
-
+         
                     // ✅ Bouton 4K (popup)
                     const download4KButtonPopup = document.createElement("button");
-                    download4KButtonPopup.className = "download-button download-button-4k";
-                    download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
-                    download4KButtonPopup.addEventListener("click", function () {
-                        openPopup4K(imgData.url, imgData.url_4k);
-                    });
-
+         download4KButtonPopup.className = "download-button download-button-4k";
+         download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
+         download4KButtonPopup.addEventListener("click", function () {
+         openPopup4K(imgData.url, imgData.url_4k); // ✅ Envoie l’image correcte au popup
+         });
+         
                     // ✅ Ajout des éléments
                     offerDiv.appendChild(titleElement);
                     offerDiv.appendChild(imgElement);
@@ -1084,31 +1091,31 @@ img {
                     offerDiv.appendChild(downloadCounter);
                     offerDiv.appendChild(download4KButtonPopup);
                     offerDiv.appendChild(downloadButtonHD);
-
+         
                     gallery.appendChild(offerDiv);
                 }
             });
-        } catch (error) {
+         } catch (error) {
             console.error("❌ Erreur lors du chargement des images :", error);
-        }
-
-        isLoading = false;
-    }
-
-    // ✅ Fonction pour charger et trier les images initiales
-    async function loadInitialImages() {
-        try {
+         }
+         
+         isLoading = false;
+         }
+         
+         // ✅ Fonction pour charger et trier les images initiales
+         async function loadInitialImages() {
+         try {
             const response = await fetch("https://raw.githubusercontent.com/ValentinGird/Kawaiify/main/images.json");
             if (!response.ok) throw new Error("❌ Problème de récupération du fichier JSON");
-
+         
             const data = await response.json();
             imageUrls = data.images;
-
+         
             if (!imageUrls || imageUrls.length === 0) {
                 console.warn("⚠️ Aucune image trouvée !");
                 return;
             }
-
+         
             // ✅ Ajoute un score de pertinence basé sur les tags en commun
             imageUrls.forEach(img => {
                 img.score = 0;
@@ -1117,40 +1124,40 @@ img {
                     img.score = commonTags.length; // Plus il y a de tags communs, plus le score est élevé
                 }
             });
-
+         
             // ✅ Trie les images par score (celles avec le plus de tags en commun en premier)
             imageUrls.sort((a, b) => b.score - a.score);
-
+         
             console.log("✅ Images triées par pertinence :", imageUrls);
-
+         
             // ✅ Charge les images triées en premier
             fetchImages();
-        } catch (error) {
+         } catch (error) {
             console.error("❌ Erreur lors de la récupération du fichier JSON :", error);
-        }
-    }
-
-    loadInitialImages();
-
-    // ✅ Suppression des doublons après le chargement des images
-    document.addEventListener("DOMContentLoaded", function () {
-        if (!mainImageUrl) {
+         }
+         }
+         
+         loadInitialImages();
+         
+         // ✅ Suppression des doublons après le chargement des images
+         document.addEventListener("DOMContentLoaded", function () {
+         if (!mainImageUrl) {
             console.error("⚠️ Image principale non trouvée !");
             return;
-        }
-
-        const galleryItems = document.querySelectorAll(".gallery-offer img");
-        galleryItems.forEach(item => {
+         }
+         
+         const galleryItems = document.querySelectorAll(".gallery-offer img");
+         galleryItems.forEach(item => {
             if (item.src === mainImageUrl) {
                 item.closest(".gallery-offer").remove(); // ✅ Supprime l'image en double
             }
-        });
-
-        console.log("✅ Images en double supprimées !");
-    });
-
-});
-
+         });
+         
+         console.log("✅ Images en double supprimées !");
+         });
+         
+         });
+         
          
             // ✅ Chargement infini sur scroll
             window.addEventListener("scroll", function () {
@@ -1190,24 +1197,24 @@ img {
          
          // ✅ FERMETURE DU POPUP 4K PRINCIPAL
          function closeMainPopup4K() {
-    const popup = document.getElementById("popup-4k-main");
-    const overlay = document.getElementById("popup-4k-main-overlay");
-
-    if (!popup || !overlay) return;
-
-    popup.style.opacity = "0";
-    popup.style.transform = "translate(-50%, -55%)";
-    overlay.style.opacity = "0";
-
-    setTimeout(() => {
-        popup.style.display = "none";
-        overlay.style.display = "none";
-    }, 300);
-}
-
-window.closeMainPopup4K = closeMainPopup4K;
-
-
+         const popup = document.getElementById("popup-4k-main");
+         const overlay = document.getElementById("popup-4k-main-overlay");
+         
+         if (!popup || !overlay) return;
+         
+         popup.style.opacity = "0";
+         popup.style.transform = "translate(-50%, -55%)";
+         overlay.style.opacity = "0";
+         
+         setTimeout(() => {
+         popup.style.display = "none";
+         overlay.style.display = "none";
+         }, 300);
+         }
+         
+         window.closeMainPopup4K = closeMainPopup4K;
+         
+         
          
             // ✅ Capture la soumission du formulaire pour masquer définitivement le popup
             const popupForm = document.getElementById("popup-4k-form");
@@ -1512,22 +1519,23 @@ window.closeMainPopup4K = closeMainPopup4K;
          });
          });
          
-
+         
          
          // ✅ Bloque le clic droit uniquement sur les images
-document.addEventListener("contextmenu", function(event) {
-    if (event.target.tagName === "IMG") {
-        event.preventDefault();
-    }
-});
-
-// ✅ Désactive le glisser-déposer des images
-document.addEventListener("dragstart", function(event) {
-    if (event.target.tagName === "IMG") {
-        event.preventDefault();
-    }
-});
-
+         document.addEventListener("contextmenu", function(event) {
+         if (event.target.tagName === "IMG") {
+         event.preventDefault();
+         }
+         });
+         
+         // ✅ Désactive le glisser-déposer des images
+         document.addEventListener("dragstart", function(event) {
+         if (event.target.tagName === "IMG") {
+         event.preventDefault();
+         }
+         });
+         
+         
          
             
       </script>

@@ -412,7 +412,7 @@
          }
          /* ✅ Ajout d'une icône devant chaque point */
          .popup-benefits li::before {
-         content: "✅"; /* Emoji Checkmark */
+         content: ""; /* Emoji Checkmark */
          position: absolute;
          left: 0;
          }
@@ -424,12 +424,13 @@
          }
          /* ✅ Style de l'image du popup */
          .popup-image {
-         width: 100%; /* Prend toute la largeur du popup */
-         max-width: 300px; /* Taille max pour ne pas être trop grande */
-         display: block;
-         margin: 0 auto 15px; /* Centrage + espace sous l'image */
-         border-radius: 8px; /* Coins arrondis pour un meilleur rendu */
-         }
+    width: 40%; /* Réduit à 80% de la largeur du popup */
+    max-width: 250px; /* ✅ Limite la taille maximale */
+    height: auto; /* ✅ Garde le ratio d’origine */
+    display: block; /* ✅ Assure un bon affichage */
+    margin: 0 auto 10px; /* ✅ Centre l’image et ajoute un espace en dessous */
+    border-radius: 8px; /* ✅ Garde des bords arrondis pour le style */
+}
          .popup-alt-button {
          background: none;
          border: none;
@@ -597,12 +598,11 @@
          display: block; /* Cache l'image */
          }
          /* ✅ Empêche le clic droit et le drag & drop sur toutes les images */
-img {
-    pointer-events: none; /* Désactive toute interaction avec la souris */
-    user-select: none; /* Empêche la sélection */
-    -webkit-user-drag: none; /* Désactive le glisser-déposer sur Webkit (Chrome, Safari) */
-}
-
+         img {
+         pointer-events: none; /* Désactive toute interaction avec la souris */
+         user-select: none; /* Empêche la sélection */
+         -webkit-user-drag: none; /* Désactive le glisser-déposer sur Webkit (Chrome, Safari) */
+         }
       </style>
    </head>
    <body>
@@ -626,21 +626,19 @@ img {
          <div class="popup-container" id="popup-4k">
             <span class="popup-close" onclick="closePopup4K()">✖</span>
             <!-- ✅ Image d'illustration 4K vs HD -->
-            <img src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K vs HD Comparison" class="popup-image">
+            <img id="popup-4k-gallery-image" src="" alt="4K Wallpaper Preview" class="popup-image">
             <!-- ✅ Titre du popup -->
-            <h3>🎁 Download Your 4K Anime Wallpaper!</h3>
-            <!-- ✅ Description rapide -->
-            <p>Enter your email to <strong>instantly download this wallpaper in ultra-sharp 4K</strong> and get exclusive benefits:</p>
-            <!-- ✅ Liste des avantages -->
+            <h3>🎁 Get This 4K Anime Wallpaper & Unlock Daily Surprises! ✨</h3>
+            <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>:</p>
             <ul class="popup-benefits">
-               <li>Receive a <strong>new exclusive 4K wallpaper</strong> every week.</li>
-               <li>Get <strong>tips on how to create your own anime wallpapers</strong>.</li>
-               <li>Learn <strong>how to monetize your Pinterest with anime wallpapers</strong>.</li>
+               <li>🎨 <strong>Receive a new premium anime wallpaper every day on Telegram</strong></li>
+               <li>💎 <strong>Unlock secret wallpapers</strong> not available anywhere else</li>
+               <li>🚀 <strong>Be the first to grab ultra-HD anime drops</strong></li>
             </ul>
             <!-- ✅ Formulaire d'inscription -->
             <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
                <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-               <button type="submit" class="popup-button">📥 Download in 4K (Free)</button>
+               <button type="submit" class="popup-button">📥 Download in 4K & Get 1 Exclusive Wallpaper Every Day!</button>
             </form>
             <!-- ✅ Option sans email -->
             <p class="popup-alt-download">Prefer not to enter your email? <br>
@@ -949,21 +947,35 @@ img {
          
          // ✅ Fonction pour ouvrir le popup 4K ou télécharger directement
          function openPopup4K(imageUrlHD, imageUrl4K) {
-         if (hasSubmittedEmail()) {
-         forceDownload(imageUrl4K); // ✅ Si déjà inscrit, on télécharge directement en 4K
-         } else {
-         const popup = document.getElementById("popup-4k");
-         const overlay = document.getElementById("popup-4k-overlay");
-         
-         if (popup && overlay) {
-         popup.style.display = "block";
-         overlay.style.display = "flex";
-         
-         setPopupDownloadUrl(imageUrlHD, imageUrl4K); // ✅ Passe les 2 URL
-         document.body.style.overflow = "hidden";
-         }
-         }
-         }
+    if (hasSubmittedEmail()) {
+        forceDownload(imageUrl4K); // ✅ Si déjà inscrit, on télécharge directement en 4K
+    } else {
+        const popup = document.getElementById("popup-4k");
+        const overlay = document.getElementById("popup-4k-overlay");
+        const popupImage = document.getElementById("popup-4k-gallery-image");
+        popupImage.style.width = "50%"; // Réduit à 50% de la largeur du conteneur
+         popupImage.style.maxWidth = "250px"; // Limite la taille maximale
+         popupImage.style.height = "auto"; // Garde le ratio de l’image
+        const galleryImage = document.getElementById("galleryImage"); // 🔥 Ajout de l'image de la galerie
+
+        if (popup && overlay) {
+            popup.style.display = "block";
+            overlay.style.display = "flex";
+            
+            // ✅ Met à jour l'image du popup (déjà existant)
+            popupImage.src = imageUrl4K;
+
+            // ✅ Met à jour l'image principale de la galerie
+            if (galleryImage) {
+                galleryImage.src = imageUrlHD;
+            }
+
+            setPopupDownloadUrl(imageUrlHD, imageUrl4K); // ✅ Passe les 2 URL
+            document.body.style.overflow = "hidden";
+        }
+    }
+}
+
          
          // ✅ Fonction pour fermer le popup 4K et réactiver le scrolling
          function closePopup4K() {
@@ -1131,21 +1143,21 @@ img {
          });
          });
          
-
+         
          // ✅ Bloque le clic droit uniquement sur les images
-document.addEventListener("contextmenu", function(event) {
-    if (event.target.tagName === "IMG") {
-        event.preventDefault();
-    }
-});
-
-// ✅ Désactive le glisser-déposer des images
-document.addEventListener("dragstart", function(event) {
-    if (event.target.tagName === "IMG") {
-        event.preventDefault();
-    }
-});
-
+         document.addEventListener("contextmenu", function(event) {
+         if (event.target.tagName === "IMG") {
+         event.preventDefault();
+         }
+         });
+         
+         // ✅ Désactive le glisser-déposer des images
+         document.addEventListener("dragstart", function(event) {
+         if (event.target.tagName === "IMG") {
+         event.preventDefault();
+         }
+         });
+         
          
          
          
