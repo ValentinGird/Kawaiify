@@ -24,46 +24,50 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            console.log("✅ Page Thank You chargée.");
+    console.log("✅ Page Thank You chargée.");
 
-            function downloadWallpaper() {
-                const wallpaperUrl = localStorage.getItem("wallpaperUrl");
+    function downloadWallpaper() {
+        const wallpaperUrl = localStorage.getItem("wallpaperUrl");
 
-                if (wallpaperUrl) {
-                    console.log("📥 Téléchargement du wallpaper :", wallpaperUrl);
+        if (wallpaperUrl) {
+            console.log("📥 Téléchargement du wallpaper :", wallpaperUrl);
 
-                    const downloadLink = document.createElement("a");
-                    downloadLink.href = wallpaperUrl;
-                    downloadLink.download = "wallpaper.jpg";
-                    downloadLink.style.display = "none";
-                    document.body.appendChild(downloadLink);
+            const downloadLink = document.createElement("a");
+            downloadLink.href = wallpaperUrl;
+            downloadLink.download = "wallpaper.jpg";
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
 
-                    downloadLink.click(); // Simule le clic pour forcer le téléchargement
+            downloadLink.click(); // Simule le clic pour forcer le téléchargement
 
-                    // Nettoyage après téléchargement
-                    localStorage.removeItem("wallpaperUrl");
-                    document.body.removeChild(downloadLink);
-                } else {
-                    console.warn("⚠️ Aucune URL trouvée, réessaie dans 1s...");
-                    setTimeout(downloadWallpaper, 1000); // Réessaie après 1 seconde
-                }
-            }
+            // Nettoyage après téléchargement
+            localStorage.removeItem("wallpaperUrl");
+            document.body.removeChild(downloadLink);
 
-            // ✅ Attendre 500ms avant d'essayer le téléchargement
-            setTimeout(downloadWallpaper, 500);
+            return true; // Indique que le téléchargement a été lancé
+        } else {
+            console.warn("⚠️ Aucune URL trouvée, réessaie dans 1s...");
+            setTimeout(downloadWallpaper, 1000); // Réessaie après 1 seconde
+            return false;
+        }
+    }
 
-            // ✅ Récupère la page précédente et redirige après 4 secondes
-            setTimeout(() => {
-                const previousPage = localStorage.getItem("previousPage");
-                if (previousPage) {
-                    console.log("🔄 Redirection vers la page précédente :", previousPage);
-                    window.location.href = previousPage;
-                } else {
-                    console.warn("⚠️ Aucune page précédente trouvée, redirection vers l'accueil.");
-                    window.location.href = "https://kawaiify.art"; // 🔥 URL par défaut si aucune page trouvée
-                }
-            }, 4000);
-        });
+    // ✅ Tente de télécharger immédiatement
+    let downloadStarted = downloadWallpaper();
+
+    // ✅ Attendre 2 secondes avant de rediriger (évite d'interrompre le téléchargement)
+    setTimeout(() => {
+        const previousPage = localStorage.getItem("previousPage");
+        if (previousPage) {
+            console.log("🔄 Redirection vers la page précédente :", previousPage);
+            window.location.href = previousPage;
+        } else {
+            console.warn("⚠️ Aucune page précédente trouvée, redirection vers l'accueil.");
+            window.location.href = "https://kawaiify.art"; // 🔥 URL par défaut si aucune page trouvée
+        }
+    }, downloadStarted ? 2000 : 4000); // Redirection après 2s si téléchargement réussi, sinon 4s
+});
+
     </script>
 </body>
 </html>
