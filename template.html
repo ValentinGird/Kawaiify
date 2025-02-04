@@ -970,153 +970,180 @@
 
                     
                     document.addEventListener("DOMContentLoaded", async function () {
-            let isLoading = false;
-            const imagesPerLoad = 10;
-            let loadedImages = new Set();
-            const gallery = document.getElementById("gallery");
-            let imageUrls = [];
-            let nextImageIndex = 0;
-            
-            // ✅ Récupère les tags de l’image principale
-            const mainTagsContainer = document.getElementById("main-image-tags");
-            const mainTags = mainTagsContainer ? 
-                Array.from(mainTagsContainer.querySelectorAll(".tag")).map(tag => tag.textContent.toLowerCase()) 
-                : [];
-         
-            console.log("🔎 Tags de l'image principale :", mainTags);
-         
-            // ✅ Fonction pour charger les images
-            async function fetchImages() {
-                if (isLoading || nextImageIndex >= imageUrls.length) return;
-                isLoading = true;
-         
-                try {
-                    // ✅ Sélectionne le prochain lot d'images à charger
-                    const imagesToLoad = imageUrls.slice(nextImageIndex, nextImageIndex + imagesPerLoad);
-                    nextImageIndex += imagesPerLoad;
-         
-                    imagesToLoad.forEach(imgData => {
-                        if (!loadedImages.has(imgData.url)) {
-                            loadedImages.add(imgData.url);
-         
-                            const offerDiv = document.createElement("div");
-                            offerDiv.className = "offer gallery-offer";
-         
-                            // ✅ Image
-                            const imgElement = document.createElement("img");
-                            imgElement.src = imgData.url;
-                            imgElement.alt = imgData.title;
-                            imgElement.loading = "lazy";
-         
-                            // ✅ Titre
-                            const titleElement = document.createElement("h3");
-                            titleElement.className = "image-title";
-                            titleElement.textContent = imgData.title;
-         
-                            // ✅ Description
-                            const descriptionElement = document.createElement("p");
-                            descriptionElement.className = "image-description";
-                            descriptionElement.textContent = imgData.description;
-         
-                            // ✅ Génération des tags cliquables
-                            const tagsContainer = document.createElement("div");
-                            tagsContainer.className = "tags-container";
-                            imgData.tags.forEach(tag => {
-                                const tagSpan = document.createElement("span");
-                                tagSpan.className = "tag";
-                                tagSpan.textContent = tag;
-                                
-                                // ✅ Active/Désactive le tag au clic
-                                tagSpan.addEventListener("click", function () {
-                                    this.classList.toggle("active"); // Change l'état du tag visuellement
-                                    filterByTag(tag); // Applique le filtrage
-                                });
-         
-                                tagsContainer.appendChild(tagSpan);
-                            });
-         
-                            // ✅ Compteur de téléchargements
-                            let storedCount = localStorage.getItem(`clickCount_${imgData.url}`);
-                            if (storedCount === null) {
-                                storedCount = Math.floor(Math.random() * (15000 - 900 + 1)) + 900;
-                                localStorage.setItem(`clickCount_${imgData.url}`, storedCount);
-                            }
-         
-                            const downloadCounter = document.createElement("p");
-                            downloadCounter.className = "counter-text";
-                            downloadCounter.innerHTML = `🔥 Downloaded by ${storedCount.toLocaleString()} people!`;
-         
-                            // ✅ Bouton HD
-                            const downloadButtonHD = document.createElement("button");
-                            downloadButtonHD.className = "download-button download-button-hd";
-                            downloadButtonHD.innerHTML = "<strong>Download in HD</strong>";
-                            downloadButtonHD.addEventListener("click", function () {
-                                forceDownload(imgData.url);
-                            });
-         
-                            // ✅ Bouton 4K (popup)
-                            const download4KButtonPopup = document.createElement("button");
-                            download4KButtonPopup.className = "download-button download-button-4k";
-                            download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
-                            download4KButtonPopup.addEventListener("click", function () {
-                                openPopup4K(imgData.url, imgData.url_4k);
-                            });
-         
-                            // ✅ Ajout des éléments
-                            offerDiv.appendChild(titleElement);
-                            offerDiv.appendChild(imgElement);
-                            offerDiv.appendChild(descriptionElement);
-                            offerDiv.appendChild(tagsContainer);
-                            offerDiv.appendChild(downloadCounter);
-                            offerDiv.appendChild(download4KButtonPopup);
-                            offerDiv.appendChild(downloadButtonHD);
-         
-                            gallery.appendChild(offerDiv);
-                        }
+    let isLoading = false;
+    const imagesPerLoad = 10;
+    let loadedImages = new Set();
+    const gallery = document.getElementById("gallery");
+    let imageUrls = [];
+    let nextImageIndex = 0;
+
+    // ✅ Récupère les tags de l’image principale
+    const mainTagsContainer = document.getElementById("main-image-tags");
+    const mainTags = mainTagsContainer ? 
+        Array.from(mainTagsContainer.querySelectorAll(".tag")).map(tag => tag.textContent.toLowerCase()) 
+        : [];
+
+    console.log("🔎 Tags de l'image principale :", mainTags);
+
+    // ✅ Récupère l'URL de l'image principale
+    const mainImageElement = document.getElementById("main-image");
+    const mainImageUrl = mainImageElement ? mainImageElement.src : null;
+
+    console.log("📌 Image principale détectée :", mainImageUrl);
+
+    // ✅ Fonction pour charger les images
+    async function fetchImages() {
+        if (isLoading || nextImageIndex >= imageUrls.length) return;
+        isLoading = true;
+
+        try {
+            // ✅ Sélectionne le prochain lot d'images à charger
+            const imagesToLoad = imageUrls.slice(nextImageIndex, nextImageIndex + imagesPerLoad);
+            nextImageIndex += imagesPerLoad;
+
+            imagesToLoad.forEach(imgData => {
+                if (!loadedImages.has(imgData.url) && imgData.url !== mainImageUrl) { 
+                    // ✅ Vérifie que l'image n'est pas déjà ajoutée et qu'elle ne correspond pas à l'image principale
+                    loadedImages.add(imgData.url);
+
+                    const offerDiv = document.createElement("div");
+                    offerDiv.className = "offer gallery-offer";
+
+                    // ✅ Image
+                    const imgElement = document.createElement("img");
+                    imgElement.src = imgData.url;
+                    imgElement.alt = imgData.title;
+                    imgElement.loading = "lazy";
+
+                    // ✅ Titre
+                    const titleElement = document.createElement("h3");
+                    titleElement.className = "image-title";
+                    titleElement.textContent = imgData.title;
+
+                    // ✅ Description
+                    const descriptionElement = document.createElement("p");
+                    descriptionElement.className = "image-description";
+                    descriptionElement.textContent = imgData.description;
+
+                    // ✅ Génération des tags cliquables
+                    const tagsContainer = document.createElement("div");
+                    tagsContainer.className = "tags-container";
+                    imgData.tags.forEach(tag => {
+                        const tagSpan = document.createElement("span");
+                        tagSpan.className = "tag";
+                        tagSpan.textContent = tag;
+
+                        // ✅ Active/Désactive le tag au clic
+                        tagSpan.addEventListener("click", function () {
+                            this.classList.toggle("active");
+                            filterByTag(tag);
+                        });
+
+                        tagsContainer.appendChild(tagSpan);
                     });
-                } catch (error) {
-                    console.error("❌ Erreur lors du chargement des images :", error);
-                }
-         
-                isLoading = false;
-            }
-         
-            // ✅ Fonction pour charger et trier les images initiales
-            async function loadInitialImages() {
-                try {
-                    const response = await fetch("https://raw.githubusercontent.com/ValentinGird/Kawaiify/main/images.json");
-                    if (!response.ok) throw new Error("❌ Problème de récupération du fichier JSON");
-         
-                    const data = await response.json();
-                    imageUrls = data.images;
-         
-                    if (!imageUrls || imageUrls.length === 0) {
-                        console.warn("⚠️ Aucune image trouvée !");
-                        return;
+
+                    // ✅ Compteur de téléchargements
+                    let storedCount = localStorage.getItem(`clickCount_${imgData.url}`);
+                    if (storedCount === null) {
+                        storedCount = Math.floor(Math.random() * (15000 - 900 + 1)) + 900;
+                        localStorage.setItem(`clickCount_${imgData.url}`, storedCount);
                     }
-         
-                    // ✅ Ajoute un score de pertinence basé sur les tags en commun
-                    imageUrls.forEach(img => {
-                        img.score = 0;
-                        if (img.tags) {
-                            const commonTags = img.tags.filter(tag => mainTags.includes(tag.toLowerCase()));
-                            img.score = commonTags.length; // Plus il y a de tags communs, plus le score est élevé
-                        }
+
+                    const downloadCounter = document.createElement("p");
+                    downloadCounter.className = "counter-text";
+                    downloadCounter.innerHTML = `🔥 Downloaded by ${storedCount.toLocaleString()} people!`;
+
+                    // ✅ Bouton HD
+                    const downloadButtonHD = document.createElement("button");
+                    downloadButtonHD.className = "download-button download-button-hd";
+                    downloadButtonHD.innerHTML = "<strong>Download in HD</strong>";
+                    downloadButtonHD.addEventListener("click", function () {
+                        forceDownload(imgData.url);
                     });
-         
-                    // ✅ Trie les images par score (celles avec le plus de tags en commun en premier)
-                    imageUrls.sort((a, b) => b.score - a.score);
-         
-                    console.log("✅ Images triées par pertinence :", imageUrls);
-         
-                    // ✅ Charge les images triées en premier
-                    fetchImages();
-                } catch (error) {
-                    console.error("❌ Erreur lors de la récupération du fichier JSON :", error);
+
+                    // ✅ Bouton 4K (popup)
+                    const download4KButtonPopup = document.createElement("button");
+                    download4KButtonPopup.className = "download-button download-button-4k";
+                    download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
+                    download4KButtonPopup.addEventListener("click", function () {
+                        openPopup4K(imgData.url, imgData.url_4k);
+                    });
+
+                    // ✅ Ajout des éléments
+                    offerDiv.appendChild(titleElement);
+                    offerDiv.appendChild(imgElement);
+                    offerDiv.appendChild(descriptionElement);
+                    offerDiv.appendChild(tagsContainer);
+                    offerDiv.appendChild(downloadCounter);
+                    offerDiv.appendChild(download4KButtonPopup);
+                    offerDiv.appendChild(downloadButtonHD);
+
+                    gallery.appendChild(offerDiv);
                 }
+            });
+        } catch (error) {
+            console.error("❌ Erreur lors du chargement des images :", error);
+        }
+
+        isLoading = false;
+    }
+
+    // ✅ Fonction pour charger et trier les images initiales
+    async function loadInitialImages() {
+        try {
+            const response = await fetch("https://raw.githubusercontent.com/ValentinGird/Kawaiify/main/images.json");
+            if (!response.ok) throw new Error("❌ Problème de récupération du fichier JSON");
+
+            const data = await response.json();
+            imageUrls = data.images;
+
+            if (!imageUrls || imageUrls.length === 0) {
+                console.warn("⚠️ Aucune image trouvée !");
+                return;
             }
-         
-            loadInitialImages();
+
+            // ✅ Ajoute un score de pertinence basé sur les tags en commun
+            imageUrls.forEach(img => {
+                img.score = 0;
+                if (img.tags) {
+                    const commonTags = img.tags.filter(tag => mainTags.includes(tag.toLowerCase()));
+                    img.score = commonTags.length; // Plus il y a de tags communs, plus le score est élevé
+                }
+            });
+
+            // ✅ Trie les images par score (celles avec le plus de tags en commun en premier)
+            imageUrls.sort((a, b) => b.score - a.score);
+
+            console.log("✅ Images triées par pertinence :", imageUrls);
+
+            // ✅ Charge les images triées en premier
+            fetchImages();
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération du fichier JSON :", error);
+        }
+    }
+
+    loadInitialImages();
+
+    // ✅ Suppression des doublons après le chargement des images
+    document.addEventListener("DOMContentLoaded", function () {
+        if (!mainImageUrl) {
+            console.error("⚠️ Image principale non trouvée !");
+            return;
+        }
+
+        const galleryItems = document.querySelectorAll(".gallery-offer img");
+        galleryItems.forEach(item => {
+            if (item.src === mainImageUrl) {
+                item.closest(".gallery-offer").remove(); // ✅ Supprime l'image en double
+            }
+        });
+
+        console.log("✅ Images en double supprimées !");
+    });
+
+});
+
          
             // ✅ Chargement infini sur scroll
             window.addEventListener("scroll", function () {
@@ -1205,7 +1232,6 @@ window.closeMainPopup4K = closeMainPopup4K;
             } else {
                 console.warn("⚠️ Avertissement : Bouton de fermeture du popup introuvable.");
             }
-         });
                     
                     
                     document.addEventListener("DOMContentLoaded", function () {
@@ -1479,26 +1505,6 @@ window.closeMainPopup4K = closeMainPopup4K;
          });
          });
          
-         
-         document.addEventListener("DOMContentLoaded", function () {
-    // Récupère l'URL de l'image principale
-    const mainImageElement = document.getElementById("main-image");
-    if (!mainImageElement) {
-        console.error("⚠️ Image principale non trouvée !");
-        return;
-    }
-    const mainImageUrl = mainImageElement.src;
-
-    // Supprime les images en double de la galerie
-    const galleryItems = document.querySelectorAll(".gallery-offer img");
-    galleryItems.forEach(item => {
-        if (item.src === mainImageUrl) {
-            item.closest(".gallery-offer").remove(); // Supprime l'image en double
-        }
-    });
-
-    console.log("✅ Images en double supprimées !");
-});
 
          
          
