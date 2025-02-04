@@ -52,7 +52,7 @@
       border-radius: 10px;
       padding: 20px;
       width: 100%;  /* ✅ Même largeur que les autres sections */
-      max-width: 320px; /* ✅ Empêche qu'il soit trop large sur PC */
+      max-width: 400px; /* ✅ Empêche qu'il soit trop large sur PC */
       text-align: center;
       margin: 0 auto; /* ✅ Centre parfaitement */
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
@@ -147,7 +147,7 @@
          justify-content: space-between;
          align-items: center;
          width: 100%;
-         max-width: 320px; /* Limit width to avoid large blocks on PC */
+         max-width: 400px; /* Limit width to avoid large blocks on PC */
          height: 100%; /* Ensure all sections have the same height */
          margin-bottom: 10px; /* Réduction de l’espace en dessous */
          }
@@ -175,7 +175,7 @@
       /* ✅ Conteneur du formulaire */
       .email-input-container {
       width: 100%;
-      max-width: 260px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       align-items: center; /* ✅ Centre les éléments */
@@ -703,8 +703,8 @@
       </div>
       <!-- ✅ Popup Principal 4K -->
       <div class="popup-overlay" id="popup-4k-main-overlay">
-         <div class="popup-container" id="popup-4k-main">
-            <span class="popup-close" onclick="closeMainPopup4K()">✖</span>
+    <div class="popup-container" id="popup-4k-main">
+        <span class="popup-close" onclick="closeMainPopup4K()">✖</span>
             <!-- ✅ Image fixe pour comparer HD vs 4K -->
             <img id="popup-4k-main-image" src="https://i.ibb.co/mV3h967M/adzdazzdaazdazd.png" alt="4K Wallpaper Preview" class="popup-image">
             <!-- ✅ Titre et description fixes -->
@@ -1156,20 +1156,24 @@
          
          // ✅ FERMETURE DU POPUP 4K PRINCIPAL
          function closeMainPopup4K() {
-            const popup = document.getElementById("popup-4k");
-            const overlay = document.getElementById("popup-4k-overlay");
-         
-            if (!popup || !overlay) return;
-         
-            popup.style.opacity = "0";
-            popup.style.transform = "translate(-50%, -55%)";
-            overlay.style.opacity = "0";
-         
-            setTimeout(() => {
-                popup.style.display = "none";
-                overlay.style.display = "none";
-            }, 300);
-         }
+    const popup = document.getElementById("popup-4k-main");
+    const overlay = document.getElementById("popup-4k-main-overlay");
+
+    if (!popup || !overlay) return;
+
+    popup.style.opacity = "0";
+    popup.style.transform = "translate(-50%, -55%)";
+    overlay.style.opacity = "0";
+
+    setTimeout(() => {
+        popup.style.display = "none";
+        overlay.style.display = "none";
+    }, 300);
+}
+
+window.closeMainPopup4K = closeMainPopup4K;
+
+
          
             // ✅ Capture la soumission du formulaire pour masquer définitivement le popup
             const popupForm = document.getElementById("popup-4k-form");
