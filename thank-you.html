@@ -23,7 +23,8 @@
     <p class="redirect-message">You will be redirected to your wallpaper in a few seconds...</p>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Page Thank You chargée.");
 
     function downloadWallpaper() {
@@ -32,26 +33,36 @@
         if (wallpaperUrl) {
             console.log("📥 Téléchargement en cours :", wallpaperUrl);
 
-            const link = document.createElement("a");
-            link.href = wallpaperUrl;
-            link.setAttribute("download", "wallpaper.jpg");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            fetch(wallpaperUrl)
+                .then(response => response.blob()) // Convertir en Blob
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
 
-            localStorage.removeItem("wallpaperUrl"); // Nettoie après téléchargement
+                    const link = document.createElement("a");
+                    link.href = blobUrl;
+                    link.setAttribute("download", "wallpaper.jpg");
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
 
-            console.log("✅ Téléchargement déclenché !");
+                    window.URL.revokeObjectURL(blobUrl); // Nettoyer l'URL Blob
+                    localStorage.removeItem("wallpaperUrl"); // Supprimer après utilisation
+
+                    console.log("✅ Téléchargement déclenché !");
+                })
+                .catch(error => {
+                    console.error("❌ Erreur lors du téléchargement :", error);
+                });
         } else {
             console.warn("⚠️ Aucune image trouvée, réessaie dans 1s...");
             setTimeout(downloadWallpaper, 1000);
         }
     }
 
-    // Lance le téléchargement après un délai de 1 seconde
+    // ✅ Lance le téléchargement après un délai de 1 seconde
     setTimeout(downloadWallpaper, 1000);
 
-    // Après 3 secondes, redirige l'utilisateur vers la page précédente
+    // ✅ Après 3 secondes, redirige l'utilisateur vers la page précédente
     setTimeout(() => {
         const previousPage = localStorage.getItem("previousPage");
         if (previousPage) {
@@ -63,6 +74,8 @@
         }
     }, 3000);
 });
+</script>
+
 
 
 
