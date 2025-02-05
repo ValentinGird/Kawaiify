@@ -908,49 +908,66 @@ function saveUserState(imageUrl4K) {
         return;
     }
 
-    const imageUrl4K = button4K.getAttribute("data-url-4k");
+    let imageUrl4K = button4K.getAttribute("data-url-4k");
 
     if (!imageUrl4K) {
         console.warn("⚠️ L’URL de l’image 4K est introuvable !");
         return;
     }
 
-    // ✅ Vérifie si l'utilisateur a déjà soumis son email
+    // ✅ Si l’email a déjà été soumis, on passe directement au téléchargement
     if (hasSubmittedEmail()) {
-        // ✅ Vérifie si le téléchargement a déjà été déclenché
-        if (localStorage.getItem("downloadTriggered") === "true") {
-            console.log("✅ Email déjà soumis et téléchargement déjà effectué.");
-            return; // ⛔ Empêche l'ouverture du popup et le téléchargement en boucle
-        }
-
-        // ✅ Télécharge immédiatement et marque comme fait
-        console.log("✅ Email soumis, téléchargement immédiat.");
+        console.log("✅ Email déjà soumis, téléchargement immédiat.");
         forceDownload(imageUrl4K);
-        localStorage.setItem("downloadTriggered", "true"); // ✅ Empêche un second téléchargement
         return;
     }
 
-    // ✅ Si l'email n'a pas encore été soumis, ouvre le popup
+    // ✅ Sinon, on ouvre le popup pour demander l'email
     document.getElementById("popup-4k-main-overlay").style.display = "flex";
 
-    // ✅ Enregistre l'état après soumission
+    // ✅ Quand le formulaire est soumis, on enregistre l’email et on redirige
     document.getElementById("popup-4k-main-form").onsubmit = function () {
         setEmailSubmitted(imageUrl4K);
         saveUserState(imageUrl4K);
     };
 }
 
-// ✅ Vérifie au chargement de la page si un téléchargement doit être déclenché
+// ✅ Vérifie au chargement si l'utilisateur a déjà soumis son email et met à jour les boutons
 document.addEventListener("DOMContentLoaded", function () {
-    const imageUrl4K = localStorage.getItem("pendingDownload4K");
+    const button4K = document.getElementById("popup-4k-main-btn");
+    let imageUrl4K = button4K ? button4K.getAttribute("data-url-4k") : null;
 
     if (imageUrl4K && hasSubmittedEmail()) {
-        console.log("🚀 Déclenchement automatique du téléchargement après retour.");
-        forceDownload(imageUrl4K);
-        localStorage.removeItem("pendingDownload4K"); // Nettoyage après téléchargement
-        localStorage.setItem("downloadTriggered", "true"); // ✅ Évite un second déclenchement
+        console.log("🚀 L'utilisateur a déjà soumis son email. Modification du bouton.");
+        
+        // ✅ Transforme le bouton en lien de téléchargement direct
+        button4K.innerHTML = "<strong>📥 Download in 4K</strong>";
+        button4K.onclick = function () {
+            forceDownload(imageUrl4K);
+        };
     }
+
+    // ✅ Vérifie si un téléchargement était en attente et le déclenche automatiquement
+    const pendingDownload = localStorage.getItem("pendingDownload4K");
+    if (pendingDownload && hasSubmittedEmail()) {
+        console.log("🚀 Téléchargement automatique après retour.");
+        forceDownload(pendingDownload);
+        localStorage.removeItem("pendingDownload4K"); // Nettoyage
+    }
+
+    // ✅ Met à jour tous les boutons de la galerie pour éviter l'affichage du popup
+    document.querySelectorAll(".download-button-4k").forEach(button => {
+        let galleryImageUrl4K = button.getAttribute("data-url-4k");
+        
+        if (hasSubmittedEmail() && galleryImageUrl4K) {
+            button.innerHTML = "<strong>📥 Download in 4K</strong>";
+            button.onclick = function () {
+                forceDownload(galleryImageUrl4K);
+            };
+        }
+    });
 });
+
 
 
 
