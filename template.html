@@ -722,6 +722,7 @@
 </form>
 
 
+
       <!-- ✅ Téléchargement sans email -->
       <p class="popup-alt-download">
          Prefer not to enter your email? <br>
@@ -1081,15 +1082,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
          function saveUserState(imageUrl4K) {
-    localStorage.setItem("previousPage", window.location.href);
+    const fullUrl = window.location.href; // Capture l'URL exacte avec le chemin et paramètres
+    localStorage.setItem("previousPage", fullUrl);
     localStorage.setItem("scrollPosition", window.scrollY);
-    console.log("💾 Page enregistrée :", window.location.href, "| Position scroll:", window.scrollY);
+    console.log("💾 Page enregistrée :", fullUrl, "| Position scroll:", window.scrollY);
 
     if (imageUrl4K) {
         localStorage.setItem("pendingDownload4K", imageUrl4K);
         console.log("💾 Image 4K enregistrée pour téléchargement :", imageUrl4K);
     }
 }
+
 
 
             
