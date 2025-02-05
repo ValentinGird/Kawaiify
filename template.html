@@ -690,7 +690,7 @@
 <div class="offers">
    <div class="image-box">
     <h2>{TITLE}</h2>
-    <img id="main-image" src="{IMAGE_URL}" data-url-4k="{IMAGE_URL_4K}" alt="Wallpaper">
+    <img id="main-image" src="{IMAGE_URL}" data-url-4k="{IMAGE_URL_4K}" alt="Wallpaper"> 
     <!-- ✅ Ajout de la description -->
     <p class="image-description">{DESCRIPTION}</p>
     <!-- ✅ Ajout des tags dynamiques -->
@@ -1097,9 +1097,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // ✅ Ajout d'un écouteur pour le bouton du popup principal
-    document.getElementById("popup-4k-main-btn").addEventListener("click", openPopupMain4K);
-
 
     // ✅ Vérifie et exécute le téléchargement après retour de la page thank-you
     checkPendingDownload();
@@ -1183,6 +1180,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+// ✅ Ajoute un écouteur pour le bouton du popup principal
+document.getElementById("popup-4k-main-btn").addEventListener("click", openPopupMain4K);
 
 
 document.addEventListener("DOMContentLoaded", function () {
