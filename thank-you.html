@@ -20,14 +20,14 @@
 </head>
 <body>
     <h1>🎉 Thank You for Signing Up!</h1>
-    <p class="redirect-message">You will be redirected in <span id="countdown">4</span> seconds...</p>
+    <p class="redirect-message">You will be redirected in <span id="countdown">3</span> seconds...</p>
 
     <script>
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Thank You Page chargée.");
 
     function downloadWallpaper(attempt = 0) {
-        const wallpaperUrl = localStorage.getItem("wallpaperUrl");
+        const wallpaperUrl = localStorage.getItem("pendingDownload4K");
 
         if (!wallpaperUrl) {
             if (attempt < 5) { // ✅ Empêche une boucle infinie (max 5 tentatives)
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        console.log("📥 Téléchargement de :", wallpaperUrl);
+        console.log("📥 Téléchargement automatique de :", wallpaperUrl);
 
         fetch(wallpaperUrl)
             .then(response => response.blob())
@@ -66,24 +66,36 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    // ✅ Vérifie si l’utilisateur a déjà téléchargé son image
     if (!localStorage.getItem("downloadTriggered")) {
         setTimeout(downloadWallpaper, 1000);
     }
 
-    // ✅ Redirection propre avec nettoyage
+    // ✅ Redirection automatique après 3 secondes
+    let countdown = 3;
+    const countdownElement = document.getElementById("countdown");
+
+    const interval = setInterval(() => {
+        countdown -= 1;
+        countdownElement.textContent = countdown;
+        if (countdown <= 0) clearInterval(interval);
+    }, 1000);
+
+    // ✅ Redirection propre avec nettoyage après 3 secondes
     setTimeout(() => {
         const previousPage = localStorage.getItem("previousPage");
 
         if (previousPage) {
             console.log("🔄 Redirection vers :", previousPage);
-            window.location.href = previousPage; // ✅ Pas de `#scroll-back`
+            window.location.href = previousPage;
         } else {
             console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
             window.location.href = "https://kawaiify.art";
         }
 
         setTimeout(() => {
-            localStorage.removeItem("downloadTriggered"); // ✅ Nettoyage final APRES la redirection
+            localStorage.removeItem("downloadTriggered"); // ✅ Nettoyage après la redirection
+            localStorage.removeItem("pendingDownload4K"); // ✅ Supprime l’image en attente
         }, 500);
     }, 3000);
 });
