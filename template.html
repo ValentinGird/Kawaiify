@@ -689,22 +689,23 @@
       <!-- ✅ Section de l'image principale -->
 <div class="offers">
    <div class="image-box">
-      <h2>{TITLE}</h2>
-      <img id="main-image" src="{IMAGE_URL}" alt="Wallpaper">
-      <!-- ✅ Ajout de la description -->
-      <p class="image-description">{DESCRIPTION}</p>
-      <!-- ✅ Ajout des tags dynamiques -->
-      <div class="tags-container" id="main-image-tags"></div>
-      <!-- ✅ Boutons Download -->
-      <div class="button-container">
-         <button class="download-button download-button-4k" id="popup-4k-main-btn">
+    <h2>{TITLE}</h2>
+    <img id="main-image" src="{IMAGE_URL}" data-url-4k="{IMAGE_URL_4K}" alt="Wallpaper">
+    <!-- ✅ Ajout de la description -->
+    <p class="image-description">{DESCRIPTION}</p>
+    <!-- ✅ Ajout des tags dynamiques -->
+    <div class="tags-container" id="main-image-tags"></div>
+    <!-- ✅ Boutons Download -->
+    <div class="button-container">
+        <button class="download-button download-button-4k" id="popup-4k-main-btn" data-url-4k="{IMAGE_URL_4K}">
             <strong>Download in 4K (Free)</strong>
-         </button>
-         <button class="download-button download-button-hd" onclick="forceDownload('{IMAGE_URL}')">
+        </button>
+        <button class="download-button download-button-hd" onclick="forceDownload('{IMAGE_URL}')">
             <strong>Download in HD</strong>
-         </button>
-      </div>
-   </div>
+        </button>
+    </div>
+</div>
+
 </div>
 
 <!-- ✅ Popup Principal 4K (Page principale) -->
@@ -899,16 +900,14 @@ function saveUserState(imageUrl4K) {
         }
     }
 
-    // ✅ Ouvre le popup principal UNIQUEMENT si les données sont injectées
     function openPopupMain4K() {
-    const mainImage = document.getElementById("main-image");
-    if (!mainImage || !mainImage.src) {
-        console.warn("⚠️ Impossible d'ouvrir le popup principal: image principale non chargée.");
+    const button4K = document.getElementById("popup-4k-main-btn");
+
+    if (!button4K) {
+        console.warn("⚠️ Impossible de trouver le bouton 4K.");
         return;
     }
 
-    // ✅ Récupère l’URL 4K depuis l'attribut `data-url-4k`
-    const button4K = document.getElementById("popup-4k-main-btn");
     const imageUrl4K = button4K.getAttribute("data-url-4k");
 
     if (!imageUrl4K) {
@@ -916,27 +915,43 @@ function saveUserState(imageUrl4K) {
         return;
     }
 
-    // ✅ Vérifie si l'email a déjà été soumis et si le téléchargement a été déclenché
-    if (hasSubmittedEmail() && localStorage.getItem("downloadTriggered") === "true") {
-        console.log("✅ Email déjà soumis, téléchargement déjà effectué.");
-        return; // ⛔ Bloque l'ouverture du popup
-    }
-
-    // ✅ Si l’email a déjà été soumis mais pas encore téléchargé, lance le téléchargement direct
+    // ✅ Vérifie si l'utilisateur a déjà soumis son email
     if (hasSubmittedEmail()) {
+        // ✅ Vérifie si le téléchargement a déjà été déclenché
+        if (localStorage.getItem("downloadTriggered") === "true") {
+            console.log("✅ Email déjà soumis et téléchargement déjà effectué.");
+            return; // ⛔ Empêche l'ouverture du popup et le téléchargement en boucle
+        }
+
+        // ✅ Télécharge immédiatement et marque comme fait
         console.log("✅ Email soumis, téléchargement immédiat.");
         forceDownload(imageUrl4K);
-        localStorage.setItem("downloadTriggered", "true"); // ✅ Empêche les téléchargements futurs
-        return; // ⛔ Bloque l'ouverture du popup
+        localStorage.setItem("downloadTriggered", "true"); // ✅ Empêche un second téléchargement
+        return;
     }
 
-    // ✅ Sinon, ouvre le popup et enregistre l'état
+    // ✅ Si l'email n'a pas encore été soumis, ouvre le popup
     document.getElementById("popup-4k-main-overlay").style.display = "flex";
+
+    // ✅ Enregistre l'état après soumission
     document.getElementById("popup-4k-main-form").onsubmit = function () {
-        setEmailSubmitted(imageUrl4K); // ✅ Sauvegarde l'email après soumission
+        setEmailSubmitted(imageUrl4K);
         saveUserState(imageUrl4K);
     };
 }
+
+// ✅ Vérifie au chargement de la page si un téléchargement doit être déclenché
+document.addEventListener("DOMContentLoaded", function () {
+    const imageUrl4K = localStorage.getItem("pendingDownload4K");
+
+    if (imageUrl4K && hasSubmittedEmail()) {
+        console.log("🚀 Déclenchement automatique du téléchargement après retour.");
+        forceDownload(imageUrl4K);
+        localStorage.removeItem("pendingDownload4K"); // Nettoyage après téléchargement
+        localStorage.setItem("downloadTriggered", "true"); // ✅ Évite un second déclenchement
+    }
+});
+
 
 
 
