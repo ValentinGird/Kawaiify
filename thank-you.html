@@ -29,40 +29,46 @@ document.addEventListener("DOMContentLoaded", function () {
     function downloadWallpaper() {
         const wallpaperUrl = localStorage.getItem("wallpaperUrl");
 
-        if (wallpaperUrl) {
-            console.log("📥 Téléchargement en cours :", wallpaperUrl);
-
-            fetch(wallpaperUrl)
-                .then(response => response.blob()) // Convertir en Blob
-                .then(blob => {
-                    const blobUrl = window.URL.createObjectURL(blob);
-
-                    const link = document.createElement("a");
-                    link.href = blobUrl;
-                    link.setAttribute("download", "wallpaper.jpg");
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-
-                    window.URL.revokeObjectURL(blobUrl); // Nettoyer l'URL Blob
-                    localStorage.removeItem("wallpaperUrl"); // Supprimer après utilisation
-
-                    console.log("✅ Téléchargement déclenché !");
-                })
-                .catch(error => {
-                    console.error("❌ Erreur lors du téléchargement :", error);
-                });
-        } else {
+        if (!wallpaperUrl) {
             console.warn("⚠️ Aucune image trouvée, réessaie dans 1s...");
             setTimeout(downloadWallpaper, 1000);
+            return;
         }
+
+        if (localStorage.getItem("downloadTriggered") === "true") {
+            console.log("⛔ Téléchargement déjà effectué, on évite un doublon.");
+            return;
+        }
+
+        console.log("📥 Téléchargement en cours :", wallpaperUrl);
+
+        fetch(wallpaperUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const blobUrl = window.URL.createObjectURL(blob);
+
+                const link = document.createElement("a");
+                link.href = blobUrl;
+                link.setAttribute("download", "wallpaper.jpg");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                window.URL.revokeObjectURL(blobUrl);
+                localStorage.removeItem("wallpaperUrl");
+                localStorage.setItem("downloadTriggered", "true");
+
+                console.log("✅ Téléchargement déclenché !");
+            })
+            .catch(error => {
+                console.error("❌ Erreur lors du téléchargement :", error);
+            });
     }
 
-    // ✅ Lance le téléchargement après un délai de 1 seconde
     setTimeout(downloadWallpaper, 1000);
 
-    // ✅ Après 3 secondes, redirige l'utilisateur vers la page précédente
     setTimeout(() => {
+        localStorage.removeItem("downloadTriggered");
         const previousPage = localStorage.getItem("previousPage");
         if (previousPage) {
             console.log("🔄 Redirection vers :", previousPage);
@@ -74,21 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3000);
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    let countdownValue = 4; // Temps d'attente avant redirection (en secondes)
-    const countdownElement = document.getElementById("countdown");
-
-    function updateCountdown() {
-        countdownElement.textContent = countdownValue; // Met à jour le texte du compteur
-        countdownValue--;
-
-        if (countdownValue >= 0) {
-            setTimeout(updateCountdown, 1000); // Met à jour toutes les secondes
-        }
-    }
-
-    updateCountdown(); // Lancer le compte à rebours
-});
 
     </script>
 </body>

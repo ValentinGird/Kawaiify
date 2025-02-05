@@ -840,20 +840,27 @@ function saveUserState(imageUrl4K) {
 
     // ✅ Sauvegarde l'état après soumission du formulaire
     function setEmailSubmitted(imageUrl4K) {
-        localStorage.setItem("emailSubmitted", "true");
-        if (imageUrl4K) {
-            localStorage.setItem("pendingDownload4K", imageUrl4K); // 🔥 Stocke l'image 4K à télécharger
-        }
+    localStorage.setItem("emailSubmitted", "true");
+    if (imageUrl4K) {
+        localStorage.setItem("pendingDownload4K", imageUrl4K);
+        console.log("💾 Image 4K enregistrée après soumission :", imageUrl4K);
     }
+}
+
 
     // ✅ Vérifie et déclenche le téléchargement de l'image 4K après retour de la page thank-you
     function checkPendingDownload() {
-        const imageUrl4K = localStorage.getItem("pendingDownload4K");
-        if (imageUrl4K) {
-            forceDownload(imageUrl4K);
-            localStorage.removeItem("pendingDownload4K"); // Nettoie après le téléchargement
-        }
+    const imageUrl4K = localStorage.getItem("pendingDownload4K");
+
+    if (imageUrl4K && hasSubmittedEmail()) {
+        console.log("✅ Téléchargement automatique de l’image 4K :", imageUrl4K);
+        forceDownload(imageUrl4K);
+        localStorage.removeItem("pendingDownload4K"); // Nettoyage après téléchargement
+    } else {
+        console.warn("⚠️ Aucun téléchargement en attente ou email non détecté.");
     }
+}
+
 
     // ✅ Ouvre le popup 4K de la galerie
     function openPopup4K(imageUrlHD, imageUrl4K) {
@@ -907,16 +914,19 @@ function saveUserState(imageUrl4K) {
 
     // ✅ Si l’email a déjà été soumis, on télécharge immédiatement
     if (hasSubmittedEmail()) {
+        console.log("✅ Email déjà soumis, téléchargement immédiat.");
         forceDownload(imageUrl4K);
     } else {
         document.getElementById("popup-4k-main-overlay").style.display = "flex";
 
-        // ✅ Assure que le formulaire enregistre bien l'image 4K au submit
+        // ✅ Assure que le formulaire enregistre bien l'image 4K et l'email soumis
         document.getElementById("popup-4k-main-form").onsubmit = function () {
+            setEmailSubmitted(imageUrl4K); // ✅ Enregistre l'état après soumission
             saveUserState(imageUrl4K);
         };
     }
 }
+
 
 
     // ✅ Ferme un popup spécifique
