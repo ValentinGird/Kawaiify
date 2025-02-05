@@ -17,7 +17,6 @@
       <meta name="twitter:image" content="{IMAGE_URL}">
       <!-- Favicon -->
       <link rel="icon" type="image/png" href="https://i.ibb.co/XZJbQPYm/favicon-32x32.png">
-      <link rel="stylesheet" href="styles.css">
    <style>
       /* Dark mode */
       * {
@@ -718,7 +717,7 @@
             <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
 
             <!-- ✅ Formulaire d'inscription -->
-            <form id="popup-4k-main-form">
+            <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
    <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
    <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
 </form>
@@ -1387,32 +1386,41 @@
          
             // ✅ Fonction pour ouvrir le popup principal
             function openMainPopup4K() {
-                if (!mainImageUrlHD || !mainImageUrl4K) {
-                    console.warn("⚠️ Impossible d'ouvrir le popup, aucune image principale trouvée !");
-                    return;
-                }
-         
-                // ✅ Affichage du popup avec animation
-                mainPopupOverlay.style.display = "flex";
-                mainPopup.style.display = "flex";
-                setTimeout(() => {
-                    mainPopupOverlay.style.opacity = "1";
-                    mainPopup.style.opacity = "1";
-                    mainPopup.style.transform = "translate(-50%, -50%)";
-                }, 10);
-         
-                // ✅ Met à jour le bouton HD pour télécharger la bonne image
-                mainDownloadHDPopup.onclick = function (event) {
-                    event.preventDefault();
-                    forceDownload(mainImageUrlHD); // ✅ Télécharge bien la version HD principale
-                    closeMainPopup4K();
-                };
-         
-                // ✅ Téléchargement automatique de la 4K si l’email est soumis
-                if (hasSubmittedEmail()) {
-                    forceDownload(mainImageUrl4K);
-                }
-            }
+    const mainImageUrlHD = "{IMAGE_URL}";  // Vérifie si cette variable est bien remplacée
+    const mainImageUrl4K = "{IMAGE_URL_4K}";
+
+    if (!mainImageUrlHD || !mainImageUrl4K || mainImageUrl4K.includes("{IMAGE_URL_4K}")) {
+        console.error("❌ ERREUR: L'URL de l'image 4K n'est pas définie !");
+        return;
+    }
+
+    console.log("✅ Ouverture du popup avec l'image :", mainImageUrlHD, mainImageUrl4K);
+
+    // ✅ Ouvre bien le popup
+    const popupOverlay = document.getElementById("popup-4k-main-overlay");
+    const popup = document.getElementById("popup-4k-main");
+    popupOverlay.style.display = "flex";
+    popup.style.display = "flex";
+
+    // ✅ Associe bien le bon lien de téléchargement HD sans email
+    const mainDownloadHDPopup = document.getElementById("popup-4k-main-hd-download");
+    if (mainDownloadHDPopup) {
+        mainDownloadHDPopup.onclick = function (event) {
+            event.preventDefault();
+            forceDownload(mainImageUrlHD);
+            closeMainPopup4K();
+        };
+    }
+
+    // ✅ Associe le bon lien de téléchargement 4K après validation de l’email
+    const form = document.getElementById("popup-4k-main-form");
+    form.addEventListener("submit", function () {
+        localStorage.setItem("emailSubmitted", "true"); // ✅ Marque l’email comme soumis
+        console.log("📩 Email validé, téléchargement en 4K...");
+        forceDownload(mainImageUrl4K);
+        closeMainPopup4K();
+    });
+}
          
             // ✅ Fonction pour fermer le popup principal
             function closeMainPopup4K() {
@@ -1427,25 +1435,26 @@
             }
          
             // ✅ Événement pour ouvrir le popup principal 4K
-            if (mainDownloadButton4K) {
-                mainDownloadButton4K.addEventListener("click", openMainPopup4K);
-            }
-         
-            // ✅ Fermer le popup principal en cliquant sur l’overlay
-            mainPopupOverlay.addEventListener("click", function (event) {
-                if (event.target === this) {
-                    closeMainPopup4K();
-                }
-            });
-         
-            // ✅ Capture la soumission du formulaire du popup principal
-            const mainPopupForm = document.getElementById("popup-4k-main-form");
+if (mainDownloadButton4K) {
+    mainDownloadButton4K.addEventListener("click", openMainPopup4K);
+}
+
+// ✅ Fermer le popup principal en cliquant sur l’overlay
+mainPopupOverlay.addEventListener("click", function (event) {
+    if (event.target === this) {
+        closeMainPopup4K();
+    }
+});
+
+// ✅ Capture la soumission du formulaire du popup principal
+const mainPopupForm = document.getElementById("popup-4k-main-form");
 if (mainPopupForm) {
     mainPopupForm.addEventListener("submit", function () {
         setEmailSubmitted(); // ✅ Enregistre que l'email a été soumis
         closeMainPopup4K(); // ✅ Ferme le popup
     });
 }
+
 
          });
          
