@@ -803,6 +803,20 @@
     console.log("✅ forceDownload est bien définie :", typeof forceDownload === "function");
 
 
+// ✅ Sauvegarde l'état de l'utilisateur avant la redirection Flodesk
+function saveUserState(imageUrl4K) {
+    const fullUrl = window.location.href; // Capture l'URL complète
+    localStorage.setItem("previousPage", fullUrl);
+    localStorage.setItem("scrollPosition", window.scrollY);
+
+    if (imageUrl4K) {
+        localStorage.setItem("pendingDownload4K", imageUrl4K);
+        console.log("💾 Image 4K enregistrée :", imageUrl4K);
+    }
+
+    console.log("💾 Page sauvegardée :", fullUrl, "| Scroll position :", window.scrollY);
+}
+
 
 
 
@@ -1076,22 +1090,6 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Tous les écouteurs de fermeture des popups ont été ajoutés !");
 });
 
-
-
-
-
-
-         function saveUserState(imageUrl4K) {
-    const fullUrl = window.location.href; // Capture l'URL exacte avec le chemin et paramètres
-    localStorage.setItem("previousPage", fullUrl);
-    localStorage.setItem("scrollPosition", window.scrollY);
-    console.log("💾 Page enregistrée :", fullUrl, "| Position scroll:", window.scrollY);
-
-    if (imageUrl4K) {
-        localStorage.setItem("pendingDownload4K", imageUrl4K);
-        console.log("💾 Image 4K enregistrée pour téléchargement :", imageUrl4K);
-    }
-}
 
 
 
