@@ -717,13 +717,16 @@
       <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
       
       <!-- ✅ Formulaire d'inscription -->
-      <form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST" onsubmit="saveUserState('{IMAGE_URL_4K}')">
+<form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST" onsubmit="saveUserState('{IMAGE_URL_4K}')">
    <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-   <!-- ✅ Modification du bouton principal pour injecter la bonne URL -->
-<button class="download-button download-button-4k" id="popup-4k-main-btn"
-        data-url-4k="{IMAGE_URL_4K}">
+   <button type="submit" class="popup-button">📥 Submit Email</button>
+</form>
+
+<!-- ✅ ✅ Bouton Download en dehors du formulaire -->
+<button class="download-button download-button-4k" id="popup-4k-main-btn" data-url-4k="{IMAGE_URL_4K}">
    <strong>📥 Download in 4K Now!</strong>
 </button>
+
 
 </form>
 
