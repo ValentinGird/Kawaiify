@@ -775,17 +775,6 @@
       </footer>
       <script>
 
-         function saveUserState(imageUrl4K) {
-    localStorage.setItem("previousPage", window.location.href);
-    localStorage.setItem("scrollPosition", window.scrollY);
-    console.log("💾 Page enregistrée :", window.location.href, "| Position scroll:", window.scrollY);
-
-    if (imageUrl4K) {
-        localStorage.setItem("pendingDownload4K", imageUrl4K);
-        console.log("💾 Image 4K enregistrée pour téléchargement :", imageUrl4K);
-    }
-}
-
 
     // ✅ Fonction de téléchargement direct d'une image
     function forceDownload(imageUrl) {
@@ -1087,6 +1076,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+
+
+
+         function saveUserState(imageUrl4K) {
+    localStorage.setItem("previousPage", window.location.href);
+    localStorage.setItem("scrollPosition", window.scrollY);
+    console.log("💾 Page enregistrée :", window.location.href, "| Position scroll:", window.scrollY);
+
+    if (imageUrl4K) {
+        localStorage.setItem("pendingDownload4K", imageUrl4K);
+        console.log("💾 Image 4K enregistrée pour téléchargement :", imageUrl4K);
+    }
+}
 
 
             
