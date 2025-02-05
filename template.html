@@ -1110,6 +1110,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Script de gestion du téléchargement chargé.");
+
+    function saveWallpaperUrl(imageUrl) {
+        if (imageUrl) {
+            console.log("💾 Image enregistrée pour téléchargement :", imageUrl);
+            localStorage.setItem("wallpaperUrl", imageUrl);
+        } else {
+            console.warn("⚠️ Aucun URL d'image détecté.");
+        }
+    }
+
+    // ✅ Capture le clic sur les boutons "Download in 4K" pour stocker la bonne URL
+    document.querySelectorAll(".download-button-4k").forEach(button => {
+        button.addEventListener("click", function () {
+            const imageUrl4K = this.getAttribute("data-url-4k"); // Récupère l'URL de l'image 4K
+            if (imageUrl4K) {
+                saveWallpaperUrl(imageUrl4K);
+            }
+        });
+    });
+
+    // ✅ Stocke l'URL de la page avant la redirection
+    if (!window.location.pathname.includes("thank-you.html")) {
+        localStorage.setItem("previousPage", window.location.href);
+    }
+
+    // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function () {
+            const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
+            if (!imageUrl) {
+                console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
+            } else {
+                console.log("✅ Image enregistrée avant soumission :", imageUrl);
+            }
+        });
+    });
+});
+
+
             
       </script>
    </body>
