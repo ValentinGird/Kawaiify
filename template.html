@@ -718,7 +718,12 @@
       <!-- ✅ Formulaire d'inscription -->
       <form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST" onsubmit="saveUserState('{IMAGE_URL_4K}')">
    <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-   <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
+   <!-- ✅ Modification du bouton principal pour injecter la bonne URL -->
+<button class="download-button download-button-4k" id="popup-4k-main-btn"
+        data-url-4k="{IMAGE_URL_4K}">
+   <strong>📥 Download in 4K Now!</strong>
+</button>
+
 </form>
 
 
@@ -882,25 +887,37 @@ function saveUserState(imageUrl4K) {
 
     // ✅ Ouvre le popup principal UNIQUEMENT si les données sont injectées
     function openPopupMain4K() {
-        const mainImage = document.getElementById("main-image");
-        if (!mainImage || !mainImage.src) {
-            console.warn("⚠️ Impossible d'ouvrir le popup principal: l'image principale n'est pas chargée.");
-            return;
-        }
-
-        const imageUrl4K = mainImage.src.replace(".jpg", "_4k.jpg"); // Simule un lien 4K basé sur l'image actuelle
-
-        if (hasSubmittedEmail()) {
-            forceDownload(imageUrl4K);
-        } else {
-            document.getElementById("popup-4k-main-overlay").style.display = "flex";
-
-            // ✅ Capture la soumission du mail pour l'image principale
-            document.getElementById("popup-4k-main-form").onsubmit = function () {
-                setEmailSubmitted(imageUrl4K);
-            };
-        }
+    const mainImage = document.getElementById("main-image");
+    if (!mainImage || !mainImage.src) {
+        console.warn("⚠️ Impossible d'ouvrir le popup principal: image principale non chargée.");
+        return;
     }
+
+    // ✅ Récupère l’URL 4K depuis l'attribut `data-url-4k`
+    const button4K = document.getElementById("popup-4k-main-btn");
+    const imageUrl4K = button4K.getAttribute("data-url-4k");
+
+    if (!imageUrl4K) {
+        console.warn("⚠️ L’URL de l’image 4K est introuvable !");
+        return;
+    }
+
+    // ✅ Sauvegarde l'image avant redirection Flodesk
+    saveUserState(imageUrl4K);
+
+    // ✅ Si l’email a déjà été soumis, on télécharge immédiatement
+    if (hasSubmittedEmail()) {
+        forceDownload(imageUrl4K);
+    } else {
+        document.getElementById("popup-4k-main-overlay").style.display = "flex";
+
+        // ✅ Assure que le formulaire enregistre bien l'image 4K au submit
+        document.getElementById("popup-4k-main-form").onsubmit = function () {
+            saveUserState(imageUrl4K);
+        };
+    }
+}
+
 
     // ✅ Ferme un popup spécifique
     function closePopup(popupId) {
