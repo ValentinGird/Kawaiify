@@ -1000,6 +1000,32 @@
 
 
 
+<script>
+    // ✅ Fonction de téléchargement direct d'une image
+    function forceDownload(imageUrl) {
+        if (!imageUrl) {
+            console.error("❌ L'URL de l'image est invalide.");
+            return;
+        }
+
+        fetch(imageUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = blobUrl;
+                a.download = "wallpaper.jpg"; // Nom du fichier téléchargé
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+            })
+            .catch(error => console.error("❌ Erreur de téléchargement :", error));
+    }
+
+    // ✅ Vérifie que la fonction est bien accessible
+    console.log("✅ forceDownload est bien définie :", typeof forceDownload === "function");
+</script>
 
 
 
