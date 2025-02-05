@@ -1370,8 +1370,27 @@
          });
          
          
-         //MAIN POPUP TEST
-                    document.addEventListener("DOMContentLoaded", function () {
+         // ✅ Vérifie que le popup et le formulaire existent AVANT de continuer
+document.addEventListener("DOMContentLoaded", function () {
+    const mainPopupForm = document.getElementById("popup-4k-main-form");
+    const mainPopupOverlay = document.getElementById("popup-4k-main-overlay");
+    const mainPopup = document.getElementById("popup-4k-main");
+
+    if (!mainPopupForm) {
+        console.error("❌ ERREUR: Le formulaire du popup 4K n'existe pas !");
+        return;
+    }
+
+    if (!mainPopupOverlay || !mainPopup) {
+        console.error("❌ ERREUR: Le popup principal 4K n'existe pas !");
+        return;
+    }
+
+    console.log("✅ Formulaire et popup détectés !");
+});
+
+// ✅ MAIN POPUP TEST
+document.addEventListener("DOMContentLoaded", function () {
             // ✅ Sélection des éléments du popup principal
             const mainPopupOverlay = document.getElementById("popup-4k-main-overlay");
             const mainPopup = document.getElementById("popup-4k-main");
