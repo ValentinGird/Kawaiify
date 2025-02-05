@@ -841,11 +841,13 @@ function saveUserState(imageUrl4K) {
     // ✅ Sauvegarde l'état après soumission du formulaire
     function setEmailSubmitted(imageUrl4K) {
     localStorage.setItem("emailSubmitted", "true");
+    localStorage.setItem("downloadTriggered", "false"); // ✅ Réinitialise pour éviter les bugs
+
     if (imageUrl4K) {
         localStorage.setItem("pendingDownload4K", imageUrl4K);
-        console.log("💾 Image 4K enregistrée après soumission :", imageUrl4K);
     }
 }
+
 
 
     // ✅ Vérifie et déclenche le téléchargement de l'image 4K après retour de la page thank-you
@@ -856,8 +858,8 @@ function saveUserState(imageUrl4K) {
         if (!localStorage.getItem("downloadTriggered")) {
             console.log("✅ Téléchargement automatique de l’image 4K :", imageUrl4K);
             forceDownload(imageUrl4K);
-            localStorage.setItem("downloadTriggered", "true"); // ✅ Empêche un double téléchargement
-            localStorage.removeItem("pendingDownload4K"); // ✅ Nettoie après exécution
+            localStorage.setItem("downloadTriggered", "true"); // ✅ Bloque les téléchargements futurs
+            localStorage.removeItem("pendingDownload4K"); // ✅ Nettoie après téléchargement
         } else {
             console.log("⛔ Téléchargement déjà effectué, évite un doublon.");
         }
@@ -865,7 +867,6 @@ function saveUserState(imageUrl4K) {
         console.warn("⚠️ Aucun téléchargement en attente ou email non détecté.");
     }
 }
-
 
 
     // ✅ Ouvre le popup 4K de la galerie
@@ -899,13 +900,14 @@ function saveUserState(imageUrl4K) {
     }
 
     // ✅ Ouvre le popup principal UNIQUEMENT si les données sont injectées
-    ffunction openPopupMain4K() {
+    function openPopupMain4K() {
     const mainImage = document.getElementById("main-image");
     if (!mainImage || !mainImage.src) {
         console.warn("⚠️ Impossible d'ouvrir le popup principal: image principale non chargée.");
         return;
     }
 
+    // ✅ Récupère l’URL 4K depuis l'attribut `data-url-4k`
     const button4K = document.getElementById("popup-4k-main-btn");
     const imageUrl4K = button4K.getAttribute("data-url-4k");
 
@@ -914,22 +916,26 @@ function saveUserState(imageUrl4K) {
         return;
     }
 
-    // ✅ Vérifie si l'utilisateur a déjà soumis son email
-    if (hasSubmittedEmail()) {
-        console.log("✅ Email déjà soumis, téléchargement immédiat.");
-        forceDownload(imageUrl4K);
-        return; // ⛔ Ne rouvre pas le popup
+    // ✅ Vérifie si l'email a déjà été soumis et si le téléchargement a été déclenché
+    if (hasSubmittedEmail() && localStorage.getItem("downloadTriggered") === "true") {
+        console.log("✅ Email déjà soumis, téléchargement déjà effectué.");
+        return; // ⛔ Bloque l'ouverture du popup
     }
 
-    // ✅ Sinon, ouvre le popup pour saisir l'email
-    document.getElementById("popup-4k-main-overlay").style.display = "flex";
+    // ✅ Si l’email a déjà été soumis mais pas encore téléchargé, lance le téléchargement direct
+    if (hasSubmittedEmail()) {
+        console.log("✅ Email soumis, téléchargement immédiat.");
+        forceDownload(imageUrl4K);
+        localStorage.setItem("downloadTriggered", "true"); // ✅ Empêche les téléchargements futurs
+        return; // ⛔ Bloque l'ouverture du popup
+    }
 
+    // ✅ Sinon, ouvre le popup et enregistre l'état
+    document.getElementById("popup-4k-main-overlay").style.display = "flex";
     document.getElementById("popup-4k-main-form").onsubmit = function () {
         setEmailSubmitted(imageUrl4K); // ✅ Sauvegarde l'email après soumission
         saveUserState(imageUrl4K);
     };
-   }
-
 }
 
 
