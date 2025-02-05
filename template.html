@@ -717,18 +717,17 @@
       <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
       
       <!-- ✅ Formulaire d'inscription -->
-<form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST" onsubmit="saveUserState('{IMAGE_URL_4K}')">
+<form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
    <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-   <button type="submit" class="popup-button">📥 Submit Email</button>
+   <button type="submit" class="popup-button" id="submit-email-btn">📥 Submit Email</button>
 </form>
 
-<!-- ✅ ✅ Bouton Download en dehors du formulaire -->
-<button class="download-button download-button-4k" id="popup-4k-main-btn" data-url-4k="{IMAGE_URL_4K}">
-   <strong>📥 Download in 4K Now!</strong>
+<!-- ✅ ✅ Bouton Download en dehors du formulaire mais caché par défaut -->
+<button class="download-button download-button-4k" id="popup-4k-main-btn" data-url-4k="{IMAGE_URL_4K}" style="display: none;">
+   <strong>📥 Download in 4K</strong>
 </button>
 
 
-</form>
 
 
 
@@ -1236,6 +1235,54 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("✅ Image enregistrée avant soumission :", imageUrl);
             }
         });
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Vérification de l'email soumis et mise à jour de l'interface.");
+
+    const emailForm = document.getElementById("popup-4k-main-form");
+    const submitEmailBtn = document.getElementById("submit-email-btn");
+    const download4KBtn = document.getElementById("popup-4k-main-btn");
+    const popupOverlay = document.getElementById("popup-4k-main-overlay");
+
+    // ✅ Vérifie si l'email a déjà été soumis
+    if (hasSubmittedEmail()) {
+        console.log("✅ Email déjà soumis, mise à jour du popup.");
+        submitEmailBtn.style.display = "none"; // Cache le bouton Submit Email
+        download4KBtn.style.display = "block"; // Montre le bouton Download in 4K
+    }
+
+    // ✅ Écouteur sur la soumission du formulaire
+    emailForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Empêche la soumission normale
+        const email = emailForm.querySelector("input[name='email']").value;
+
+        if (email) {
+            console.log("📩 Email soumis:", email);
+            setEmailSubmitted(download4KBtn.getAttribute("data-url-4k")); // Sauvegarde email
+
+            // ✅ Mise à jour de l'interface après soumission
+            submitEmailBtn.style.display = "none"; // Cache Submit Email
+            download4KBtn.style.display = "block"; // Montre Download in 4K
+
+            // ✅ Ferme automatiquement le popup après un court délai
+            setTimeout(() => {
+                popupOverlay.style.display = "none";
+                forceDownload(download4KBtn.getAttribute("data-url-4k")); // Lance le téléchargement
+            }, 1000);
+        }
+    });
+
+    // ✅ Empêche l'ouverture du popup si l'email est déjà soumis
+    document.getElementById("popup-4k-main-btn").addEventListener("click", function (event) {
+        if (hasSubmittedEmail()) {
+            event.preventDefault();
+            console.log("✅ Email déjà soumis, téléchargement direct.");
+            forceDownload(download4KBtn.getAttribute("data-url-4k"));
+        }
     });
 });
 
