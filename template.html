@@ -716,10 +716,11 @@
       <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
       
       <!-- ✅ Formulaire d'inscription -->
-      <form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
-         <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-         <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
-      </form>
+      <form id="popup-4k-main-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST" onsubmit="saveUserState('{IMAGE_URL_4K}')">
+   <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+   <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
+</form>
+
 
       <!-- ✅ Téléchargement sans email -->
       <p class="popup-alt-download">
@@ -738,10 +739,11 @@
         <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
 
         <!-- ✅ Formulaire d'inscription -->
-        <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
-            <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-            <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
-        </form>
+        <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST" onsubmit="saveUserState('{IMAGE_URL_4K}')">
+   <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+   <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
+</form>
+
 
         <!-- ✅ Option sans email -->
         <p class="popup-alt-download">
@@ -772,6 +774,18 @@
          <p>&copy; 2025 Kawaiify | <a href="https://tonsite.com/privacy">Privacy Policy</a></p>
       </footer>
       <script>
+
+         function saveUserState(imageUrl4K) {
+    localStorage.setItem("previousPage", window.location.href);
+    localStorage.setItem("scrollPosition", window.scrollY);
+    console.log("💾 Page enregistrée :", window.location.href, "| Position scroll:", window.scrollY);
+
+    if (imageUrl4K) {
+        localStorage.setItem("pendingDownload4K", imageUrl4K);
+        console.log("💾 Image 4K enregistrée pour téléchargement :", imageUrl4K);
+    }
+}
+
 
     // ✅ Fonction de téléchargement direct d'une image
     function forceDownload(imageUrl) {
@@ -1071,59 +1085,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("✅ Tous les écouteurs de fermeture des popups ont été ajoutés !");
 });
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script de gestion du téléchargement chargé.");
-
-    function saveWallpaperUrl(imageUrl) {
-        if (imageUrl) {
-            console.log("💾 Image enregistrée pour téléchargement :", imageUrl);
-            localStorage.setItem("wallpaperUrl", imageUrl);
-        } else {
-            console.warn("⚠️ Aucun URL d'image détecté.");
-        }
-    }
-
-    // ✅ Capture le clic sur les boutons "Download in 4K" pour stocker la bonne URL
-    document.querySelectorAll(".download-button-4k").forEach(button => {
-        button.addEventListener("click", function () {
-            const imageUrl4K = this.getAttribute("data-url-4k"); // Récupère l'URL de l'image 4K
-            if (imageUrl4K) {
-                saveWallpaperUrl(imageUrl4K);
-            }
-        });
-    });
-
-    // ✅ Stocke l'URL de la page avant la redirection
-    if (!window.location.pathname.includes("thank-you.html")) {
-        localStorage.setItem("previousPage", window.location.href);
-    }
-
-    // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
-    document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function () {
-            const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
-            if (!imageUrl) {
-                console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
-            } else {
-                console.log("✅ Image enregistrée avant soumission :", imageUrl);
-            }
-        });
-    });
-});
-
-
-
-
-
-
-
-
-
 
 
 
