@@ -782,6 +782,10 @@
       </footer>
       <script>
 
+    // ✅ Vérifie si l'utilisateur a déjà soumis son email
+    function hasSubmittedEmail() {
+        return localStorage.getItem("emailSubmitted") === "true";
+    }
 
     // ✅ Fonction de téléchargement direct d'une image
     function forceDownload(imageUrl) {
@@ -833,11 +837,6 @@ function saveUserState(imageUrl4K) {
     const gallery = document.getElementById("gallery");
     let imageUrls = [];
     let nextImageIndex = 0;
-
-    // ✅ Vérifie si l'utilisateur a déjà soumis son email
-    function hasSubmittedEmail() {
-        return localStorage.getItem("emailSubmitted") === "true";
-    }
 
     // ✅ Sauvegarde l'état après soumission du formulaire
     function setEmailSubmitted(imageUrl4K) {
