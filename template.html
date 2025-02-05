@@ -690,19 +690,16 @@
 <div class="offers">
    <div class="image-box">
       <h2>{TITLE}</h2>
-      <img id="main-image" src="{IMAGE_URL}" data-url-4k="{IMAGE_URL_4K}" alt="Wallpaper">
+      <img id="main-image" src="{IMAGE_URL}" alt="Wallpaper">
       <!-- ✅ Ajout de la description -->
       <p class="image-description">{DESCRIPTION}</p>
       <!-- ✅ Ajout des tags dynamiques -->
       <div class="tags-container" id="main-image-tags"></div>
       <!-- ✅ Boutons Download -->
       <div class="button-container">
-         <button class="download-button download-button-4k" id="popup-4k-main-btn"
-    data-url-4k="{IMAGE_URL_4K}">
-    <strong>Download in 4K (Free)</strong>
-</button>
-
-
+         <button class="download-button download-button-4k" id="popup-4k-main-btn">
+            <strong>Download in 4K (Free)</strong>
+         </button>
          <button class="download-button download-button-hd" onclick="forceDownload('{IMAGE_URL}')">
             <strong>Download in HD</strong>
          </button>
@@ -714,7 +711,7 @@
 <div class="popup-overlay" id="popup-4k-main-overlay">
    <div class="popup-container" id="popup-4k-main">
       <span class="popup-close" id="popup-close-main">✖</span>
-      <img id="main-image" src="{IMAGE_URL}" data-url-4k="{IMAGE_URL_4K}" alt="Wallpaper">
+      <img id="popup-4k-main-image" src="{IMAGE_URL}" alt="4K Wallpaper Preview" class="popup-image">
       <h3>🎁 Get This 4K Anime Wallpaper & Unlock Daily Surprises! ✨</h3>
       <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
       
@@ -851,76 +848,75 @@ function saveUserState(imageUrl4K) {
 
     // ✅ Vérifie et déclenche le téléchargement de l'image 4K après retour de la page thank-you
     function checkPendingDownload() {
-    const imageUrl4K = localStorage.getItem("pendingDownload4K");
-
-    if (imageUrl4K) {
-        console.log("✅ Téléchargement automatique de l’image 4K :", imageUrl4K);
-        forceDownload(imageUrl4K);
-        localStorage.removeItem("pendingDownload4K"); // ✅ Nettoyage après téléchargement
+        const imageUrl4K = localStorage.getItem("pendingDownload4K");
+        if (imageUrl4K) {
+            forceDownload(imageUrl4K);
+            localStorage.removeItem("pendingDownload4K"); // Nettoie après le téléchargement
+        }
     }
-}
-
-// ✅ Exécute immédiatement après le chargement de la page
-document.addEventListener("DOMContentLoaded", checkPendingDownload);
-
-
 
     // ✅ Ouvre le popup 4K de la galerie
     function openPopup4K(imageUrlHD, imageUrl4K) {
-    if (!imageUrl4K) {
-        console.error("⚠️ Impossible d'ouvrir le popup 4K: URL introuvable.");
-        return;
-    }
+        if (!imageUrlHD || !imageUrl4K) {
+            console.warn("⚠️ Impossible d'ouvrir le popup 4K: images non chargées.");
+            return;
+        }
 
-    if (hasSubmittedEmail()) {
-        console.log("✅ Email déjà soumis. Téléchargement immédiat.");
-        forceDownload(imageUrl4K);
-        return;
-    }
+        if (hasSubmittedEmail()) {
+            forceDownload(imageUrl4K); // ✅ Si déjà inscrit, téléchargement immédiat
+        } else {
+            const popupImage = document.getElementById("popup-4k-gallery-image");
+            const overlay = document.getElementById("popup-4k-overlay");
 
-    console.log("✅ Ouverture du popup 4K avec l'image :", imageUrl4K);
-    
-    const popupImage = document.getElementById("popup-4k-gallery-image");
-    popupImage.src = imageUrl4K;
+            popupImage.src = imageUrl4K;
+            overlay.style.display = "flex";
 
-    document.getElementById("popup-4k-overlay").style.display = "flex";
+            // ✅ Met à jour le bouton de téléchargement HD dans le popup
+            document.getElementById("popup-4k-gallery-hd-download").onclick = function (event) {
+                event.preventDefault();
+                forceDownload(imageUrlHD);
+                closePopup("popup-4k-overlay");
+            };
 
-    document.getElementById("popup-4k-gallery-hd-download").onclick = function (event) {
-        event.preventDefault();
-        forceDownload(imageUrlHD);
-        closePopup("popup-4k-overlay");
-    };
-
-    document.getElementById("popup-4k-form").onsubmit = function () {
-        setEmailSubmitted(imageUrl4K);
-    };
-}
-
-
-
+            // ✅ Capture la soumission du mail dans la galerie
+            document.getElementById("popup-4k-form").onsubmit = function () {
+                setEmailSubmitted(imageUrl4K);
+            };
+        }
     }
 
     // ✅ Ouvre le popup principal UNIQUEMENT si les données sont injectées
-    function openPopupMain4K(imageUrl4K) {
-    if (!imageUrl4K) {
-        console.error("⚠️ Impossible d'ouvrir le popup principal: URL 4K manquante.");
+    function openPopupMain4K() {
+    const mainImage = document.getElementById("main-image");
+    if (!mainImage || !mainImage.src) {
+        console.warn("⚠️ Impossible d'ouvrir le popup principal: image principale non chargée.");
         return;
     }
 
-    // ✅ Vérifie si l'utilisateur a déjà soumis son email
+    // ✅ Récupère l’URL 4K depuis l'attribut `data-url-4k`
+    const button4K = document.getElementById("popup-4k-main-btn");
+    const imageUrl4K = button4K.getAttribute("data-url-4k");
+
+    if (!imageUrl4K) {
+        console.warn("⚠️ L’URL de l’image 4K est introuvable !");
+        return;
+    }
+
+    // ✅ Sauvegarde l'image avant redirection Flodesk
+    saveUserState(imageUrl4K);
+
+    // ✅ Si l’email a déjà été soumis, on télécharge immédiatement
     if (hasSubmittedEmail()) {
-    console.log("✅ Email déjà soumis. Téléchargement immédiat.");
-    forceDownload(imageUrl4K);
-    return; // ⛔ Empêche l'ouverture du popup
+        forceDownload(imageUrl4K);
+    } else {
+        document.getElementById("popup-4k-main-overlay").style.display = "flex";
+
+        // ✅ Assure que le formulaire enregistre bien l'image 4K au submit
+        document.getElementById("popup-4k-main-form").onsubmit = function () {
+            saveUserState(imageUrl4K);
+        };
+    }
 }
-
-
-    // ✅ Affiche le popup
-    document.getElementById("popup-4k-main-overlay").style.display = "flex";
-}
-
-
-
 
 
     // ✅ Ferme un popup spécifique
@@ -1047,17 +1043,15 @@ document.addEventListener("DOMContentLoaded", checkPendingDownload);
 
     // ✅ Ajout d'un écouteur pour le bouton du popup principal
     document.getElementById("popup-4k-main-btn").addEventListener("click", function () {
-    const imageUrl4K = this.getAttribute("data-url-4k");
+        openPopupMain4K();
+    });
 
-    if (!imageUrl4K) {
-        console.error("⚠️ L'URL de l'image 4K est introuvable !");
-        return;
-    }
+    // ✅ Vérifie et exécute le téléchargement après retour de la page thank-you
+    checkPendingDownload();
 
-    openPopupMain4K(imageUrl4K);
+    // ✅ Charger les images au démarrage
+    loadInitialImages();
 });
-
-
 
 
 
