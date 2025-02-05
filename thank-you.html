@@ -24,23 +24,27 @@
 
     <script>
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Page Thank You chargée.");
+    console.log("✅ Thank You Page chargée.");
 
-    function downloadWallpaper() {
+    function downloadWallpaper(attempt = 0) {
         const wallpaperUrl = localStorage.getItem("wallpaperUrl");
 
         if (!wallpaperUrl) {
-            console.warn("⚠️ Aucune image trouvée, réessaie dans 1s...");
-            setTimeout(downloadWallpaper, 1000);
+            if (attempt < 5) { // ✅ Empêche une boucle infinie (max 5 tentatives)
+                console.warn(`⚠️ Image non trouvée, nouvelle tentative (${attempt + 1})...`);
+                setTimeout(() => downloadWallpaper(attempt + 1), 1000);
+            } else {
+                console.error("❌ Impossible de télécharger l'image après 5 tentatives.");
+            }
             return;
         }
 
         if (localStorage.getItem("downloadTriggered") === "true") {
-            console.log("⛔ Téléchargement déjà effectué, on évite un doublon.");
+            console.log("⛔ Téléchargement déjà effectué, pas de doublon.");
             return;
         }
 
-        console.log("📥 Téléchargement en cours :", wallpaperUrl);
+        console.log("📥 Téléchargement de :", wallpaperUrl);
 
         fetch(wallpaperUrl)
             .then(response => response.blob())
@@ -58,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem("downloadTriggered", "true"); // ✅ Marque comme téléchargé
             })
             .catch(error => {
-                console.error("❌ Erreur lors du téléchargement :", error);
+                console.error("❌ Erreur téléchargement :", error);
             });
     }
 
@@ -66,21 +70,23 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(downloadWallpaper, 1000);
     }
 
+    // ✅ Redirection propre avec nettoyage
     setTimeout(() => {
-        localStorage.removeItem("downloadTriggered"); // ✅ Nettoyage après retour
         const previousPage = localStorage.getItem("previousPage");
+
         if (previousPage) {
             console.log("🔄 Redirection vers :", previousPage);
-            window.location.href = previousPage + "#scroll-back";
+            window.location.href = previousPage; // ✅ Pas de `#scroll-back`
         } else {
             console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
             window.location.href = "https://kawaiify.art";
         }
+
+        setTimeout(() => {
+            localStorage.removeItem("downloadTriggered"); // ✅ Nettoyage final APRES la redirection
+        }, 500);
     }, 3000);
 });
-
-
-
     </script>
 </body>
 </html>
