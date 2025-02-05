@@ -789,6 +789,18 @@
         return localStorage.getItem("emailSubmitted") === "true";
     }
 
+    // ✅ Sauvegarde l'état après soumission du formulaire
+function setEmailSubmitted(imageUrl4K) {
+    localStorage.setItem("emailSubmitted", "true"); // ✅ Marque l'email comme soumis
+    localStorage.setItem("downloadTriggered", "false"); // ✅ Reset pour éviter les bugs
+
+    if (imageUrl4K) {
+        localStorage.setItem("pendingDownload4K", imageUrl4K);
+        console.log("💾 Image 4K enregistrée :", imageUrl4K);
+    }
+}
+
+
     // ✅ Fonction de téléchargement direct d'une image
     function forceDownload(imageUrl) {
         if (!imageUrl) {
@@ -839,18 +851,6 @@ function saveUserState(imageUrl4K) {
     const gallery = document.getElementById("gallery");
     let imageUrls = [];
     let nextImageIndex = 0;
-
-    // ✅ Sauvegarde l'état après soumission du formulaire
-    function setEmailSubmitted(imageUrl4K) {
-    localStorage.setItem("emailSubmitted", "true"); // ✅ Marque l'email comme soumis
-    localStorage.setItem("downloadTriggered", "false"); // ✅ Reset pour éviter les bugs
-
-    if (imageUrl4K) {
-        localStorage.setItem("pendingDownload4K", imageUrl4K);
-    }
-}
-
-
 
 
     // ✅ Vérifie et déclenche le téléchargement de l'image 4K après retour de la page thank-you
@@ -1139,6 +1139,59 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// ✅ Vérifie si l'utilisateur a déjà soumis son email
+function hasSubmittedEmail() {
+    return localStorage.getItem("emailSubmitted") === "true";
+}
+
+// ✅ Télécharge l'image immédiatement si besoin
+function forceDownload(imageUrl) {
+    if (!imageUrl) {
+        console.error("❌ L'URL de l'image est invalide.");
+        return;
+    }
+
+    fetch(imageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = blobUrl;
+            a.download = "wallpaper.jpg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+        })
+        .catch(error => console.error("❌ Erreur de téléchargement :", error));
+}
+
+// ✅ Empêche le popup de s'afficher si l'email a été soumis
+document.addEventListener("DOMContentLoaded", function () {
+    const popupOverlay = document.getElementById("popup-4k-main-overlay");
+    const button4K = document.getElementById("popup-4k-main-btn");
+
+    if (hasSubmittedEmail()) {
+        console.log("🚀 Email déjà soumis, modification du bouton 4K.");
+
+        if (button4K) {
+            let imageUrl4K = button4K.getAttribute("data-url-4k");
+            button4K.innerHTML = "<strong>📥 Download in 4K</strong>";
+            button4K.onclick = function () {
+                forceDownload(imageUrl4K);
+            };
+        }
+
+        if (popupOverlay) {
+            popupOverlay.style.display = "none"; // Empêche le popup de réapparaître
+        }
+    }
+});
+
+// ✅ Ajoute un écouteur pour le bouton du popup principal
+document.getElementById("popup-4k-main-btn").addEventListener("click", openPopupMain4K);
+
+
 
 
 
@@ -1240,51 +1293,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Vérification de l'email soumis et mise à jour de l'interface.");
-
-    const emailForm = document.getElementById("popup-4k-main-form");
-    const submitEmailBtn = document.getElementById("submit-email-btn");
-    const download4KBtn = document.getElementById("popup-4k-main-btn");
-    const popupOverlay = document.getElementById("popup-4k-main-overlay");
-
-    // ✅ Vérifie si l'email a déjà été soumis
-    if (hasSubmittedEmail()) {
-        console.log("✅ Email déjà soumis, mise à jour du popup.");
-        submitEmailBtn.style.display = "none"; // Cache le bouton Submit Email
-        download4KBtn.style.display = "block"; // Montre le bouton Download in 4K
-    }
-
-    // ✅ Écouteur sur la soumission du formulaire
-    emailForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Empêche la soumission normale
-        const email = emailForm.querySelector("input[name='email']").value;
-
-        if (email) {
-            console.log("📩 Email soumis:", email);
-            setEmailSubmitted(download4KBtn.getAttribute("data-url-4k")); // Sauvegarde email
-
-            // ✅ Mise à jour de l'interface après soumission
-            submitEmailBtn.style.display = "none"; // Cache Submit Email
-            download4KBtn.style.display = "block"; // Montre Download in 4K
-
-            // ✅ Ferme automatiquement le popup après un court délai
-            setTimeout(() => {
-                popupOverlay.style.display = "none";
-                forceDownload(download4KBtn.getAttribute("data-url-4k")); // Lance le téléchargement
-            }, 1000);
-        }
-    });
-
-    // ✅ Empêche l'ouverture du popup si l'email est déjà soumis
-    document.getElementById("popup-4k-main-btn").addEventListener("click", function (event) {
-        if (hasSubmittedEmail()) {
-            event.preventDefault();
-            console.log("✅ Email déjà soumis, téléchargement direct.");
-            forceDownload(download4KBtn.getAttribute("data-url-4k"));
-        }
-    });
-});
 
 
             
