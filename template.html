@@ -841,13 +841,14 @@ function saveUserState(imageUrl4K) {
 
     // ✅ Sauvegarde l'état après soumission du formulaire
     function setEmailSubmitted(imageUrl4K) {
-    localStorage.setItem("emailSubmitted", "true");
-    localStorage.setItem("downloadTriggered", "false"); // ✅ Réinitialise pour éviter les bugs
+    localStorage.setItem("emailSubmitted", "true"); // ✅ Marque l'email comme soumis
+    localStorage.setItem("downloadTriggered", "false"); // ✅ Reset pour éviter les bugs
 
     if (imageUrl4K) {
         localStorage.setItem("pendingDownload4K", imageUrl4K);
     }
 }
+
 
 
 
@@ -919,10 +920,11 @@ function saveUserState(imageUrl4K) {
     if (hasSubmittedEmail()) {
         console.log("✅ Email déjà soumis, téléchargement immédiat.");
         forceDownload(imageUrl4K);
-        return;
+        return; // ⛔ Empêche l'ouverture du popup
     }
 
     // ✅ Sinon, on ouvre le popup pour demander l'email
+    console.log("🛑 Email non soumis, ouverture du popup...");
     document.getElementById("popup-4k-main-overlay").style.display = "flex";
 
     // ✅ Quand le formulaire est soumis, on enregistre l’email et on redirige
@@ -931,6 +933,7 @@ function saveUserState(imageUrl4K) {
         saveUserState(imageUrl4K);
     };
 }
+
 
 // ✅ Vérifie au chargement si l'utilisateur a déjà soumis son email et met à jour les boutons
 document.addEventListener("DOMContentLoaded", function () {
@@ -1105,6 +1108,34 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Charger les images au démarrage
     loadInitialImages();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (hasSubmittedEmail()) {
+        console.log("🚀 L'utilisateur a déjà soumis son email. Modification des boutons.");
+
+        // ✅ Transforme le bouton de l’image principale
+        const button4K = document.getElementById("popup-4k-main-btn");
+        if (button4K) {
+            let imageUrl4K = button4K.getAttribute("data-url-4k");
+            button4K.innerHTML = "<strong>📥 Download in 4K</strong>";
+            button4K.onclick = function () {
+                forceDownload(imageUrl4K);
+            };
+        }
+
+        // ✅ Met à jour tous les boutons de la galerie
+        document.querySelectorAll(".download-button-4k").forEach(button => {
+            let galleryImageUrl4K = button.getAttribute("data-url-4k");
+            if (galleryImageUrl4K) {
+                button.innerHTML = "<strong>📥 Download in 4K</strong>";
+                button.onclick = function () {
+                    forceDownload(galleryImageUrl4K);
+                };
+            }
+        });
+    }
+});
+
 
 
 
