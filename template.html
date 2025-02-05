@@ -990,6 +990,64 @@
 
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Initialisation des popups et des événements.");
+
+    // ✅ Fonction générique pour ouvrir un popup
+    function openPopup(popupId) {
+        const overlay = document.getElementById(popupId);
+        if (overlay) {
+            overlay.style.display = "flex";
+            document.body.style.overflow = "hidden"; // Désactive le scroll en arrière-plan
+        } else {
+            console.warn(`⚠️ Popup non trouvé: ${popupId}`);
+        }
+    }
+
+    // ✅ Fonction générique pour fermer un popup
+    function closePopup(popupId) {
+        const overlay = document.getElementById(popupId);
+        if (overlay) {
+            overlay.style.display = "none";
+            document.body.style.overflow = ""; // Réactive le scroll
+        } else {
+            console.warn(`⚠️ Impossible de fermer le popup: ${popupId}`);
+        }
+    }
+
+    // ✅ Ajoute un écouteur pour fermer les popups en cliquant sur la croix (✖)
+    document.querySelectorAll(".popup-close").forEach(closeBtn => {
+        closeBtn.addEventListener("click", function () {
+            const popup = this.closest(".popup-overlay"); // Trouve l'overlay parent
+            if (popup) {
+                closePopup(popup.id);
+            }
+        });
+    });
+
+    // ✅ Ajoute un écouteur pour fermer les popups en cliquant sur l'overlay (fond flou)
+    document.querySelectorAll(".popup-overlay").forEach(overlay => {
+        overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+                closePopup(overlay.id);
+            }
+        });
+    });
+
+    // ✅ Bouton pour ouvrir le popup principal
+    document.getElementById("popup-4k-main-btn").addEventListener("click", function () {
+        openPopup("popup-4k-main-overlay");
+    });
+
+    console.log("✅ Tous les écouteurs de fermeture des popups ont été ajoutés !");
+});
+
+
+
+
+
+
+
 
 
 
