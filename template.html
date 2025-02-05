@@ -1073,6 +1073,8 @@
 
             setPopupDownloadUrl(imageUrlHD, imageUrl4K); // ✅ Passe les 2 URL
             document.body.style.overflow = "hidden";
+            // ✅ Bloque le scroll
+            document.body.classList.add("no-scroll");
         }
     }
 }
@@ -1080,16 +1082,17 @@
          
          // ✅ Fonction pour fermer le popup 4K et réactiver le scrolling
          function closePopup4K() {
-         const popup = document.getElementById("popup-4k");
-         const overlay = document.getElementById("popup-4k-overlay");
-         
-         if (popup && overlay) {
-         popup.style.display = "none";
-         overlay.style.display = "none";
-         
-         document.body.style.overflow = "";
-         }
-         }
+    const popup = document.getElementById("popup-4k");
+    const overlay = document.getElementById("popup-4k-overlay");
+
+    if (popup && overlay) {
+        popup.style.display = "none";
+        overlay.style.display = "none";
+        
+        // ✅ Débloque le scroll
+        document.body.classList.remove("no-scroll");
+    }
+}
          
          // ✅ Capture la soumission du formulaire pour masquer définitivement le popup
          document.getElementById("popup-4k-form").addEventListener("submit", function () {
@@ -1366,6 +1369,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function closeMainPopup4K() {
         popupOverlay.style.display = "none";
         popupContainer.style.display = "none";
+        // ✅ Débloque le scroll
         document.body.classList.remove("no-scroll");
     }
 
@@ -1399,6 +1403,64 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Attache l'événement sur la croix pour fermer le popup
     closeGalleryButton.addEventListener("click", closePopupGallery);
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Récupération des éléments clés
+    const mainImage = document.getElementById("main-image"); // Image principale
+    const downloadHDButton = document.querySelector(".download-button-hd"); // Bouton Download in HD
+    const download4KButton = document.getElementById("popup-4k-main-btn"); // Bouton Download in 4K
+
+    const popupOverlay = document.getElementById("popup-4k-main-overlay"); // Overlay du popup
+    const popupContainer = document.getElementById("popup-4k-main"); // Contenu du popup
+    const popupImage = document.getElementById("popup-4k-main-image"); // Image dans le popup
+    const popupDownloadHD = document.getElementById("popup-4k-main-hd-download"); // Lien "Download in HD (No email)"
+
+    if (mainImage && downloadHDButton && download4KButton && popupImage && popupDownloadHD) {
+        let imageUrlHD = mainImage.src; // URL de l'image principale
+        let imageUrl4K = imageUrlHD.replace("/hd/", "/4k/"); // 🔥 Adapter si ton système remplace bien ce chemin
+
+        // ✅ Injection dans les boutons de la section image principale
+        downloadHDButton.setAttribute("onclick", `forceDownload('${imageUrlHD}')`);
+        download4KButton.setAttribute("data-url-4k", imageUrl4K);
+
+        console.log("✅ Liens injectés dans la section principale :", { imageUrlHD, imageUrl4K });
+
+        // ✅ Ajout du comportement au bouton "Download in 4K" pour afficher le popup
+        download4KButton.addEventListener("click", function () {
+            popupOverlay.style.display = "flex"; // Affiche le fond noir
+            popupContainer.style.display = "block"; // Affiche le popup
+            document.body.classList.add("no-scroll"); // Désactive le scroll
+            
+            popupImage.src = imageUrl4K; // Met à jour l'image en 4K
+            popupDownloadHD.setAttribute("href", imageUrlHD); // Met à jour le lien de téléchargement HD
+
+            console.log("✅ Popup mis à jour avec :", { imageUrlHD, imageUrl4K });
+        });
+
+        // ✅ Fonction pour fermer le popup
+        function closeMainPopup4K() {
+            popupOverlay.style.display = "none";
+            popupContainer.style.display = "none";
+            document.body.classList.remove("no-scroll"); // Réactive le scroll
+        }
+
+        // ✅ Fermeture du popup au clic sur la croix
+        document.querySelector(".popup-close").addEventListener("click", closeMainPopup4K);
+
+        // ✅ Fermeture du popup en cliquant sur l’overlay
+        popupOverlay.addEventListener("click", function (event) {
+            if (event.target === popupOverlay) {
+                closeMainPopup4K();
+            }
+        });
+
+    } else {
+        console.error("❌ Un élément est manquant pour injecter les liens correctement.");
+    }
+});
+
+
 
             
       </script>
