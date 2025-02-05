@@ -901,7 +901,9 @@ function saveUserState(imageUrl4K) {
         }
     }
 
-    function openPopupMain4K() {
+    function openPopupMain4K(event) {
+    event.preventDefault(); // ✅ Empêche le comportement par défaut du bouton
+
     const button4K = document.getElementById("popup-4k-main-btn");
 
     if (!button4K) {
@@ -933,6 +935,7 @@ function saveUserState(imageUrl4K) {
         saveUserState(imageUrl4K);
     };
 }
+
 
 
 // ✅ Vérifie au chargement si l'utilisateur a déjà soumis son email et met à jour les boutons
@@ -1098,9 +1101,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ✅ Ajout d'un écouteur pour le bouton du popup principal
-    document.getElementById("popup-4k-main-btn").addEventListener("click", function () {
-        openPopupMain4K();
-    });
+    document.getElementById("popup-4k-main-btn").addEventListener("click", openPopupMain4K);
+
 
     // ✅ Vérifie et exécute le téléchargement après retour de la page thank-you
     checkPendingDownload();
