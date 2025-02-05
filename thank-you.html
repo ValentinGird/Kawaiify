@@ -55,20 +55,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.body.removeChild(link);
 
                 window.URL.revokeObjectURL(blobUrl);
-                localStorage.removeItem("wallpaperUrl");
-                localStorage.setItem("downloadTriggered", "true");
-
-                console.log("✅ Téléchargement déclenché !");
+                localStorage.setItem("downloadTriggered", "true"); // ✅ Marque comme téléchargé
             })
             .catch(error => {
                 console.error("❌ Erreur lors du téléchargement :", error);
             });
     }
 
-    setTimeout(downloadWallpaper, 1000);
+    if (!localStorage.getItem("downloadTriggered")) {
+        setTimeout(downloadWallpaper, 1000);
+    }
 
     setTimeout(() => {
-        localStorage.removeItem("downloadTriggered");
+        localStorage.removeItem("downloadTriggered"); // ✅ Nettoyage après retour
         const previousPage = localStorage.getItem("previousPage");
         if (previousPage) {
             console.log("🔄 Redirection vers :", previousPage);
@@ -79,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }, 3000);
 });
+
 
 
     </script>

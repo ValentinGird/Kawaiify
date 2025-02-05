@@ -853,13 +853,19 @@ function saveUserState(imageUrl4K) {
     const imageUrl4K = localStorage.getItem("pendingDownload4K");
 
     if (imageUrl4K && hasSubmittedEmail()) {
-        console.log("✅ Téléchargement automatique de l’image 4K :", imageUrl4K);
-        forceDownload(imageUrl4K);
-        localStorage.removeItem("pendingDownload4K"); // Nettoyage après téléchargement
+        if (!localStorage.getItem("downloadTriggered")) {
+            console.log("✅ Téléchargement automatique de l’image 4K :", imageUrl4K);
+            forceDownload(imageUrl4K);
+            localStorage.setItem("downloadTriggered", "true"); // ✅ Empêche un double téléchargement
+            localStorage.removeItem("pendingDownload4K"); // ✅ Nettoie après exécution
+        } else {
+            console.log("⛔ Téléchargement déjà effectué, évite un doublon.");
+        }
     } else {
         console.warn("⚠️ Aucun téléchargement en attente ou email non détecté.");
     }
 }
+
 
 
     // ✅ Ouvre le popup 4K de la galerie
@@ -893,14 +899,13 @@ function saveUserState(imageUrl4K) {
     }
 
     // ✅ Ouvre le popup principal UNIQUEMENT si les données sont injectées
-    function openPopupMain4K() {
+    ffunction openPopupMain4K() {
     const mainImage = document.getElementById("main-image");
     if (!mainImage || !mainImage.src) {
         console.warn("⚠️ Impossible d'ouvrir le popup principal: image principale non chargée.");
         return;
     }
 
-    // ✅ Récupère l’URL 4K depuis l'attribut `data-url-4k`
     const button4K = document.getElementById("popup-4k-main-btn");
     const imageUrl4K = button4K.getAttribute("data-url-4k");
 
@@ -909,22 +914,22 @@ function saveUserState(imageUrl4K) {
         return;
     }
 
-    // ✅ Sauvegarde l'image avant redirection Flodesk
-    saveUserState(imageUrl4K);
-
-    // ✅ Si l’email a déjà été soumis, on télécharge immédiatement
+    // ✅ Vérifie si l'utilisateur a déjà soumis son email
     if (hasSubmittedEmail()) {
         console.log("✅ Email déjà soumis, téléchargement immédiat.");
         forceDownload(imageUrl4K);
-    } else {
-        document.getElementById("popup-4k-main-overlay").style.display = "flex";
-
-        // ✅ Assure que le formulaire enregistre bien l'image 4K et l'email soumis
-        document.getElementById("popup-4k-main-form").onsubmit = function () {
-            setEmailSubmitted(imageUrl4K); // ✅ Enregistre l'état après soumission
-            saveUserState(imageUrl4K);
-        };
+        return; // ⛔ Ne rouvre pas le popup
     }
+
+    // ✅ Sinon, ouvre le popup pour saisir l'email
+    document.getElementById("popup-4k-main-overlay").style.display = "flex";
+
+    document.getElementById("popup-4k-main-form").onsubmit = function () {
+        setEmailSubmitted(imageUrl4K); // ✅ Sauvegarde l'email après soumission
+        saveUserState(imageUrl4K);
+    };
+   }
+
 }
 
 
