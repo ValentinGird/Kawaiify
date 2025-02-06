@@ -18,7 +18,6 @@
       <!-- Favicon -->
       <link rel="icon" type="image/png" href="https://i.ibb.co/XZJbQPYm/favicon-32x32.png">
       <link rel="stylesheet" href="styles.css">
-   </head>
    <style>
       /* Dark mode */
       * {
@@ -1521,33 +1520,25 @@ if (mainPopupForm) {
          });
          
 
-
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script de gestion du téléchargement chargé.");
 
     function saveWallpaperUrl(imageUrl) {
         if (imageUrl) {
-            console.log("💾 Image enregistrée :", imageUrl);
+            console.log("💾 Image enregistrée pour téléchargement :", imageUrl);
             localStorage.setItem("wallpaperUrl", imageUrl);
         } else {
             console.warn("⚠️ Aucun URL d'image détecté.");
         }
     }
 
-    // ✅ Capture l’image principale affichée sur la page
-    const mainImage = document.querySelector("#main-image");
-    if (mainImage) {
-        saveWallpaperUrl(mainImage.src);
-    }
-
-    // ✅ Capture le clic sur les boutons "Download in 4K"
+    // ✅ Capture le clic sur les boutons "Download in 4K" pour stocker la bonne URL
     document.querySelectorAll(".download-button-4k").forEach(button => {
         button.addEventListener("click", function () {
-            const imageUrl = this.getAttribute("data-url-4k");
-            saveWallpaperUrl(imageUrl);
+            const imageUrl4K = this.getAttribute("data-url-4k"); // Récupère l'URL de l'image 4K
+            if (imageUrl4K) {
+                saveWallpaperUrl(imageUrl4K);
+            }
         });
     });
 
@@ -1555,48 +1546,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!window.location.pathname.includes("thank-you.html")) {
         localStorage.setItem("previousPage", window.location.href);
     }
-});
 
-document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
     document.querySelectorAll("form").forEach(form => {
         form.addEventListener("submit", function () {
-            // 🔥 Sauvegarde la position exacte de scroll avant la redirection
-            localStorage.setItem("scrollPosition", window.scrollY);
-        });
-    });
-});
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Sélectionne tous les boutons de téléchargement nécessitant un email
-    document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function (event) {
-            const imageUrl = document.getElementById("popup-4k-gallery-image")?.src; // URL de l’image
-            if (imageUrl) {
-                localStorage.setItem("wallpaperUrl", imageUrl); // Stocke l'image pour la récupérer plus tard
+            const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
+            if (!imageUrl) {
+                console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
+            } else {
+                console.log("✅ Image enregistrée avant soumission :", imageUrl);
             }
-            localStorage.setItem("previousPage", window.location.href); // Stocke la page précédente
         });
     });
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    // ✅ Vérifie si on revient depuis la thank-you page
-    if (window.location.hash === "#scroll-back") {
-        const scrollPosition = localStorage.getItem("scrollPosition");
-
-        if (scrollPosition) {
-            console.log("🔄 Restauration du scroll à la position :", scrollPosition);
-
-            setTimeout(() => {
-                window.scrollTo({ top: parseInt(scrollPosition), behavior: "smooth" });
-            }, 500); // 🔥 Petit délai pour s'assurer que tout est bien chargé
-
-            localStorage.removeItem("scrollPosition"); // Nettoie après utilisation
-        }
-    }
 });
 
 
