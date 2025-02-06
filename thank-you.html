@@ -38,7 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const link = document.createElement("a");
         link.href = wallpaperUrl;
-        link.setAttribute("download", "wallpaper.jpg");
+        link.setAttribute("download", wallpaperUrl.split('/').pop());
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
