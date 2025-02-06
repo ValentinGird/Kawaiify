@@ -942,9 +942,9 @@
          
          // ✅ Fonction pour ouvrir le popup 4K ou télécharger directement
          function openPopup4K(imageUrlHD, imageUrl4K) {
-    localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ On enregistre l’image en attente de téléchargement
+    localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ On sauvegarde bien l'image
     if (hasSubmittedEmail()) {
-        forceDownload(imageUrl4K); // ✅ Télécharge directement si déjà inscrit
+        forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
     } else {
         const popup = document.getElementById("popup-4k");
         const overlay = document.getElementById("popup-4k-overlay");
@@ -957,7 +957,6 @@
         }
     }
 }
-
 
          
          // ✅ Fonction pour fermer le popup 4K et réactiver le scrolling
@@ -1176,7 +1175,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Stocke l'URL de la page avant la redirection
     if (!window.location.pathname.includes("thank-you.html")) {
         localStorage.setItem("previousPage", window.location.href);
-localStorage.setItem("scrollPosition", window.scrollY); // ✅ On enregistre la position du scroll
+localStorage.setItem("scrollPosition", window.scrollY);
+localStorage.setItem("previousPage", window.location.href); // ✅ On enregistre la position du scroll
 
     }
 
