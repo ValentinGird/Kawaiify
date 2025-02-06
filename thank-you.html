@@ -66,12 +66,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // ✅ Télécharger l’image après la redirection si elle n’a pas encore été téléchargée
     if (!localStorage.getItem("downloadTriggered")) {
         setTimeout(downloadWallpaper, 1000);
     }
 
-    // ✅ Gestion du compteur avant redirection
     let countdown = 3;
     const countdownElement = document.getElementById("countdown");
 
@@ -81,21 +79,38 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Attente pour restaurer le scroll AVANT la redirection
-    setTimeout(() => {
-        const savedScrollPosition = localStorage.getItem("lastScrollPosition"); // Harmonisation du nom
+    // ✅ Fonction ultra-précise pour restaurer le scroll
+    function restoreScrollWithRetry(attempt = 0) {
+        const savedScrollPosition = localStorage.getItem("lastScrollPosition");
 
         if (savedScrollPosition && savedScrollPosition !== "0") {
-            console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
-            window.scrollTo({
-                top: parseInt(savedScrollPosition, 10),
-                behavior: "smooth"
+            console.log(`🔄 Tentative #${attempt + 1} de restauration du scroll :`, savedScrollPosition);
+
+            requestAnimationFrame(() => {
+                window.scrollTo({
+                    top: parseInt(savedScrollPosition, 10),
+                    behavior: "smooth"
+                });
+
+                // Vérifie après 500ms si le scroll est bien positionné
+                setTimeout(() => {
+                    if (window.scrollY !== parseInt(savedScrollPosition, 10) && attempt < 4) {
+                        restoreScrollWithRetry(attempt + 1); // 🔁 Réessaye si la position n'est pas exacte
+                    } else {
+                        console.log("✅ Scroll restauré avec succès :", window.scrollY);
+                    }
+                }, 500);
             });
         } else {
             console.warn("⚠️ Aucune restauration du scroll nécessaire.");
         }
+    }
 
-        // ✅ Redirection après 2s pour accélérer l'expérience utilisateur
+    // ✅ Attente AVANT la redirection pour restaurer précisément le scroll
+    setTimeout(() => {
+        restoreScrollWithRetry();
+
+        // ✅ Redirection après 2.5s (un peu plus tard pour être sûr du scroll)
         setTimeout(() => {
             if (previousPage) {
                 console.log("🔄 Redirection vers :", previousPage);
@@ -105,14 +120,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "https://kawaiify.art";
             }
 
-            // ✅ Nettoyage APRÈS la redirection (délai supplémentaire)
             setTimeout(() => {
                 localStorage.removeItem("downloadTriggered");
                 localStorage.removeItem("pendingDownload4K");
-                localStorage.removeItem("lastScrollPosition"); // Suppression différée après redirection
+                localStorage.removeItem("lastScrollPosition"); // ✅ Suppression différée
             }, 1500);
 
-        }, 2000);
+        }, 2500);
 
     }, 2000);
 
