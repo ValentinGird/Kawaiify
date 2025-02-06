@@ -1772,7 +1772,66 @@ async function forceMainImageDownload(imageUrl) {
         }
     }
 
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Script du popup principal chargé.");
 
+    const popupMain4KForm = document.getElementById("popup-main-4k-form");
+    if (!popupMain4KForm) {
+        console.error("❌ ERREUR : Impossible de trouver le formulaire principal !");
+        return;
+    }
+
+    popupMain4KForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Empêche la soumission par défaut
+        console.log("📩 Formulaire soumis ! Vérification en cours...");
+
+        // ✅ Stocke l'email soumis dans le LocalStorage
+        localStorage.setItem("emailSubmitted", "true");
+        console.log("✅ Email enregistré dans le localStorage.");
+
+        // ✅ Récupère l'image 4K en attente (s'il y en a une)
+        let imageUrl4K = localStorage.getItem("pendingDownload4K");
+
+        if (!imageUrl4K) {
+            console.warn("⚠️ Aucun fond d’écran 4K enregistré avant soumission !");
+        } else {
+            console.log("✅ Image 4K sélectionnée avant soumission :", imageUrl4K);
+        }
+
+        // ✅ Soumission du formulaire vers Flodesk
+        console.log("🔗 Redirection vers Flodesk...");
+        popupMain4KForm.action = "https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit";
+        popupMain4KForm.submit();
+
+        // ✅ Après soumission, redirige l'utilisateur à la page précédente
+        setTimeout(function () {
+            const returnToPage = localStorage.getItem("returnToPage");
+            if (returnToPage) {
+                console.log("🔄 Redirection vers la page précédente :", returnToPage);
+                localStorage.removeItem("returnToPage");
+                window.location.href = returnToPage;
+            }
+        }, 3000); // 🔥 Délai de 3 secondes pour laisser le temps au formulaire de se soumettre
+    });
+});
+
+// ✅ Ferme le popup au clic sur l'overlay
+document.addEventListener("DOMContentLoaded", function () {
+    const popupOverlay = document.getElementById("popup-main-4k-overlay");
+
+    if (popupOverlay) {
+        popupOverlay.addEventListener("click", function (event) {
+            if (event.target === popupOverlay) {
+                closePopupMain4K();
+            }
+        });
+    }
+});
+
+// ✅ Fonction pour fermer le popup
+function closePopupMain4K() {
+    document.getElementById("popup-main-4k-overlay").style.display = "none";
+}
 
 
 
