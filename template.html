@@ -752,9 +752,10 @@
             <div class="tags-container" id="main-image-tags"></div>
             <!-- ✅ Boutons Download -->
             <div class="button-container">
-               <button class="download-button download-button-4k" id="popup-main-4k-btn">
-   <strong>Download in 4K (Free)</strong>
+               <button class="download-button download-button-4k" id="popup-main-4k-btn" onclick="openPopupMain4K()">
+    <strong>Download in 4K (Free)</strong>
 </button>
+
 
                <button class="download-button download-button-hd" id="main-hd-download-btn" 
     onclick="forceMainImageDownload('{IMAGE_URL}')">
@@ -766,19 +767,20 @@
          </div>
       </div>
 
-<!-- ✅ Popup Principal -->
-      <div class="popup-overlay" id="popup-main-4k-overlay">
-   <div class="popup-container">
-      <span class="popup-close" onclick="closePopupMain4K()">✖</span>
-      <h3>🎁 Get This 4K Wallpaper & Unlock Daily Surprises! ✨</h3>
-      <img id="popup-main-4k-image" src="{IMAGE_URL}" alt="4K Wallpaper Preview" class="popup-image">
-      <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
-      <form id="popup-main-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
-         <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-         <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
-      </form>
-   </div>
+<!-- ✅ Popup 4K pour l'image principale -->
+<div class="popup-overlay" id="popup-main-4k-overlay">
+    <div class="popup-container">
+        <span class="popup-close" onclick="closePopupMain4K()">✖</span>
+        <h3>🎁 Get This 4K Wallpaper & Unlock Daily Surprises! ✨</h3>
+        <img id="popup-main-4k-image" src="{IMAGE_URL}" alt="4K Wallpaper Preview" class="popup-image">
+        <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
+        <form id="popup-main-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
+            <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+            <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
+        </form>
+    </div>
 </div>
+
 
 
 
@@ -1703,6 +1705,73 @@ async function forceMainImageDownload(imageUrl) {
 
 
    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ✅ Ouvre le popup 4K de l'image principale
+    function openPopupMain4K() {
+        if (localStorage.getItem("emailSubmitted") === "true") {
+            forceDownload("{IMAGE_URL_4K}");
+        } else {
+            document.getElementById("popup-main-4k-overlay").style.display = "flex";
+            document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
+        }
+    }
+
+    // ✅ Ferme le popup
+    function closePopupMain4K() {
+        document.getElementById("popup-main-4k-overlay").style.display = "none";
+    }
+
+    // ✅ Capture la soumission du formulaire pour enregistrer l’email et rediriger après la Thank You Page
+    document.getElementById("popup-main-4k-form").addEventListener("submit", function (event) {
+        localStorage.setItem("emailSubmitted", "true");
+        localStorage.setItem("returnToPage", window.location.href);
+    });
+
+    // ✅ Redirection automatique après la Thank You Page
+    window.onload = function () {
+        const returnToPage = localStorage.getItem("returnToPage");
+        if (returnToPage) {
+            localStorage.removeItem("returnToPage");
+            window.location.href = returnToPage;
+        }
+    };
+
+    // ✅ Force le téléchargement du fichier après soumission
+    async function forceDownload(imageUrl) {
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = blobUrl;
+            a.download = "wallpaper_4K.jpg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            setTimeout(() => {
+                window.URL.revokeObjectURL(blobUrl);
+            }, 1000);
+        } catch (error) {
+            console.error("❌ Download failed:", error);
+            window.open(imageUrl, "_blank"); // 🔥 Solution de secours
+        }
+    }
+
 
 
 
