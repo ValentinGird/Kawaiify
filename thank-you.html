@@ -28,6 +28,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const previousPage = localStorage.getItem("previousPage");
     const pendingDownload = localStorage.getItem("pendingDownload4K");
+    const savedImage = localStorage.getItem("returnToImage");
+
+    if (savedImage) {
+        console.log("✅ Image enregistrée pour retour :", savedImage);
+    } else {
+        console.warn("⚠️ Aucune image enregistrée avant redirection.");
+    }
 
     function downloadWallpaper(attempt = 0) {
         if (!pendingDownload) {
