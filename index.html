@@ -624,7 +624,7 @@
       <!-- ✅ Popup 4K Centered -->
       <div class="popup-overlay" id="popup-4k-overlay">
          <div class="popup-container" id="popup-4k">
-            <span class="popup-close" onclick="closePopup4K()">✖</span>
+            <span class="popup-close">✖</span>
             <!-- ✅ Image d'illustration 4K vs HD -->
             <img id="popup-4k-gallery-image" src="" alt="4K Wallpaper Preview" class="popup-image">
             <!-- ✅ Titre du popup -->
@@ -976,17 +976,31 @@
          
          
          // ✅ Fonction pour fermer le popup 4K et réactiver le scrolling
-         function closePopup4K() {
-         const popup = document.getElementById("popup-4k");
-         const overlay = document.getElementById("popup-4k-overlay");
+function closePopup4K() {
+    const popup = document.getElementById("popup-4k");
+    const overlay = document.getElementById("popup-4k-overlay");
+
+    if (popup && overlay) {
+        popup.style.display = "none";
+        overlay.style.display = "none";
+
+        document.body.style.overflow = ""; // Réactive le scroll si désactivé
+        console.log("❌ Popup fermé !");
+    }
+}
+
+// ✅ Ajout d'un événement pour fermer le popup en cliquant sur la croix
+document.addEventListener("DOMContentLoaded", function () {
+    const closeButton = document.querySelector(".popup-close");
+    if (closeButton) {
+        closeButton.addEventListener("click", closePopup4K);
+        console.log("✅ Événement ajouté pour fermer le popup avec la croix.");
+    } else {
+        console.error("❌ Erreur : Impossible de trouver '.popup-close' !");
+    }
+});
+
          
-         if (popup && overlay) {
-         popup.style.display = "none";
-         overlay.style.display = "none";
-         
-         document.body.style.overflow = "";
-         }
-         }
          
          // ✅ Capture la soumission du formulaire pour masquer définitivement le popup
          document.getElementById("popup-4k-form").addEventListener("submit", function () {
@@ -1258,6 +1272,29 @@
          }
          });
          
+         document.addEventListener("DOMContentLoaded", function () {
+         console.log("✅ Script de gestion du scroll chargé.");
+         
+         const savedScrollPosition = localStorage.getItem("scrollPosition");
+         
+         if (savedScrollPosition && savedScrollPosition !== "0") {
+         console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
+         setTimeout(() => {
+            window.scrollTo({
+                top: parseInt(savedScrollPosition),
+                behavior: "smooth"
+            });
+         }, 800); // Petit délai pour éviter les bugs
+         
+         localStorage.removeItem("scrollPosition"); // ✅ Supprime après restauration
+         }
+         
+         // ✅ Sauvegarde la position avant de quitter la page
+         window.addEventListener("beforeunload", function () {
+         localStorage.setItem("scrollPosition", window.scrollY);
+         console.log("💾 Scroll sauvegardé :", window.scrollY);
+         });
+         });
          
          
            

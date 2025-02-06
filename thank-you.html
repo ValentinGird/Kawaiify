@@ -1,119 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Thank You! 🎉</title>
-      <style>
-         body {
-         text-align: center;
-         padding: 50px;
-         background-color: #121212;
-         color: #fff;
-         font-family: Arial, sans-serif;
-         }
-         .redirect-message {
-         font-size: 18px;
-         margin-top: 20px;
-         }
-      </style>
-   </head>
-   <body>
-      <h1>🎉 Thank You for Signing Up!</h1>
-      <p class="redirect-message">You will be redirected in <span id="countdown">3</span> seconds...</p>
-      <script>
-         document.addEventListener("DOMContentLoaded", function () {
-             console.log("✅ Thank You Page chargée.");
-         
-             const previousPage = localStorage.getItem("previousPage");
-             const pendingDownload = localStorage.getItem("pendingDownload4K");
-         
-             function downloadWallpaper(attempt = 0) {
-                 if (!pendingDownload) {
-                     if (attempt < 5) { 
-                         console.warn(`⚠️ Image non trouvée, nouvelle tentative (${attempt + 1})...`);
-                         setTimeout(() => downloadWallpaper(attempt + 1), 1000);
-                     } else {
-                         console.error("❌ Impossible de télécharger l'image après 5 tentatives.");
-                     }
-                     return;
-                 }
-         
-                 if (localStorage.getItem("downloadTriggered") === "true") {
-                     console.log("⛔ Téléchargement déjà effectué, pas de doublon.");
-                     return;
-                 }
-         
-                 console.log("📥 Téléchargement automatique de :", pendingDownload);
-         
-                 fetch(pendingDownload)
-                     .then(response => response.blob())
-                     .then(blob => {
-                         const blobUrl = window.URL.createObjectURL(blob);
-                         const link = document.createElement("a");
-                         link.href = blobUrl;
-                         link.setAttribute("download", "wallpaper.jpg");
-                         document.body.appendChild(link);
-                         link.click();
-                         document.body.removeChild(link);
-                         window.URL.revokeObjectURL(blobUrl);
-         
-                         localStorage.setItem("downloadTriggered", "true");
-                     })
-                     .catch(error => {
-                         console.error("❌ Erreur téléchargement :", error);
-                     });
-             }
-         
-             // ✅ Télécharger l’image après la redirection si elle n’a pas encore été téléchargée
-             if (!localStorage.getItem("downloadTriggered")) {
-                 setTimeout(downloadWallpaper, 1000);
-             }
-         
-             // ✅ Gestion du compteur avant redirection
-             let countdown = 3;
-             const countdownElement = document.getElementById("countdown");
-         
-             const interval = setInterval(() => {
-                 countdown -= 1;
-                 countdownElement.textContent = countdown;
-                 if (countdown <= 0) clearInterval(interval);
-             }, 1000);
-         
-             // ✅ Attente pour restaurer le scroll avant la redirection
-             setTimeout(() => {
-                 const savedScrollPosition = localStorage.getItem("scrollPosition");
-         
-                 if (savedScrollPosition) {
-                     window.scrollTo({
-                         top: parseInt(savedScrollPosition),
-                         behavior: "smooth"
-                     });
-                     console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
-                     localStorage.removeItem("scrollPosition");
-                 }
-         
-                 // ✅ Après 1s, on redirige proprement
-                 setTimeout(() => {
-                     if (previousPage) {
-                         console.log("🔄 Redirection vers :", previousPage);
-                         window.location.href = previousPage;
-                     } else {
-                         console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
-                         window.location.href = "https://kawaiify.art";
-                     }
-         
-                     // ✅ Nettoyage des données après redirection
-                     setTimeout(() => {
-                         localStorage.removeItem("downloadTriggered");
-                         localStorage.removeItem("pendingDownload4K");
-                     }, 500);
-                 }, 1000);
-         
-             }, 3000);
-         });
-         
-             
-      </script>
-   </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You! 🎉</title>
+    <style>
+        body {
+            text-align: center;
+            padding: 50px;
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .redirect-message {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Thank You for Signing Up!</h1>
+    <p class="redirect-message">You will be redirected in <span id="countdown">3</span> seconds...</p>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Thank You Page chargée.");
+
+    const previousPage = localStorage.getItem("previousPage");
+    const pendingDownload = localStorage.getItem("pendingDownload4K");
+
+    function downloadWallpaper(attempt = 0) {
+        if (!pendingDownload) {
+            if (attempt < 5) { 
+                console.warn(`⚠️ Image non trouvée, nouvelle tentative (${attempt + 1})...`);
+                setTimeout(() => downloadWallpaper(attempt + 1), 1000);
+            } else {
+                console.error("❌ Impossible de télécharger l'image après 5 tentatives.");
+            }
+            return;
+        }
+
+        if (localStorage.getItem("downloadTriggered") === "true") {
+            console.log("⛔ Téléchargement déjà effectué, pas de doublon.");
+            return;
+        }
+
+        console.log("📥 Téléchargement automatique de :", pendingDownload);
+
+        fetch(pendingDownload)
+            .then(response => response.blob())
+            .then(blob => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = blobUrl;
+                link.setAttribute("download", "wallpaper.jpg");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(blobUrl);
+
+                localStorage.setItem("downloadTriggered", "true");
+            })
+            .catch(error => {
+                console.error("❌ Erreur téléchargement :", error);
+            });
+    }
+
+    // ✅ Télécharger l’image après la redirection si elle n’a pas encore été téléchargée
+    if (!localStorage.getItem("downloadTriggered")) {
+        setTimeout(downloadWallpaper, 1000);
+    }
+
+    // ✅ Gestion du compteur avant redirection
+    let countdown = 3;
+    const countdownElement = document.getElementById("countdown");
+
+    const interval = setInterval(() => {
+        countdown -= 1;
+        countdownElement.textContent = countdown;
+        if (countdown <= 0) clearInterval(interval);
+    }, 1000);
+
+    // ✅ Attente pour restaurer le scroll avant la redirection
+    setTimeout(() => {
+        const savedScrollPosition = localStorage.getItem("scrollPosition");
+
+        if (savedScrollPosition) {
+            window.scrollTo({
+                top: parseInt(savedScrollPosition),
+                behavior: "smooth"
+            });
+            console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
+            localStorage.removeItem("scrollPosition");
+        }
+
+        // ✅ Après 1s, on redirige proprement
+        setTimeout(() => {
+            if (previousPage) {
+                console.log("🔄 Redirection vers :", previousPage);
+                window.location.href = previousPage;
+            } else {
+                console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
+                window.location.href = "https://kawaiify.art";
+            }
+
+            // ✅ Nettoyage des données après redirection
+            setTimeout(() => {
+                localStorage.removeItem("downloadTriggered");
+                localStorage.removeItem("pendingDownload4K");
+            }, 500);
+        }, 1000);
+
+    }, 3000);
+});
+
+    </script>
+</body>
 </html>
