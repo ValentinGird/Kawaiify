@@ -1341,7 +1341,23 @@
         console.log("🔄 Détection d'un retour depuis la Thank-You page, activation du scroll auto-piloté.");
         setTimeout(restoreScrollAutoPilot, 1000); 
     }
+
+    // ✅ Sauvegarde de la position du scroll AVANT d'envoyer un formulaire
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function () {
+            let currentScroll = window.scrollY;
+            localStorage.setItem("returnScrollPosition", currentScroll);
+            console.log("💾 Scroll enregistré AVANT redirection vers la Thank-You page :", currentScroll);
+        });
+    });
+
+    // ✅ Sauvegarde AVANT de quitter la page (ex: si la personne ferme l’onglet)
+    window.addEventListener("beforeunload", function () {
+        localStorage.setItem("returnScrollPosition", window.scrollY);
+        console.log("💾 Scroll sauvegardé avant changement de page :", window.scrollY);
+    });
 });
+
 
 
 

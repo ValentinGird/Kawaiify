@@ -79,10 +79,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Enregistre la position du scroll pour restauration exacte au retour
-    const currentScroll = window.scrollY;
-    localStorage.setItem("returnScrollPosition", currentScroll);
-    console.log("💾 Position du scroll enregistrée pour retour :", currentScroll);
+    // ✅ Sauvegarde de la position du scroll AVANT la redirection (mais ne l’écrase pas s’il existe déjà)
+    if (!localStorage.getItem("returnScrollPosition")) {
+        const currentScroll = window.scrollY;
+        localStorage.setItem("returnScrollPosition", currentScroll);
+        console.log("💾 Position du scroll enregistrée pour retour :", currentScroll);
+    } else {
+        console.log("⚠️ Position du scroll déjà enregistrée :", localStorage.getItem("returnScrollPosition"));
+    }
 
     // ✅ Redirection après 3s
     setTimeout(() => {
