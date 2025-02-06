@@ -756,9 +756,11 @@
    <strong>Download in 4K (Free)</strong>
 </button>
 
-               <button class="download-button download-button-hd" id="main-hd-download-btn">
-   <strong>Download in HD</strong>
+               <button class="download-button download-button-hd" id="main-hd-download-btn" 
+    onclick="forceMainImageDownload('{IMAGE_URL}')">
+    <strong>Download in HD</strong>
 </button>
+
 
             </div>
          </div>
@@ -1598,332 +1600,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-         
-        document.addEventListener("DOMContentLoaded", function () {
-    const downloadButtons = document.querySelectorAll(".download-button-hd, .download-button-4k");
-    const errorPopup = document.getElementById("download-error-overlay");
-    const manualDownloadLink = document.getElementById("manual-download-link");
-    const closeErrorPopup = document.getElementById("close-error-popup");
-
-    async function forceDownload(imageUrl) {
-        try {
-            const response = await fetch(imageUrl);
-            if (!response.ok) throw new Error("Failed to download");
-
-            const blob = await response.blob();
-            const blobUrl = window.URL.createObjectURL(blob);
-            
-            const a = document.createElement("a");
-            a.href = blobUrl;
-            a.download = "wallpaper.jpg";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            setTimeout(() => {
-                window.URL.revokeObjectURL(blobUrl);
-            }, 1000);
-        } catch (error) {
-            console.error("❌ Download failed:", error);
-
-            // 🔥 Afficher le popup de secours
-            errorPopup.style.display = "flex";
-
-            // 🔥 Mettre à jour le lien avec la bonne URL
-            manualDownloadLink.href = imageUrl;
-            manualDownloadLink.target = "_blank";
-        }
-    }
-
-    // ✅ Écouteurs pour les boutons de téléchargement
-    downloadButtons.forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            const imageUrl = this.getAttribute("data-url") || localStorage.getItem("wallpaperUrl");
-            if (imageUrl) forceDownload(imageUrl);
-        });
-    });
-
-    // ✅ Fermeture du popup de secours
-    closeErrorPopup.addEventListener("click", function () {
-        errorPopup.style.display = "none";
-    });
-
-    // ✅ Fermer si on clique en dehors du popup
-    errorPopup.addEventListener("click", function (event) {
-        if (event.target === errorPopup) {
-            errorPopup.style.display = "none";
-        }
-    });
-});
- 
-
-document.addEventListener("DOMContentLoaded", function () {
-    const downloadButtons = document.querySelectorAll(".download-button-hd, .download-button-4k");
-    const errorPopup = document.createElement("div");
-    errorPopup.id = "download-error-overlay";
-    errorPopup.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-    `;
-    
-    errorPopup.innerHTML = `
-        <div style="background: #1e1e1e; color: white; padding: 20px; border-radius: 8px; text-align: center; max-width: 300px;">
-            <p>⚠️ Having trouble downloading?</p>
-            <a href="#" id="manual-download-link" class="popup-alt-button" style="color: #FF69B4; font-weight: bold;">Open in a new tab</a>
-            <br><br>
-            <button id="close-error-popup" style="background: #FF69B4; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px;">Close</button>
-        </div>
-    `;
-    
-    document.body.appendChild(errorPopup);
-    
-    const manualDownloadLink = document.getElementById("manual-download-link");
-    const closeErrorPopup = document.getElementById("close-error-popup");
-
-    async function forceDownload(imageUrl) {
-        try {
-            const a = document.createElement("a");
-            a.href = imageUrl;
-            a.download = "wallpaper.jpg";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            // 🔥 Vérifie après 3 secondes si le fichier a été reçu
-            setTimeout(() => {
-                if (!document.querySelector('a[download]')) {
-                    console.log("🚨 Possible échec du téléchargement !");
-                    errorPopup.style.display = "flex";
-                    manualDownloadLink.href = imageUrl;
-                    manualDownloadLink.target = "_blank";
-                }
-            }, 3000);
-        } catch (error) {
-            console.error("❌ Download failed:", error);
-            errorPopup.style.display = "flex";
-            manualDownloadLink.href = imageUrl;
-            manualDownloadLink.target = "_blank";
-        }
-    }
-
-    downloadButtons.forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            const imageUrl = this.getAttribute("data-url") || localStorage.getItem("wallpaperUrl");
-            if (imageUrl) forceDownload(imageUrl);
-        });
-    });
-
-    closeErrorPopup.addEventListener("click", function () {
-        errorPopup.style.display = "none";
-    });
-
-    errorPopup.addEventListener("click", function (event) {
-        if (event.target === errorPopup) {
-            errorPopup.style.display = "none";
-        }
-    });
-});
-         
-         
-         
-         
-
-
-
-
-
-
-
-
-
-
-
-
-         
-         
-   // ✅ Vérifie si l'utilisateur a déjà soumis son email
-   function hasSubmittedEmail() {
-       return localStorage.getItem("emailSubmitted") === "true";
-   }
-
-   // ✅ Ouvre le popup spécifique à l’image principale
-   document.getElementById("popup-main-4k-btn").addEventListener("click", function () {
-       if (hasSubmittedEmail()) {
-           forceDownload("{IMAGE_URL_4K}");
-       } else {
-           document.getElementById("popup-main-4k-overlay").style.display = "flex";
-           document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
-       }
-   });
-
-   // ✅ Ferme le popup
-   function closePopupMain4K() {
-       document.getElementById("popup-main-4k-overlay").style.display = "none";
-   }
-
-   // ✅ Capture la soumission du formulaire pour enregistrer l’email et rediriger
-   document.getElementById("popup-main-4k-form").addEventListener("submit", function (event) {
-       localStorage.setItem("emailSubmitted", "true");
-       localStorage.setItem("returnToPage", window.location.href);
-   });
-
-   // ✅ Redirection automatique après la Thank You Page
-   window.onload = function () {
-       const returnToPage = localStorage.getItem("returnToPage");
-       if (returnToPage) {
-           localStorage.removeItem("returnToPage");
-           window.location.href = returnToPage;
-       }
-   };
-
-   // ✅ Force le téléchargement du fichier
-   async function forceDownload(imageUrl) {
-       try {
-           const response = await fetch(imageUrl);
-           const blob = await response.blob();
-           const blobUrl = window.URL.createObjectURL(blob);
-
-           const a = document.createElement("a");
-           a.href = blobUrl;
-           a.download = "wallpaper_4K.jpg";
-           document.body.appendChild(a);
-           a.click();
-           document.body.removeChild(a);
-
-           setTimeout(() => {
-               window.URL.revokeObjectURL(blobUrl);
-           }, 1000);
-       } catch (error) {
-           console.error("❌ Download failed:", error);
-           window.open(imageUrl, "_blank"); // 🔥 Solution de secours
-       }
-   }
-
-         
-         document.addEventListener("DOMContentLoaded", function () {
-    const popupMain4KBtn = document.getElementById("popup-main-4k-btn");
-
-    if (popupMain4KBtn) {
-        popupMain4KBtn.addEventListener("click", function (event) {
-            event.preventDefault(); // ✅ Empêche l'événement de se déclencher deux fois
-
-            if (localStorage.getItem("emailSubmitted") === "true") {
-                console.log("✅ Email déjà soumis, téléchargement immédiat.");
-                forceDownload("{IMAGE_URL_4K}");
-            } else {
-                console.log("📌 Email non soumis, ouverture du popup.");
-                document.getElementById("popup-main-4k-overlay").style.display = "flex";
-                document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
-            }
-        });
-    }
-});
-
-         
-    async function forceMainImageDownload(imageUrl) {
-    try {
-        console.log("🚀 Téléchargement de l'image principale :", imageUrl);
-
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = "main_wallpaper.jpg"; // 🔥 Nom du fichier spécifique
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        setTimeout(() => {
-            window.URL.revokeObjectURL(blobUrl);
-        }, 1000);
-
-        console.log("✅ Téléchargement réussi !");
-    } catch (error) {
-        console.error("❌ Erreur lors du téléchargement de l'image principale :", error);
-        alert("⚠️ Erreur lors du téléchargement. Essayez d'ouvrir l'image dans un nouvel onglet.");
-    }
-}
    
+       
          
-         
-         
-         
-document.addEventListener("DOMContentLoaded", function () {
-    const mainHDDownloadBtn = document.getElementById("main-hd-download-btn");
-    const main4KDownloadBtn = document.getElementById("popup-main-4k-btn");
-
-    if (mainHDDownloadBtn) {
-        mainHDDownloadBtn.addEventListener("click", function (event) {
-            event.preventDefault(); // ✅ Empêche l'ouverture du lien
-            forceDownload("{IMAGE_URL}"); // 🔥 Télécharge directement l'image HD
-        });
-    }
-
-    if (main4KDownloadBtn) {
-        main4KDownloadBtn.addEventListener("click", function (event) {
-            event.preventDefault(); // ✅ Empêche l'ouverture du lien
-
-            if (localStorage.getItem("emailSubmitted") === "true") {
-                console.log("✅ Email déjà soumis, téléchargement immédiat.");
-                forceDownload("{IMAGE_URL_4K}"); // 🔥 Télécharge directement l'image 4K
-            } else {
-                console.log("📌 Email non soumis, ouverture du popup.");
-                document.getElementById("popup-main-4k-overlay").style.display = "flex";
-                document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
-            }
-        });
-    }
-});
-
-// ✅ Fonction de téléchargement direct
-async function forceDownload(imageUrl) {
-    try {
-        console.log("🚀 Téléchargement en cours :", imageUrl);
-
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = "wallpaper.jpg"; // ✅ Nom du fichier téléchargé
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        // ✅ Nettoie l'URL du blob après téléchargement
-        setTimeout(() => {
-            window.URL.revokeObjectURL(blobUrl);
-        }, 1000);
-
-        console.log("✅ Téléchargement réussi !");
-    } catch (error) {
-        console.error("❌ Erreur lors du téléchargement :", error);
-        alert("⚠️ Erreur lors du téléchargement. Essayez d'ouvrir l'image dans un nouvel onglet.");
-    }
-}
-
-
-
+  // ✅ Ferme le popup en cliquant sur l'overlay (flou en arrière-plan)
 document.addEventListener("DOMContentLoaded", function () {
     const popupOverlay = document.getElementById("popup-main-4k-overlay");
-    const popupContainer = document.querySelector(".popup-container");
 
     if (popupOverlay) {
         popupOverlay.addEventListener("click", function (event) {
-            // ✅ Ferme le popup uniquement si l'utilisateur clique sur l'overlay (le flou)
             if (event.target === popupOverlay) {
                 closePopupMain4K();
             }
@@ -1934,12 +1619,94 @@ document.addEventListener("DOMContentLoaded", function () {
 // ✅ Fonction pour fermer le popup
 function closePopupMain4K() {
     document.getElementById("popup-main-4k-overlay").style.display = "none";
+}       
+         
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function openPopupMain4K() {
+    if (localStorage.getItem("emailSubmitted") === "true") {
+        forceDownload("{IMAGE_URL_4K}");
+    } else {
+        document.getElementById("popup-main-4k-overlay").style.display = "flex";
+        document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
+    }
+}
+
+async function forceMainImageDownload(imageUrl) {
+    try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = "main_wallpaper.jpg"; 
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+        }, 1000);
+    } catch (error) {
+        console.error("❌ Erreur lors du téléchargement :", error);
+        alert("⚠️ Erreur lors du téléchargement. Essayez d'ouvrir l'image dans un nouvel onglet.");
+    }
 }
 
 
 
 
+
          
+         
+
+
+
+
+
+
+   
+
+
+
+
          
          
          
