@@ -29,6 +29,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const previousPage = localStorage.getItem("previousPage");
     const pendingDownload = localStorage.getItem("pendingDownload4K");
 
+    function disableUserScroll() {
+        document.body.style.overflow = "hidden"; // ❌ Désactive complètement le scroll
+        console.log("🛑 Scroll utilisateur désactivé.");
+    }
+
+    function enableUserScroll() {
+        document.body.style.overflow = ""; // ✅ Réactive le scroll
+        console.log("✅ Scroll utilisateur réactivé.");
+    }
+
     function downloadWallpaper(attempt = 0) {
         if (!pendingDownload) {
             if (attempt < 5) { 
@@ -79,38 +89,50 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Fonction ultra-précise pour restaurer le scroll
-    function restoreScrollWithRetry(attempt = 0) {
+    // ✅ Fonction ULTRA-RIGIDE pour restaurer le scroll avec LOCKING + AUTO-PILOTAGE
+    function restoreScrollWithLockAndAutoPilot(attempt = 0) {
         const savedScrollPosition = localStorage.getItem("lastScrollPosition");
 
-        if (savedScrollPosition && savedScrollPosition !== "0") {
-            console.log(`🔄 Tentative #${attempt + 1} de restauration du scroll :`, savedScrollPosition);
-
-            requestAnimationFrame(() => {
-                window.scrollTo({
-                    top: parseInt(savedScrollPosition, 10),
-                    behavior: "smooth"
-                });
-
-                // Vérifie après 500ms si le scroll est bien positionné
-                setTimeout(() => {
-                    if (window.scrollY !== parseInt(savedScrollPosition, 10) && attempt < 4) {
-                        restoreScrollWithRetry(attempt + 1); // 🔁 Réessaye si la position n'est pas exacte
-                    } else {
-                        console.log("✅ Scroll restauré avec succès :", window.scrollY);
-                    }
-                }, 500);
-            });
-        } else {
-            console.warn("⚠️ Aucune restauration du scroll nécessaire.");
+        if (!savedScrollPosition || savedScrollPosition === "0") {
+            console.warn("⚠️ Aucune position de scroll enregistrée.");
+            enableUserScroll(); // ✅ Réactive le scroll si pas besoin
+            return;
         }
+
+        const targetScroll = parseInt(savedScrollPosition, 10);
+
+        console.log(`🔄 Tentative #${attempt + 1} de restauration du scroll : ${targetScroll}`);
+
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: targetScroll,
+                behavior: "smooth"
+            });
+
+            setTimeout(() => {
+                if (window.scrollY !== targetScroll && attempt < 10) {
+                    console.warn(`⚠️ Position incorrecte (Actuelle: ${window.scrollY}, Attendue: ${targetScroll}). Retente...`);
+                    restoreScrollWithLockAndAutoPilot(attempt + 1); // 🔁 REESSAYE tant que ce n'est pas bon
+                } else {
+                    console.log("✅ Scroll restauré avec succès :", window.scrollY);
+                    setTimeout(() => {
+                        localStorage.removeItem("lastScrollPosition"); // 🔥 Suppression UNIQUEMENT quand c'est bon !
+                        console.log("🗑️ Données de scroll supprimées.");
+                        enableUserScroll(); // ✅ Réactive le contrôle utilisateur
+                    }, 1000);
+                }
+            }, 300);
+        });
     }
+
+    // ✅ Désactive le scroll utilisateur dès l'arrivée (Auto-Pilotage)
+    disableUserScroll();
 
     // ✅ Attente AVANT la redirection pour restaurer précisément le scroll
     setTimeout(() => {
-        restoreScrollWithRetry();
+        restoreScrollWithLockAndAutoPilot();
 
-        // ✅ Redirection après 2.5s (un peu plus tard pour être sûr du scroll)
+        // ✅ Redirection après 3s (temps augmenté pour éviter les conflits)
         setTimeout(() => {
             if (previousPage) {
                 console.log("🔄 Redirection vers :", previousPage);
@@ -123,14 +145,13 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(() => {
                 localStorage.removeItem("downloadTriggered");
                 localStorage.removeItem("pendingDownload4K");
-                localStorage.removeItem("lastScrollPosition"); // ✅ Suppression différée
             }, 1500);
 
-        }, 2500);
+        }, 3000);
 
     }, 2000);
-
 });
-    </script>
+</script>
+
 </body>
 </html>
