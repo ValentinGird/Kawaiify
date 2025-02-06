@@ -1263,26 +1263,34 @@ document.addEventListener("DOMContentLoaded", function () {
     if (savedScrollPosition && savedScrollPosition !== "0") {
         console.log("🔄 Tentative de restauration du scroll...");
 
-        // Attendre que le contenu soit totalement chargé avant de restaurer
         let attempt = 0;
-        const maxAttempts = 10; // On essaie jusqu'à 10 fois
-        const scrollInterval = setInterval(() => {
-            if (document.readyState === "complete" && attempt < maxAttempts) {
-                attempt++;
+        const maxAttempts = 10;
+
+        function restoreScroll() {
+            if (attempt >= maxAttempts) {
+                console.error("❌ Impossible de restaurer le scroll après plusieurs tentatives.");
+                return;
+            }
+
+            if (document.readyState === "complete") {
                 window.scrollTo({
                     top: parseInt(savedScrollPosition),
                     behavior: "smooth"
                 });
-                console.log(`✅ Scroll restauré à la position : ${savedScrollPosition} (Tentative ${attempt})`);
-                if (attempt >= 2) { // Arrêter après quelques essais réussis
-                    clearInterval(scrollInterval);
+                console.log(`✅ Scroll restauré à la position : ${savedScrollPosition} (Tentative ${attempt + 1})`);
+                attempt++;
+                if (attempt >= 2) {
                     localStorage.removeItem("scrollPosition"); // Nettoyage après succès
                 }
-            } else if (attempt >= maxAttempts) {
-                console.error("❌ Impossible de restaurer le scroll après plusieurs tentatives.");
-                clearInterval(scrollInterval);
+            } else {
+                attempt++;
+                setTimeout(restoreScroll, 500); // Réessaye dans 500ms
             }
-        }, 500); // Réessaye toutes les 500ms
+        }
+
+        setTimeout(() => {
+            requestAnimationFrame(restoreScroll);
+        }, 300); // Petit délai pour éviter les conflits avec d'autres scripts
     }
 
     // Sauvegarde la position du scroll avant de quitter la page
@@ -1291,6 +1299,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("💾 Scroll sauvegardé :", window.scrollY);
     });
 });
+
 
 
 
