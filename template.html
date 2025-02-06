@@ -1568,12 +1568,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     popupMain4KForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Empêche la soumission par défaut
-        console.log("📩 Formulaire soumis ! Vérification en cours...");
+    localStorage.setItem("previousPage", window.location.href); // 🔥 Stocke l'URL avant soumission
+    event.preventDefault(); // Empêche la soumission par défaut
+    console.log("📩 Formulaire soumis ! Vérification en cours...");
 
-        // ✅ Stocke l'email soumis dans le LocalStorage
-        localStorage.setItem("emailSubmitted", "true");
-        console.log("✅ Email enregistré dans le localStorage.");
+    // ✅ Stocke l'email soumis dans le LocalStorage
+    localStorage.setItem("emailSubmitted", "true");
+    console.log("✅ Email enregistré dans le localStorage.");
+
 
         // ✅ Récupère l'image 4K en attente (s'il y en a une)
         let imageUrl4K = localStorage.getItem("pendingDownload4K");

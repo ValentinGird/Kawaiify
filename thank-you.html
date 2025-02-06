@@ -28,12 +28,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let savedImageId = localStorage.getItem("returnToImage");
     let pendingDownload = localStorage.getItem("pendingDownload4K");
+    let previousPage = localStorage.getItem("previousPage"); // 🔥 Récupère la page avant soumission
 
     // 🛠️ Vérification des valeurs stockées
     console.log("🛠️ Vérification localStorage: ", {
         returnToImage: savedImageId,
         wallpaperUrl: localStorage.getItem("wallpaperUrl"),
-        pendingDownload4K: pendingDownload
+        pendingDownload4K: pendingDownload,
+        previousPage: previousPage
     });
 
     if (savedImageId) {
@@ -93,7 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 1000);
 
     setTimeout(() => {
-        if (savedImageId) {
+        if (previousPage) {
+            console.log("🔄 Redirection vers la page précédente :", previousPage);
+            window.location.href = previousPage;
+        } else if (savedImageId) {
             console.log("🔄 Redirection vers l'image :", savedImageId);
             let redirectUrl = "https://kawaiify.art?focus=" + encodeURIComponent(savedImageId);
             window.location.href = redirectUrl;
@@ -108,9 +113,11 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.removeItem("pendingDownload4K");
             localStorage.removeItem("returnToImage");
             localStorage.removeItem("wallpaperUrl");
+            localStorage.removeItem("previousPage"); // 🔥 Supprime l'ancienne URL
         }, 1500);
     }, 3000);
 });
+
 </script>
 
 </body>
