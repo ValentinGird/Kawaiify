@@ -29,6 +29,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let savedImageId = localStorage.getItem("returnToImage");
     let pendingDownload = localStorage.getItem("pendingDownload4K");
 
+    // 🛠️ Vérification des valeurs stockées
+    console.log("🛠️ Vérification localStorage: ", {
+        returnToImage: savedImageId,
+        wallpaperUrl: localStorage.getItem("wallpaperUrl"),
+        pendingDownload4K: pendingDownload
+    });
+
     if (savedImageId) {
         console.log("✅ Image enregistrée détectée :", savedImageId);
     } else {
@@ -95,10 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = "https://kawaiify.art";
         }
 
+        // Nettoyage des valeurs stockées après redirection
         setTimeout(() => {
             localStorage.removeItem("downloadTriggered");
             localStorage.removeItem("pendingDownload4K");
             localStorage.removeItem("returnToImage");
+            localStorage.removeItem("wallpaperUrl");
         }, 1500);
     }, 3000);
 });

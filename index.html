@@ -836,21 +836,21 @@
                 const offerDiv = document.createElement("div");
                 offerDiv.className = "offer gallery-offer";
 
-                // ✅ Génération d'un ID unique basé sur l'URL
-                const uniqueId = btoa(imgData.url).replace(/[^a-zA-Z0-9]/g, "").substring(0, 10);
-                offerDiv.setAttribute("data-image-id", uniqueId);
+                // ✅ Utilisation directe de l'URL comme ID unique
+                const imageId = imgData.url;
+                offerDiv.setAttribute("data-image-id", imageId);
 
                 // ✅ Image
                 const imgElement = document.createElement("img");
                 imgElement.src = imgData.url;
                 imgElement.alt = imgData.title;
                 imgElement.loading = "lazy";
-                imgElement.setAttribute("data-image-id", uniqueId); // Ajout de l'ID
+                imgElement.setAttribute("data-image-id", imageId);
 
                 // ✅ Stocke l'ID lorsqu'on clique sur une image
                 imgElement.addEventListener("click", function () {
-                    localStorage.setItem("returnToImage", uniqueId);
-                    console.log("💾 Image enregistrée pour retour :", uniqueId);
+                    localStorage.setItem("returnToImage", imageId);
+                    console.log("💾 Image enregistrée pour retour :", imageId);
                 });
 
                 // ✅ Titre
@@ -871,10 +871,9 @@
                     tagSpan.className = "tag";
                     tagSpan.textContent = tag;
 
-                    // ✅ Active/Désactive le tag au clic
                     tagSpan.addEventListener("click", function () {
-                        this.classList.toggle("active"); // Change l'état du tag visuellement
-                        filterByTag(tag); // Applique le filtrage
+                        this.classList.toggle("active");
+                        filterByTag(tag);
                     });
 
                     tagsContainer.appendChild(tagSpan);
@@ -903,11 +902,11 @@
                 const download4KButtonPopup = document.createElement("button");
                 download4KButtonPopup.className = "download-button download-button-4k";
                 download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
-                download4KButtonPopup.addEventListener("click", function () {
-    const imageId = imgData.id || imgData.url; // ✅ Utilise l'ID de l'image ou l'URL en fallback
-    openPopup4K(imageId, imgData.url, imgData.url_4k);
-});
 
+                // 🔥 Ajoute l'événement pour ouvrir le popup
+                download4KButtonPopup.addEventListener("click", function () {
+                    openPopup4K(imageId, imgData.url, imgData.url_4k);
+                });
 
                 // ✅ Ajout des éléments
                 offerDiv.appendChild(titleElement);
@@ -927,6 +926,9 @@
 
     isLoading = false;
 }
+
+
+
 
          
          
@@ -976,29 +978,37 @@ function openPopup4K(imageId, imageUrlHD, imageUrl4K) {
     }
 
     console.log("📌 Image sélectionnée :", imageId);
-    
+    console.log("🔗 URL 4K sélectionnée :", imageUrl4K);
+
     // 🔥 Enregistre l'ID et l'URL de l'image pour la redirection après soumission
     localStorage.setItem("returnToImage", imageId);
     localStorage.setItem("wallpaperUrl", imageUrl4K);
     localStorage.setItem("pendingDownload4K", imageUrl4K);
 
     if (hasSubmittedEmail()) {
+        console.log("✅ Email déjà soumis, téléchargement immédiat.");
         forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
     } else {
+        console.log("🖼️ Ouverture du popup 4K...");
+
         const popup = document.getElementById("popup-4k");
         const overlay = document.getElementById("popup-4k-overlay");
         const popupImage = document.getElementById("popup-4k-gallery-image");
 
-        if (popupImage) {
-            popupImage.src = imageUrl4K;
+        if (!popup || !overlay || !popupImage) {
+            console.error("❌ Erreur : Impossible de trouver les éléments du popup !");
+            return;
         }
 
-        if (popup && overlay) {
-            popup.style.display = "block";
-            overlay.style.display = "flex";
-        }
+        popupImage.src = imageUrl4K;
+
+        popup.style.display = "block";
+        overlay.style.display = "flex";
+
+        console.log("✅ Popup affiché avec succès.");
     }
 }
+
 
          
          
