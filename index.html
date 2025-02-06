@@ -424,13 +424,13 @@
          }
          /* ✅ Style de l'image du popup */
          .popup-image {
-    width: 50%; /* Réduit à 80% de la largeur du popup */
-    max-width: 250px; /* ✅ Limite la taille maximale */
-    height: auto; /* ✅ Garde le ratio d’origine */
-    display: block; /* ✅ Assure un bon affichage */
-    margin: 0 auto 10px; /* ✅ Centre l’image et ajoute un espace en dessous */
-    border-radius: 8px; /* ✅ Garde des bords arrondis pour le style */
-}
+         width: 50%; /* Réduit à 80% de la largeur du popup */
+         max-width: 250px; /* ✅ Limite la taille maximale */
+         height: auto; /* ✅ Garde le ratio d’origine */
+         display: block; /* ✅ Assure un bon affichage */
+         margin: 0 auto 10px; /* ✅ Centre l’image et ajoute un espace en dessous */
+         border-radius: 8px; /* ✅ Garde des bords arrondis pour le style */
+         }
          .popup-alt-button {
          background: none;
          border: none;
@@ -663,25 +663,12 @@
          <p>&copy; 2025 Kawaiify | <a href="https://tonsite.com/privacy">Privacy Policy</a></p>
       </footer>
       <script>
-
          // ✅ Fonction pour vérifier si l'utilisateur a déjà soumis son email
-function hasSubmittedEmail() {
-    return localStorage.getItem("emailSubmitted") === "true";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Barre de recherche activée...");
-
-    if (hasSubmittedEmail()) { // ✅ Maintenant, cette fonction est bien définie
-        document.querySelectorAll(".download-button-4k").forEach(button => {
-            button.textContent = "📥 Download 4K Instantly!";
-            button.style.backgroundColor = "#FF69B4";
-            button.addEventListener("click", function () {
-                forceDownload(this.getAttribute("data-url-4k"));
-            });
-        });
-    }
-});
+         function hasSubmittedEmail() {
+         return localStorage.getItem("emailSubmitted") === "true";
+         }
+         
+         
          // ✅ Fonction pour filtrer les images
          function filterImages() {
          console.log("🔎 Filtrage en cours...");
@@ -961,22 +948,22 @@ document.addEventListener("DOMContentLoaded", function () {
          
          // ✅ Fonction pour ouvrir le popup 4K ou télécharger directement
          function openPopup4K(imageUrlHD, imageUrl4K) {
-    localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ On sauvegarde bien l'image
-    if (hasSubmittedEmail()) {
-        forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
-    } else {
-        const popup = document.getElementById("popup-4k");
-        const overlay = document.getElementById("popup-4k-overlay");
-        const popupImage = document.getElementById("popup-4k-gallery-image");
-        popupImage.src = imageUrl4K;
-
-        if (popup && overlay) {
+         localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ On sauvegarde bien l'image
+         if (hasSubmittedEmail()) {
+         forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
+         } else {
+         const popup = document.getElementById("popup-4k");
+         const overlay = document.getElementById("popup-4k-overlay");
+         const popupImage = document.getElementById("popup-4k-gallery-image");
+         popupImage.src = imageUrl4K;
+         
+         if (popup && overlay) {
             popup.style.display = "block";
             overlay.style.display = "flex";
-        }
-    }
-}
-
+         }
+         }
+         }
+         
          
          // ✅ Fonction pour fermer le popup 4K et réactiver le scrolling
          function closePopup4K() {
@@ -993,10 +980,10 @@ document.addEventListener("DOMContentLoaded", function () {
          
          // ✅ Capture la soumission du formulaire pour masquer définitivement le popup
          document.getElementById("popup-4k-form").addEventListener("submit", function () {
-    localStorage.setItem("emailSubmitted", "true"); // ✅ On garde en mémoire que l’email a été soumis
-    closePopup4K(); // ✅ Ferme le popup après soumission
-});
-
+         localStorage.setItem("emailSubmitted", "true"); // ✅ On garde en mémoire que l’email a été soumis
+         closePopup4K(); // ✅ Ferme le popup après soumission
+         });
+         
          
          // ✅ Ferme le popup si on clique sur l'overlay
          document.getElementById("popup-4k-overlay").addEventListener("click", function (event) {
@@ -1160,58 +1147,71 @@ document.addEventListener("DOMContentLoaded", function () {
          }
          });
          
-
-
-   
-
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script de gestion du téléchargement chargé.");
-
-    function saveWallpaperUrl(imageUrl) {
-        if (imageUrl) {
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         document.addEventListener("DOMContentLoaded", function () {
+         console.log("✅ Script de gestion du téléchargement chargé.");
+         
+         function saveWallpaperUrl(imageUrl) {
+         if (imageUrl) {
             console.log("💾 Image enregistrée pour téléchargement :", imageUrl);
             localStorage.setItem("wallpaperUrl", imageUrl);
-        } else {
+         } else {
             console.warn("⚠️ Aucun URL d'image détecté.");
-        }
-    }
-
-    // ✅ Capture le clic sur les boutons "Download in 4K" pour stocker la bonne URL
-    document.querySelectorAll(".download-button-4k").forEach(button => {
-        button.addEventListener("click", function () {
+         }
+         }
+         
+         // ✅ Capture le clic sur les boutons "Download in 4K" pour stocker la bonne URL
+         document.querySelectorAll(".download-button-4k").forEach(button => {
+         button.addEventListener("click", function () {
             const imageUrl4K = this.getAttribute("data-url-4k"); // Récupère l'URL de l'image 4K
             if (imageUrl4K) {
                 saveWallpaperUrl(imageUrl4K);
             }
-        });
-    });
-
-    // ✅ Stocke l'URL de la page avant la redirection
-    if (!window.location.pathname.includes("thank-you.html")) {
-        localStorage.setItem("previousPage", window.location.href);
-localStorage.setItem("scrollPosition", window.scrollY);
-localStorage.setItem("previousPage", window.location.href); // ✅ On enregistre la position du scroll
-
-    }
-
-    // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
-    document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function () {
+         });
+         });
+         
+         // ✅ Stocke l'URL de la page avant la redirection
+         if (!window.location.pathname.includes("thank-you.html")) {
+         localStorage.setItem("previousPage", window.location.href);
+         localStorage.setItem("scrollPosition", window.scrollY);
+         localStorage.setItem("previousPage", window.location.href); // ✅ On enregistre la position du scroll
+         
+         }
+         
+         // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
+         document.querySelectorAll("form").forEach(form => {
+         form.addEventListener("submit", function () {
             const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
             if (!imageUrl) {
                 console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
             } else {
                 console.log("✅ Image enregistrée avant soumission :", imageUrl);
             }
-        });
-    });
+         });
+         });
+         });
+
+         document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Script de restauration du scroll chargé.");
+
+    if (localStorage.getItem("scrollPosition")) {
+        setTimeout(() => {
+            window.scrollTo(0, localStorage.getItem("scrollPosition"));
+            console.log("🔄 Scroll restauré à la position :", localStorage.getItem("scrollPosition"));
+            localStorage.removeItem("scrollPosition"); // ✅ Nettoyage après scroll
+        }, 500);
+    }
 });
 
+         
              
       </script>
    </body>

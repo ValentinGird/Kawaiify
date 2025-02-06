@@ -26,13 +26,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Thank You Page chargée.");
 
-    const previousPage = localStorage.getItem("previousPage") || "https://kawaiify.art"; // ✅ Sécurisation
+    const previousPage = localStorage.getItem("previousPage");
+    const pendingDownload = localStorage.getItem("pendingDownload4K");
 
     function downloadWallpaper(attempt = 0) {
-        const wallpaperUrl = localStorage.getItem("pendingDownload4K");
-
-        if (!wallpaperUrl) {
-            if (attempt < 5) { 
+        if (!pendingDownload) {
+            if (attempt < 5) { // ✅ On réessaye 5 fois si l'image n'est pas encore sauvegardée
                 console.warn(`⚠️ Image non trouvée, nouvelle tentative (${attempt + 1})...`);
                 setTimeout(() => downloadWallpaper(attempt + 1), 1000);
             } else {
@@ -46,9 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        console.log("📥 Téléchargement automatique de :", wallpaperUrl);
+        console.log("📥 Téléchargement automatique de :", pendingDownload);
 
-        fetch(wallpaperUrl)
+        fetch(pendingDownload)
             .then(response => response.blob())
             .then(blob => {
                 const blobUrl = window.URL.createObjectURL(blob);
@@ -67,12 +66,12 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // ✅ Téléchargement automatique
+    // ✅ On s'assure que l'image est bien téléchargée après redirection
     if (!localStorage.getItem("downloadTriggered")) {
         setTimeout(downloadWallpaper, 1000);
     }
 
-    // ✅ Décompte de la redirection
+    // ✅ Redirection automatique après 3 secondes
     let countdown = 3;
     const countdownElement = document.getElementById("countdown");
 
@@ -82,26 +81,23 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Redirection après 3 secondes
+    // ✅ Redirection propre avec nettoyage après 3 secondes
     setTimeout(() => {
-        console.log("🔄 Redirection vers :", previousPage);
-        window.location.href = previousPage;
+        if (previousPage) {
+            console.log("🔄 Redirection vers :", previousPage);
+            window.location.href = previousPage;
+        } else {
+            console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
+            window.location.href = "https://kawaiify.art";
+        }
 
         setTimeout(() => {
-            const scrollPosition = localStorage.getItem("scrollPosition");
-            if (scrollPosition) {
-                window.scrollTo(0, scrollPosition);
-                localStorage.removeItem("scrollPosition"); // ✅ Nettoyage après le scroll
-            }
-        }, 2000);
+            localStorage.removeItem("downloadTriggered"); // ✅ Nettoyage après redirection
+            localStorage.removeItem("pendingDownload4K"); // ✅ Supprime l’image en attente
+        }, 500);
     }, 3000);
-
-    // ✅ Nettoyage après la redirection
-    setTimeout(() => {
-        localStorage.removeItem("downloadTriggered");
-        localStorage.removeItem("pendingDownload4K");
-    }, 500);
 });
+
     </script>
 </body>
 </html>
