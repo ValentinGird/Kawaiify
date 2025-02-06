@@ -1280,39 +1280,67 @@
          document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script de gestion du scroll chargé.");
 
-    // ✅ Forcer la sauvegarde avant la soumission du formulaire
-    document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function () {
-            let currentScroll = window.scrollY;
-            localStorage.setItem("lastScrollPosition", currentScroll);
-            console.log("💾 Scroll enregistré avant redirection vers la Thank-You page :", currentScroll);
-        });
-    });
-
-    // ✅ Vérifie si l'utilisateur vient de la Thank-You page et restaure
-    let lastScrollPosition = localStorage.getItem("lastScrollPosition");
-    let previousPage = document.referrer;
-
-    if (previousPage && previousPage.includes("thank-you") && lastScrollPosition && lastScrollPosition !== "0") {
-        console.log("🔄 Tentative de restauration du scroll après retour de la Thank-You page :", lastScrollPosition);
-
-        setTimeout(() => {
-            window.scrollTo({
-                top: parseInt(lastScrollPosition, 10),
-                behavior: "smooth"
-            });
-            console.log("✅ Scroll restauré après retour :", lastScrollPosition);
-            localStorage.removeItem("lastScrollPosition"); // ✅ Supprime après utilisation
-        }, 500);
-    } else {
-        console.warn("⚠️ Pas de restauration nécessaire.");
+    function disableUserScroll() {
+        document.body.style.overflow = "hidden"; // ❌ Bloque le scroll utilisateur
+        console.log("🛑 Scroll utilisateur désactivé.");
     }
 
-    // ✅ Sauvegarde en quittant la page
-    window.addEventListener("beforeunload", function () {
-        localStorage.setItem("lastScrollPosition", window.scrollY);
-        console.log("💾 Scroll sauvegardé avant changement de page :", window.scrollY);
-    });
+    function enableUserScroll() {
+        document.body.style.overflow = ""; // ✅ Réactive le scroll
+        console.log("✅ Scroll utilisateur réactivé.");
+    }
+
+    function preciseScrollTo(targetScroll, attempt = 0) {
+        if (attempt > 20) { 
+            console.error("❌ Échec de la restauration du scroll après 20 tentatives.");
+            enableUserScroll(); // ✅ Redonne la main même si on n'a pas réussi
+            return;
+        }
+
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: targetScroll,
+                behavior: "smooth"
+            });
+
+            setTimeout(() => {
+                const currentScroll = window.scrollY;
+
+                if (Math.abs(currentScroll - targetScroll) > 5) { 
+                    console.warn(`⚠️ Mauvaise position (Actuelle: ${currentScroll}, Attendue: ${targetScroll}). Nouvelle tentative...`);
+                    preciseScrollTo(targetScroll, attempt + 1); // 🔄 On retente encore
+                } else {
+                    console.log("✅ Position exacte atteinte :", currentScroll);
+                    setTimeout(() => {
+                        enableUserScroll(); // ✅ Rendre le scroll après confirmation
+                        localStorage.removeItem("returnScrollPosition"); // ✅ Supprime après réussite
+                    }, 500);
+                }
+            }, 100);
+        });
+    }
+
+    function restoreScrollAutoPilot() {
+        const savedScrollPosition = localStorage.getItem("returnScrollPosition");
+
+        if (!savedScrollPosition || savedScrollPosition === "0") {
+            console.warn("⚠️ Aucune position de scroll enregistrée.");
+            enableUserScroll();
+            return;
+        }
+
+        console.log(`🔄 Restauration forcée du scroll vers : ${savedScrollPosition}`);
+
+        disableUserScroll();
+        preciseScrollTo(parseInt(savedScrollPosition, 10));
+    }
+
+    // ✅ Vérifie si l'utilisateur revient de la Thank-You page
+    let previousPage = document.referrer;
+    if (previousPage.includes("/thank-you")) {
+        console.log("🔄 Détection d'un retour depuis la Thank-You page, activation du scroll auto-piloté.");
+        setTimeout(restoreScrollAutoPilot, 1000); 
+    }
 });
 
 
