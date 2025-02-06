@@ -1654,19 +1654,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-// ✅ Fonction pour forcer le téléchargement de l'image principale
-async function forceMainImageDownload(imageUrl) {
+window.forceMainImageDownload = async function (imageUrl) {
     try {
         console.log("🚀 Téléchargement de l'image principale :", imageUrl);
 
-        // ✅ Vérifie si le téléchargement automatique est supporté
         const response = await fetch(imageUrl);
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
 
         const a = document.createElement("a");
         a.href = blobUrl;
-        a.download = "main_wallpaper.jpg"; 
+        a.download = "main_wallpaper.jpg";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1680,9 +1678,9 @@ async function forceMainImageDownload(imageUrl) {
         console.error("❌ Erreur lors du téléchargement :", error);
         alert("⚠️ Erreur lors du téléchargement. Essayez d'ouvrir l'image dans un nouvel onglet.");
     }
-}
+};
 
-// ✅ Ajout d'un événement au bouton s'il est présent
+// ✅ Attache la fonction au bouton après chargement
 document.addEventListener("DOMContentLoaded", function () {
     const mainHdDownloadBtn = document.getElementById("main-hd-download-btn");
     
@@ -1695,6 +1693,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("❌ Le bouton HD principal n'a pas été trouvé !");
     }
 });
+
 
 
 
