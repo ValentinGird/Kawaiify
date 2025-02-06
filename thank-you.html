@@ -26,12 +26,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Thank You Page chargée.");
 
-    const previousPage = document.referrer;
-    let savedImage = localStorage.getItem("returnToImage");
+    let previousPage = document.referrer;
+    let savedImageId = localStorage.getItem("returnToImage");
     let pendingDownload = localStorage.getItem("pendingDownload4K");
 
-    if (savedImage) {
-        console.log("✅ Image enregistrée détectée :", savedImage);
+    if (savedImageId) {
+        console.log("✅ Image enregistrée détectée :", savedImageId);
     } else {
         console.warn("⚠️ Aucune image enregistrée avant redirection.");
     }
@@ -73,12 +73,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // ✅ Lancer le téléchargement automatique dès le chargement
     if (!localStorage.getItem("downloadTriggered")) {
         setTimeout(downloadWallpaper, 1000);
     }
 
-    // ✅ Gestion du compteur avant redirection
     let countdown = 3;
     const countdownElement = document.getElementById("countdown");
 
@@ -88,22 +86,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Redirection après 3s vers l’image sélectionnée
     setTimeout(() => {
-        if (savedImage) {
-            console.log("🔄 Redirection vers l'image sélectionnée :", savedImage);
-            let redirectUrl = "https://kawaiify.art?focus=" + encodeURIComponent(savedImage);
+        if (savedImageId) {
+            console.log("🔄 Redirection vers l'image :", savedImageId);
+            let redirectUrl = "https://kawaiify.art?focus=" + encodeURIComponent(savedImageId);
             window.location.href = redirectUrl;
         } else {
-            console.warn("⚠️ Aucune image enregistrée avant redirection, retour à l’accueil.");
+            console.warn("⚠️ Aucune image enregistrée, retour à l’accueil.");
             window.location.href = "https://kawaiify.art";
         }
 
         setTimeout(() => {
             localStorage.removeItem("downloadTriggered");
             localStorage.removeItem("pendingDownload4K");
+            localStorage.removeItem("returnToImage");
         }, 1500);
-
     }, 3000);
 });
 </script>

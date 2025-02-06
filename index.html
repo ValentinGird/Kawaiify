@@ -822,99 +822,110 @@
          
          // ✅ Fonction pour charger les images avec tags cliquables
          async function fetchImages() {
-         if (isLoading || nextImageIndex >= imageUrls.length) return;
-         isLoading = true;
-         
-         try {
-         const imagesToLoad = imageUrls.slice(nextImageIndex, nextImageIndex + imagesPerLoad);
-         nextImageIndex += imagesPerLoad;
-         
-         imagesToLoad.forEach(imgData => {
-         if (!loadedImages.has(imgData.url)) {
-             loadedImages.add(imgData.url);
-         
-             const offerDiv = document.createElement("div");
-             offerDiv.className = "offer gallery-offer";
-         
-             // ✅ Image
-             const imgElement = document.createElement("img");
-             imgElement.src = imgData.url;
-             imgElement.alt = imgData.title;
-             imgElement.loading = "lazy";
-         
-             // ✅ Titre
-             const titleElement = document.createElement("h3");
-             titleElement.className = "image-title";
-             titleElement.textContent = imgData.title;
-         
-             // ✅ Description
-             const descriptionElement = document.createElement("p");
-             descriptionElement.className = "image-description";
-             descriptionElement.textContent = imgData.description;
-         
-             // ✅ Génération des tags cliquables
-         const tagsContainer = document.createElement("div");
-         tagsContainer.className = "tags-container";
-         imgData.tags.forEach(tag => {
-         const tagSpan = document.createElement("span");
-         tagSpan.className = "tag";
-         tagSpan.textContent = tag;
-         
-         // ✅ Active/Désactive le tag au clic
-         tagSpan.addEventListener("click", function () {
-         this.classList.toggle("active"); // Change l'état du tag visuellement
-         filterByTag(tag); // Applique le filtrage
-         });
-         
-         tagsContainer.appendChild(tagSpan);
-         });
-         
-             // ✅ Compteur de téléchargements
-             let storedCount = localStorage.getItem(`clickCount_${imgData.url}`);
-             if (storedCount === null) {
-                 storedCount = Math.floor(Math.random() * (15000 - 900 + 1)) + 900;
-                 localStorage.setItem(`clickCount_${imgData.url}`, storedCount);
-             }
-         
-             const downloadCounter = document.createElement("p");
-             downloadCounter.className = "counter-text";
-             downloadCounter.innerHTML = `🔥 Downloaded by ${storedCount.toLocaleString()} people!`;
-         
-         
-             // ✅ Bouton HD
-             const downloadButtonHD = document.createElement("button");
-             downloadButtonHD.className = "download-button download-button-hd";
-             downloadButtonHD.innerHTML = "<strong>Download in HD</strong>";
-             downloadButtonHD.addEventListener("click", function () {
-                 forceDownload(imgData.url);
-             });
-         
-             // ✅ Bouton 4K (popup)
-             const download4KButtonPopup = document.createElement("button");
-             download4KButtonPopup.className = "download-button download-button-4k";
-             download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
-             download4KButtonPopup.addEventListener("click", function () {
-         openPopup4K(imgData.url, imgData.url_4k); // 🔥 On passe les 2 URL : HD et 4K
-         });
-         
-             // ✅ Ajout des éléments
-             offerDiv.appendChild(titleElement);
-             offerDiv.appendChild(imgElement);
-             offerDiv.appendChild(descriptionElement);
-             offerDiv.appendChild(tagsContainer);
-             offerDiv.appendChild(downloadCounter);
-             offerDiv.appendChild(download4KButtonPopup);
-             offerDiv.appendChild(downloadButtonHD);
-         
-             gallery.appendChild(offerDiv);
-         }
-         });
-         } catch (error) {
-         console.error("❌ Erreur lors du chargement des images :", error);
-         }
-         
-         isLoading = false;
-         }
+    if (isLoading || nextImageIndex >= imageUrls.length) return;
+    isLoading = true;
+
+    try {
+        const imagesToLoad = imageUrls.slice(nextImageIndex, nextImageIndex + imagesPerLoad);
+        nextImageIndex += imagesPerLoad;
+
+        imagesToLoad.forEach(imgData => {
+            if (!loadedImages.has(imgData.url)) {
+                loadedImages.add(imgData.url);
+
+                const offerDiv = document.createElement("div");
+                offerDiv.className = "offer gallery-offer";
+
+                // ✅ Génération d'un ID unique basé sur l'URL
+                const uniqueId = btoa(imgData.url).replace(/[^a-zA-Z0-9]/g, "").substring(0, 10);
+                offerDiv.setAttribute("data-image-id", uniqueId);
+
+                // ✅ Image
+                const imgElement = document.createElement("img");
+                imgElement.src = imgData.url;
+                imgElement.alt = imgData.title;
+                imgElement.loading = "lazy";
+                imgElement.setAttribute("data-image-id", uniqueId); // Ajout de l'ID
+
+                // ✅ Stocke l'ID lorsqu'on clique sur une image
+                imgElement.addEventListener("click", function () {
+                    localStorage.setItem("returnToImage", uniqueId);
+                    console.log("💾 Image enregistrée pour retour :", uniqueId);
+                });
+
+                // ✅ Titre
+                const titleElement = document.createElement("h3");
+                titleElement.className = "image-title";
+                titleElement.textContent = imgData.title;
+
+                // ✅ Description
+                const descriptionElement = document.createElement("p");
+                descriptionElement.className = "image-description";
+                descriptionElement.textContent = imgData.description;
+
+                // ✅ Génération des tags cliquables
+                const tagsContainer = document.createElement("div");
+                tagsContainer.className = "tags-container";
+                imgData.tags.forEach(tag => {
+                    const tagSpan = document.createElement("span");
+                    tagSpan.className = "tag";
+                    tagSpan.textContent = tag;
+
+                    // ✅ Active/Désactive le tag au clic
+                    tagSpan.addEventListener("click", function () {
+                        this.classList.toggle("active"); // Change l'état du tag visuellement
+                        filterByTag(tag); // Applique le filtrage
+                    });
+
+                    tagsContainer.appendChild(tagSpan);
+                });
+
+                // ✅ Compteur de téléchargements
+                let storedCount = localStorage.getItem(`clickCount_${imgData.url}`);
+                if (storedCount === null) {
+                    storedCount = Math.floor(Math.random() * (15000 - 900 + 1)) + 900;
+                    localStorage.setItem(`clickCount_${imgData.url}`, storedCount);
+                }
+
+                const downloadCounter = document.createElement("p");
+                downloadCounter.className = "counter-text";
+                downloadCounter.innerHTML = `🔥 Downloaded by ${storedCount.toLocaleString()} people!`;
+
+                // ✅ Bouton HD
+                const downloadButtonHD = document.createElement("button");
+                downloadButtonHD.className = "download-button download-button-hd";
+                downloadButtonHD.innerHTML = "<strong>Download in HD</strong>";
+                downloadButtonHD.addEventListener("click", function () {
+                    forceDownload(imgData.url);
+                });
+
+                // ✅ Bouton 4K (popup)
+                const download4KButtonPopup = document.createElement("button");
+                download4KButtonPopup.className = "download-button download-button-4k";
+                download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
+                download4KButtonPopup.addEventListener("click", function () {
+                    openPopup4K(imgData.url, imgData.url_4k);
+                });
+
+                // ✅ Ajout des éléments
+                offerDiv.appendChild(titleElement);
+                offerDiv.appendChild(imgElement);
+                offerDiv.appendChild(descriptionElement);
+                offerDiv.appendChild(tagsContainer);
+                offerDiv.appendChild(downloadCounter);
+                offerDiv.appendChild(download4KButtonPopup);
+                offerDiv.appendChild(downloadButtonHD);
+
+                gallery.appendChild(offerDiv);
+            }
+        });
+    } catch (error) {
+        console.error("❌ Erreur lors du chargement des images :", error);
+    }
+
+    isLoading = false;
+}
+
          
          
          
@@ -1285,12 +1296,12 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script de gestion du retour à l'image chargé.");
 
     function disableUserScroll() {
-        document.body.style.overflow = "hidden"; // ❌ Bloque le scroll utilisateur
+        document.body.style.overflow = "hidden";
         console.log("🛑 Scroll utilisateur désactivé.");
     }
 
     function enableUserScroll() {
-        document.body.style.overflow = ""; // ✅ Réactive le scroll
+        document.body.style.overflow = "";
         console.log("✅ Scroll utilisateur réactivé.");
     }
 
@@ -1311,14 +1322,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             setTimeout(() => {
                 const currentScroll = window.scrollY;
-
                 if (Math.abs(currentScroll - elementPosition) > 10) {
                     console.warn(`⚠️ Mauvaise position (Actuelle: ${currentScroll}, Attendue: ${elementPosition}). Nouvelle tentative...`);
                     preciseScrollToElement(element, attempt + 1);
                 } else {
                     console.log("✅ Position exacte atteinte :", currentScroll);
                     enableUserScroll();
-                    localStorage.removeItem("returnToImage"); // ✅ Supprime après réussite
+                    localStorage.removeItem("returnToImage");
                 }
             }, 200);
         });
@@ -1336,14 +1346,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let waitTime = 0;
         const checkIfImageExists = setInterval(() => {
-            const imageElement = document.getElementById(imageId) || document.querySelector(`[data-image-id="${imageId}"]`);
+            const imageElement = document.querySelector(`[data-image-id="${imageId}"]`);
 
-            if (imageElement || waitTime > 5000) { // Attente max de 5 secondes
+            if (imageElement || waitTime > 5000) {
                 clearInterval(checkIfImageExists);
                 if (imageElement) {
                     console.log("📌 Image trouvée, scroll vers celle-ci.");
                     disableUserScroll();
                     preciseScrollToElement(imageElement);
+                    
+                    // ✅ Simule un clic pour rouvrir le popup
+                    console.log("🖼️ Ouverture automatique du popup pour :", imageId);
+                    imageElement.click();
                 } else {
                     console.error("❌ Impossible de retrouver l'image après 5s.");
                 }
@@ -1354,7 +1368,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 200);
     }
 
-    // ✅ Vérifie si l'utilisateur revient de la Thank-You page
     let previousPage = document.referrer;
     if (previousPage.includes("/thank-you")) {
         console.log("🔄 Détection d'un retour depuis la Thank-You page, recherche de l'image cliquée.");
@@ -1362,17 +1375,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// ✅ ENREGISTRER L'IMAGE CLIQUÉE AVANT D'OUVRIR LE POPUP
-document.querySelectorAll(".image-popup").forEach(image => {
-    image.addEventListener("click", function () {
-        const imageId = this.getAttribute("id") || this.getAttribute("data-image-id");
+// ✅ Enregistrement de l'image cliquée avant d'ouvrir le popup
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".gallery-offer img").forEach(image => {
+        image.addEventListener("click", function () {
+            const imageId = this.getAttribute("data-image-id");
 
-        if (imageId) {
-            localStorage.setItem("returnToImage", imageId);
-            console.log("💾 Image enregistrée pour retour :", imageId);
-        } else {
-            console.warn("⚠️ L'image n'a pas d'ID unique. Ajoute un `id` ou `data-image-id`.");
-        }
+            if (imageId) {
+                localStorage.setItem("returnToImage", imageId);
+                console.log("💾 Image enregistrée pour retour :", imageId);
+            } else {
+                console.warn("⚠️ L'image n'a pas d'ID unique.");
+            }
+        });
     });
 });
 
