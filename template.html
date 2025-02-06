@@ -719,9 +719,31 @@
 
             <!-- ✅ Formulaire d'inscription -->
             <form id="popup-4k-main-form">
-   <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-   <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
+    <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+    <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
 </form>
+
+<script>
+document.getElementById("popup-4k-main-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Empêche le rechargement de la page
+    const formData = new FormData(this);
+    
+    fetch("https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit", {
+        method: "POST",
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            console.log("✅ Email envoyé !");
+            localStorage.setItem("emailSubmitted", "true"); // Sauvegarde que l'utilisateur a mis son mail
+            localStorage.setItem("pendingDownload4K", "{IMAGE_URL_4K}"); // Sauvegarde l'image à télécharger
+            window.location.href = "thank-you.html"; // Redirige l'utilisateur
+        } else {
+            console.error("❌ Erreur lors de l'envoi.");
+        }
+    }).catch(error => console.error("❌ Erreur réseau :", error));
+});
+</script>
+
 
             <!-- ✅ Téléchargement sans email -->
             <p class="popup-alt-download">
@@ -740,10 +762,32 @@
             <h3>🎁 Get This 4K Anime Wallpaper & Unlock Daily Surprises! ✨</h3>
             <p>Enter your email to <strong>instantly download this wallpaper in ultra-HD</strong> and <strong>get access to daily exclusive content</strong>.</p>
             <!-- ✅ Formulaire d'inscription -->
-            <form id="popup-4k-form" action="https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit" method="POST">
-               <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
-               <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
-            </form>
+            <form id="popup-4k-form">
+    <input type="email" name="email" class="popup-email-input" placeholder="Enter your email" required>
+    <button type="submit" class="popup-button">📥 Download in 4K Now!</button>
+</form>
+
+<script>
+document.getElementById("popup-4k-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Empêche le rechargement de la page
+    const formData = new FormData(this);
+    
+    fetch("https://form.flodesk.com/forms/679762dbb32b1d435468220c/submit", {
+        method: "POST",
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            console.log("✅ Email envoyé !");
+            localStorage.setItem("emailSubmitted", "true"); // Sauvegarde que l'utilisateur a mis son mail
+            localStorage.setItem("pendingDownload4K", document.getElementById("popup-4k-gallery-image").src); // Sauvegarde l'image à télécharger
+            window.location.href = "thank-you.html"; // Redirige l'utilisateur
+        } else {
+            console.error("❌ Erreur lors de l'envoi.");
+        }
+    }).catch(error => console.error("❌ Erreur réseau :", error));
+});
+</script>
+
             <!-- ✅ Option sans email -->
             <p class="popup-alt-download">Prefer not to enter your email? <br>
                <a href="#" id="download-hd-button" class="popup-alt-button" data-url="">Download in HD (No email)</a>
@@ -1558,6 +1602,30 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (localStorage.getItem("emailSubmitted") === "true") {
+        console.log("📩 Email déjà soumis, popup désactivée.");
+        document.querySelectorAll(".download-button-4k").forEach(button => {
+            button.addEventListener("click", function () {
+                const imageUrl4K = this.getAttribute("data-url-4k");
+                if (imageUrl4K) {
+                    console.log("📥 Téléchargement direct sans popup :", imageUrl4K);
+                    forceDownload(imageUrl4K);
+                }
+            });
+        });
+    }
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (!window.location.pathname.includes("thank-you.html")) {
+        console.log("📌 Enregistrement de la page d'origine :", window.location.href);
+        localStorage.setItem("previousPage", window.location.href);
+    }
 });
 
 
