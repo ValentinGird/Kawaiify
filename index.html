@@ -665,10 +665,10 @@
       <script>
          // ✅ Fonction pour vérifier si l'utilisateur a déjà soumis son email
          function hasSubmittedEmail() {
-    const emailStatus = localStorage.getItem("emailSubmitted");
-    return emailStatus !== null && emailStatus === "true";
-}
-
+         const emailStatus = localStorage.getItem("emailSubmitted");
+         return emailStatus !== null && emailStatus === "true";
+         }
+         
          
          
          // ✅ Fonction pour filtrer les images
@@ -766,10 +766,10 @@
          
          // ✅ Vérifie si l'utilisateur a déjà soumis son email
          function hasSubmittedEmail() {
-    const emailStatus = localStorage.getItem("emailSubmitted");
-    return emailStatus !== null && emailStatus === "true";
-}
-
+         const emailStatus = localStorage.getItem("emailSubmitted");
+         return emailStatus !== null && emailStatus === "true";
+         }
+         
          
          // ✅ Sauvegarde l'état après soumission du formulaire
          function setEmailSubmitted() {
@@ -1222,43 +1222,43 @@
          });
          
          
-
+         
          // ✅ Sauvegarde la position du scroll avant de quitter la page ou soumettre un formulaire
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script de gestion du scroll chargé.");
-
-    // ✅ Vérifie si une position de scroll est enregistrée
-    const savedScrollPosition = localStorage.getItem("scrollPosition");
-
-    if (savedScrollPosition && savedScrollPosition !== "0") {
-        setTimeout(() => {
+         document.addEventListener("DOMContentLoaded", function () {
+         console.log("✅ Script de gestion du scroll chargé.");
+         
+         // ✅ Vérifie si une position de scroll est enregistrée
+         const savedScrollPosition = localStorage.getItem("scrollPosition");
+         
+         if (savedScrollPosition && savedScrollPosition !== "0") {
+         setTimeout(() => {
             window.scrollTo({
                 top: parseInt(savedScrollPosition),
                 behavior: "smooth"
             });
             console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
             localStorage.removeItem("scrollPosition"); // ✅ Supprime après restauration
-        }, 800);
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const emailForms = document.querySelectorAll("form");
-
-    emailForms.forEach(form => {
-        form.addEventListener("submit", function () {
+         }, 800);
+         }
+         });
+         
+         document.addEventListener("DOMContentLoaded", function () {
+         const emailForms = document.querySelectorAll("form");
+         
+         emailForms.forEach(form => {
+         form.addEventListener("submit", function () {
             localStorage.setItem("emailSubmitted", "true");
             console.log("✅ Email enregistré dans le localStorage");
-        });
-    });
-
-    if (hasSubmittedEmail()) {
-        console.log("✅ Email déjà enregistré, popup désactivé.");
-        document.getElementById("popup-4k-overlay").style.display = "none";
-    }
-});
-
-
+         });
+         });
+         
+         if (hasSubmittedEmail()) {
+         console.log("✅ Email déjà enregistré, popup désactivé.");
+         document.getElementById("popup-4k-overlay").style.display = "none";
+         }
+         });
+         
+         
          
            
       </script>
