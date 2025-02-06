@@ -904,8 +904,10 @@
                 download4KButtonPopup.className = "download-button download-button-4k";
                 download4KButtonPopup.innerHTML = "<strong>Download in 4K (Free)</strong>";
                 download4KButtonPopup.addEventListener("click", function () {
-                    openPopup4K(imgData.url, imgData.url_4k);
-                });
+    const imageId = imgData.id || imgData.url; // ✅ Utilise l'ID de l'image ou l'URL en fallback
+    openPopup4K(imageId, imgData.url, imgData.url_4k);
+});
+
 
                 // ✅ Ajout des éléments
                 offerDiv.appendChild(titleElement);
@@ -962,28 +964,42 @@
          });
          
          // ✅ Fonction pour ouvrir le popup 4K ou télécharger directement
-         function openPopup4K(imageUrlHD, imageUrl4K) {
-         if (!imageUrl4K) {
-         console.warn("⚠️ Aucun fond d’écran 4K détecté !");
-         return;
-         }
-         localStorage.setItem("wallpaperUrl", imageUrl4K); // 🔥 Sauvegarde de l’image
-         localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ Utilisée après la soumission du formulaire
-         
-         if (hasSubmittedEmail()) {
-         forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
-         } else {
-         const popup = document.getElementById("popup-4k");
-         const overlay = document.getElementById("popup-4k-overlay");
-         const popupImage = document.getElementById("popup-4k-gallery-image");
-         popupImage.src = imageUrl4K;
-         
-         if (popup && overlay) {
+function openPopup4K(imageId, imageUrlHD, imageUrl4K) {
+    if (!imageId) {
+        console.warn("⚠️ Aucun ID d'image trouvé !");
+        return;
+    }
+
+    if (!imageUrl4K) {
+        console.warn("⚠️ Aucun fond d’écran 4K détecté !");
+        return;
+    }
+
+    console.log("📌 Image sélectionnée :", imageId);
+    
+    // 🔥 Enregistre l'ID et l'URL de l'image pour la redirection après soumission
+    localStorage.setItem("returnToImage", imageId);
+    localStorage.setItem("wallpaperUrl", imageUrl4K);
+    localStorage.setItem("pendingDownload4K", imageUrl4K);
+
+    if (hasSubmittedEmail()) {
+        forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
+    } else {
+        const popup = document.getElementById("popup-4k");
+        const overlay = document.getElementById("popup-4k-overlay");
+        const popupImage = document.getElementById("popup-4k-gallery-image");
+
+        if (popupImage) {
+            popupImage.src = imageUrl4K;
+        }
+
+        if (popup && overlay) {
             popup.style.display = "block";
             overlay.style.display = "flex";
-         }
-         }
-         }
+        }
+    }
+}
+
          
          
          // ✅ Fonction pour fermer le popup 4K et réactiver le scrolling
@@ -1320,9 +1336,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!savedImageId) {
                 console.warn("⚠️ Aucune image enregistrée avant soumission !");
-                
-                // Vérifier s'il y a une image active actuellement ouverte
-                let activeImage = document.querySelector(".popup-image");
+
+                // Vérifier s'il y a une image actuellement ouverte dans le popup
+                let activeImage = document.querySelector("#popup-4k-gallery-image");
                 if (activeImage) {
                     saveClickedImageId(activeImage);
                 }
@@ -1332,12 +1348,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!savedImageId) {
                 console.error("❌ Aucun ID d'image trouvé avant soumission !");
+                event.preventDefault(); // ⛔ Empêche l'envoi du formulaire
+                alert("Veuillez sélectionner un fond d'écran avant de valider !");
+                return false;
             } else {
                 console.log("✅ Image bien enregistrée avant soumission :", savedImageId);
             }
         });
     });
 });
+
 
 
          
