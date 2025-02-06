@@ -735,27 +735,33 @@
 
     function disableImageSaving() {
         document.querySelectorAll(".gallery-offer img").forEach(img => {
-            img.style.pointerEvents = "none"; // Désactive les interactions
-            img.addEventListener("contextmenu", event => event.preventDefault()); // Désactive clic droit
-            img.addEventListener("dragstart", event => event.preventDefault()); // Désactive le glisser-déposer
+            img.style.pointerEvents = "none";
+            img.addEventListener("contextmenu", event => event.preventDefault());
+            img.addEventListener("dragstart", event => event.preventDefault());
         });
     }
 
     function enableImageSaving(imageElement) {
-        imageElement.style.pointerEvents = "auto"; // Active les interactions
-        imageElement.addEventListener("contextmenu", event => event.stopPropagation()); // Active le clic droit uniquement dans le popup
-        imageElement.addEventListener("dragstart", event => event.stopPropagation()); // Active le glisser-déposer uniquement dans le popup
+        imageElement.style.pointerEvents = "auto";
+        imageElement.addEventListener("contextmenu", event => event.stopPropagation());
+        imageElement.addEventListener("dragstart", event => event.stopPropagation());
     }
 
     function disableScroll() {
-        document.body.style.overflow = "hidden"; // Empêche le scroll
+        document.body.style.overflow = "hidden";
     }
 
     function enableScroll() {
-        document.body.style.overflow = ""; // Réactive le scroll
+        document.body.style.overflow = "";
     }
 
-    function openImagePopup(imageUrl4K) {
+    // ✅ Précharger les images 4K en cache avant qu'elles soient ouvertes
+    function preloadImage(url) {
+        const img = new Image();
+        img.src = url;
+    }
+
+    function openImagePopup(imageUrlHD, imageUrl4K) {
         const popupOverlay = document.createElement("div");
         popupOverlay.style.cssText = `
             position: fixed;
@@ -782,9 +788,18 @@
             position: relative;
         `;
 
+        // ✅ Image de préchargement en HD
         const img = document.createElement("img");
-        img.src = imageUrl4K;
-        img.style.cssText = "max-width: 100%; border-radius: 8px; cursor: pointer;";
+        img.src = imageUrlHD; // Charge d'abord la version HD
+        img.style.cssText = "max-width: 100%; border-radius: 8px; cursor: pointer; filter: blur(8px); transition: filter 0.5s ease-in-out;";
+
+        // ✅ Charger l'image 4K en arrière-plan
+        const highResImg = new Image();
+        highResImg.src = imageUrl4K;
+        highResImg.onload = function () {
+            img.src = imageUrl4K; // Remplace l'image HD par la 4K
+            img.style.filter = "none"; // Enlève l'effet de flou
+        };
 
         const message = document.createElement("p");
         message.textContent = "If you are on phone, hold and save it.";
@@ -821,12 +836,12 @@
         document.body.appendChild(popupOverlay);
 
         disableScroll();
-        enableImageSaving(img); // ✅ Active l'enregistrement uniquement dans le popup
+        enableImageSaving(img);
     }
 
-    function openPopup4K(imageUrl4K) {
+    function openPopup4K(imageUrlHD, imageUrl4K) {
         if (hasSubmittedEmail()) {
-            openImagePopup(imageUrl4K);
+            openImagePopup(imageUrlHD, imageUrl4K);
         } else {
             const popupOverlay = document.getElementById("popup-4k-overlay");
             const popup = document.getElementById("popup-4k");
@@ -837,76 +852,12 @@
         }
     }
 
-    // ✅ PARTIE PUBS
-    function insertAds(imagesArray) {
-        let count = 0;
-        let adInterval = Math.floor(Math.random() * 6) + 5;
-
-        if (imagesArray.length > 1) {
-            const firstAd = adTemplates[Math.floor(Math.random() * adTemplates.length)];
-            const firstAdDiv = createAdElement(firstAd);
-            imagesArray.splice(1, 0, { isAd: true, element: firstAdDiv });
-        }
-
-        for (let i = 2; i < imagesArray.length; i++) {
-            count++;
-
-            if (count === adInterval) {
-                const randomAd = adTemplates[Math.floor(Math.random() * adTemplates.length)];
-                const adDiv = createAdElement(randomAd);
-
-                imagesArray.splice(i, 0, { isAd: true, element: adDiv });
-                count = 0;
-                adInterval = Math.floor(Math.random() * 6) + 5;
-            }
-        }
-    }
-
-    function createAdElement(adData) {
-        const adDiv = document.createElement("div");
-        adDiv.className = "offer gallery-offer ad-offer";
-
-        const adTitle = document.createElement("h3");
-        adTitle.className = "image-title";
-        adTitle.textContent = adData.title;
-
-        const adImage = document.createElement("img");
-        adImage.src = adData.imageUrl;
-        adImage.alt = "Ad Image";
-        adImage.loading = "lazy";
-
-        const adDescription = document.createElement("p");
-        adDescription.className = "image-description";
-        adDescription.innerHTML = adData.description;
-
-        const adButton = document.createElement("button");
-        adButton.className = "download-button telegram-button";
-        adButton.textContent = adData.buttonText;
-        adButton.onclick = function () {
-            window.open(adData.link, "_blank");
-        };
-
-        adDiv.appendChild(adTitle);
-        adDiv.appendChild(adImage);
-        adDiv.appendChild(adDescription);
-        adDiv.appendChild(adButton);
-
-        return adDiv;
-    }
-
     async function fetchImages() {
         const response = await fetch("https://raw.githubusercontent.com/ValentinGird/Kawaiify/main/images.json");
         const data = await response.json();
         const gallery = document.getElementById("gallery");
 
-        insertAds(data.images);
-
         data.images.forEach(imgData => {
-            if (imgData.isAd) {
-                gallery.appendChild(imgData.element);
-                return;
-            }
-
             const offerDiv = document.createElement("div");
             offerDiv.className = "offer gallery-offer";
 
@@ -927,7 +878,7 @@
             download4KButton.className = "download-button download-button-4k";
             download4KButton.innerHTML = "<strong>Download in 4K</strong>";
             download4KButton.addEventListener("click", function () {
-                openPopup4K(imgData.url_4k);
+                openPopup4K(imgData.url, imgData.url_4k);
             });
 
             offerDiv.appendChild(titleElement);
@@ -935,9 +886,12 @@
             offerDiv.appendChild(descriptionElement);
             offerDiv.appendChild(download4KButton);
             gallery.appendChild(offerDiv);
+
+            // ✅ Précharge l'image 4K pour qu'elle s'affiche rapidement dans le popup
+            preloadImage(imgData.url_4k);
         });
 
-        disableImageSaving(); // ✅ Bloque l'enregistrement sur la galerie
+        disableImageSaving();
     }
 
     fetchImages();
@@ -946,6 +900,11 @@
         localStorage.setItem("emailSubmitted", "true");
     });
 });
+
+
+
+
+
 
          
          
