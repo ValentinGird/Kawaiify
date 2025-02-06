@@ -1697,6 +1697,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+window.openPopupMain4K = function () {
+    console.log("🔹 Tentative d'ouverture du popup principal...");
+
+    if (localStorage.getItem("emailSubmitted") === "true") {
+        console.log("✅ Email déjà soumis. Téléchargement direct...");
+        forceDownload("{IMAGE_URL_4K}");
+    } else {
+        document.getElementById("popup-main-4k-overlay").style.display = "flex";
+        document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
+        console.log("✅ Popup principal ouvert.");
+    }
+};
+
          
          
          
