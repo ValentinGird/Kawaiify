@@ -1463,72 +1463,7 @@ function openPopup4K(imageId, imageUrlHD, imageUrl4K) {
          
          
          
-         document.addEventListener("DOMContentLoaded", function () {
-         console.log("✅ Script de gestion du téléchargement chargé.");
          
-         function saveWallpaperUrl(imageUrl) {
-         if (imageUrl) {
-            console.log("💾 Image enregistrée pour téléchargement :", imageUrl);
-            localStorage.setItem("wallpaperUrl", imageUrl);
-         } else {
-            console.warn("⚠️ Aucun URL d'image détecté.");
-         }
-         }
-         
-         // ✅ Capture le clic sur les boutons "Download in 4K" pour stocker la bonne URL
-         document.querySelectorAll(".download-button-4k").forEach(button => {
-         button.addEventListener("click", function () {
-            const imageUrl4K = this.getAttribute("data-url-4k"); // Récupère l'URL de l'image 4K
-            if (imageUrl4K) {
-                saveWallpaperUrl(imageUrl4K);
-            }
-         });
-         });
-           
-         
-         // ✅ Stocke l'URL de la page avant la redirection
-         if (!window.location.pathname.includes("thank-you.html")) {
-         localStorage.setItem("previousPage", window.location.href);
-         localStorage.setItem("scrollPosition", window.scrollY);
-         localStorage.setItem("previousPage", window.location.href); // ✅ On enregistre la position du scroll
-         
-         }
-         
-         // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
-         document.querySelectorAll("form").forEach(form => {
-         form.addEventListener("submit", function () {
-         const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
-         
-         if (!imageUrl) {
-            console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
-            alert("Veuillez sélectionner un fond d'écran avant de soumettre !");
-            return false; // ⛔ Empêche l'envoi du formulaire si aucune image n'est enregistrée
-         } else {
-            console.log("✅ Image enregistrée avant soumission :", imageUrl);
-            localStorage.setItem("pendingDownload4K", imageUrl); // 🔥 Sauvegarde pour la page "Thank You"
-         }
-         });
-         });
-         
-         });
-         
-         
-         
-         document.addEventListener("DOMContentLoaded", function () {
-         const emailForms = document.querySelectorAll("form");
-         
-         emailForms.forEach(form => {
-         form.addEventListener("submit", function () {
-            localStorage.setItem("emailSubmitted", "true");
-            console.log("✅ Email enregistré dans le localStorage");
-         });
-         });
-         
-         if (hasSubmittedEmail()) {
-         console.log("✅ Email déjà enregistré, popup désactivé.");
-         document.getElementById("popup-4k-overlay").style.display = "none";
-         }
-         });
          
          
          
@@ -1541,55 +1476,6 @@ function openPopup4K(imageId, imageUrlHD, imageUrl4K) {
 
 
    
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script de gestion du retour à l'image chargé.");
-
-    function saveClickedImageId(imageElement) {
-        const imageId = imageElement.getAttribute("data-image-id");
-
-        if (imageId) {
-            localStorage.setItem("returnToImage", imageId);
-            console.log("💾 Image enregistrée pour retour :", imageId);
-        } else {
-            console.warn("⚠️ L'image cliquée n'a pas d'ID unique.");
-        }
-    }
-
-    // ✅ Capture le clic sur une image pour enregistrer son ID
-    document.querySelectorAll(".gallery-offer img").forEach(image => {
-        image.addEventListener("click", function () {
-            saveClickedImageId(this);
-        });
-    });
-
-    // ✅ Assure que l'ID est bien sauvegardé avant la soumission du formulaire
-    document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function (event) {
-            let savedImageId = localStorage.getItem("returnToImage");
-
-            if (!savedImageId) {
-                console.warn("⚠️ Aucune image enregistrée avant soumission !");
-
-                // Vérifier s'il y a une image actuellement ouverte dans le popup
-                let activeImage = document.querySelector("#popup-4k-gallery-image");
-                if (activeImage) {
-                    saveClickedImageId(activeImage);
-                }
-
-                savedImageId = localStorage.getItem("returnToImage");
-            }
-
-            if (!savedImageId) {
-                console.error("❌ Aucun ID d'image trouvé avant soumission !");
-                event.preventDefault(); // ⛔ Empêche l'envoi du formulaire
-                alert("Veuillez sélectionner un fond d'écran avant de valider !");
-                return false;
-            } else {
-                console.log("✅ Image bien enregistrée avant soumission :", savedImageId);
-            }
-        });
-    });
-});
 
 
 
@@ -1603,27 +1489,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
    
-       
-         
-  // ✅ Ferme le popup en cliquant sur l'overlay (flou en arrière-plan)
-document.addEventListener("DOMContentLoaded", function () {
-    const popupOverlay = document.getElementById("popup-main-4k-overlay");
+     
 
-    if (popupOverlay) {
-        popupOverlay.addEventListener("click", function (event) {
-            if (event.target === popupOverlay) {
-                closePopupMain4K();
-            }
-        });
-    }
-});
 
-// ✅ Fonction pour fermer le popup
-function closePopupMain4K() {
-    document.getElementById("popup-main-4k-overlay").style.display = "none";
-}       
-         
-         
 
 
 
@@ -1660,121 +1528,39 @@ function closePopupMain4K() {
 
 
 
-
-function openPopupMain4K() {
-    if (localStorage.getItem("emailSubmitted") === "true") {
-        forceDownload("{IMAGE_URL_4K}");
-    } else {
-        document.getElementById("popup-main-4k-overlay").style.display = "flex";
-        document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
-    }
-}
-
-async function forceMainImageDownload(imageUrl) {
-    try {
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = "main_wallpaper.jpg"; 
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        setTimeout(() => {
-            window.URL.revokeObjectURL(blobUrl);
-        }, 1000);
-    } catch (error) {
-        console.error("❌ Erreur lors du téléchargement :", error);
-        alert("⚠️ Erreur lors du téléchargement. Essayez d'ouvrir l'image dans un nouvel onglet.");
-    }
-}
-
-
-
-
-
-         
-         
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ✅ Ouvre le popup 4K de l'image principale
-    function openPopupMain4K() {
-        if (localStorage.getItem("emailSubmitted") === "true") {
-            forceDownload("{IMAGE_URL_4K}");
-        } else {
-            document.getElementById("popup-main-4k-overlay").style.display = "flex";
-            document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
-        }
-    }
-
-    // ✅ Ferme le popup
-    function closePopupMain4K() {
-        document.getElementById("popup-main-4k-overlay").style.display = "none";
-    }
-
-    // ✅ Capture la soumission du formulaire pour enregistrer l’email et rediriger après la Thank You Page
-    document.getElementById("popup-main-4k-form").addEventListener("submit", function (event) {
-        localStorage.setItem("emailSubmitted", "true");
-        localStorage.setItem("returnToPage", window.location.href);
-    });
-
-    // ✅ Redirection automatique après la Thank You Page
-    window.onload = function () {
-        const returnToPage = localStorage.getItem("returnToPage");
-        if (returnToPage) {
-            localStorage.removeItem("returnToPage");
-            window.location.href = returnToPage;
-        }
-    };
-
-    // ✅ Force le téléchargement du fichier après soumission
-    async function forceDownload(imageUrl) {
-        try {
-            const response = await fetch(imageUrl);
-            const blob = await response.blob();
-            const blobUrl = window.URL.createObjectURL(blob);
-
-            const a = document.createElement("a");
-            a.href = blobUrl;
-            a.download = "wallpaper_4K.jpg";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            setTimeout(() => {
-                window.URL.revokeObjectURL(blobUrl);
-            }, 1000);
-        } catch (error) {
-            console.error("❌ Download failed:", error);
-            window.open(imageUrl, "_blank"); // 🔥 Solution de secours
-        }
-    }
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script du popup principal chargé.");
 
+    // ✅ Vérification que l'élément existe avant d'ajouter un event
+    const popupMain4KBtn = document.getElementById("popup-main-4k-btn");
+    if (popupMain4KBtn) {
+        popupMain4KBtn.addEventListener("click", openPopupMain4K);
+    } else {
+        console.error("❌ ERREUR : Le bouton de téléchargement 4K principal est introuvable !");
+    }
+
+    // ✅ Fonction pour ouvrir le popup 4K du formulaire principal
+    function openPopupMain4K() {
+        console.log("🔹 Tentative d'ouverture du popup principal...");
+
+        if (localStorage.getItem("emailSubmitted") === "true") {
+            console.log("✅ Email déjà soumis. Téléchargement direct...");
+            forceDownload("{IMAGE_URL_4K}");
+        } else {
+            document.getElementById("popup-main-4k-overlay").style.display = "flex";
+            document.getElementById("popup-main-4k-image").src = "{IMAGE_URL}";
+            console.log("✅ Popup principal ouvert.");
+        }
+    }
+
+    // ✅ Fonction pour fermer le popup
+    function closePopupMain4K() {
+        document.getElementById("popup-main-4k-overlay").style.display = "none";
+        console.log("❌ Popup principal fermé.");
+    }
+
+    // ✅ Capture la soumission du formulaire pour enregistrer l’email et rediriger après la Thank You Page
     const popupMain4KForm = document.getElementById("popup-main-4k-form");
     if (!popupMain4KForm) {
         console.error("❌ ERREUR : Impossible de trouver le formulaire principal !");
@@ -1813,12 +1599,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, 3000); // 🔥 Délai de 3 secondes pour laisser le temps au formulaire de se soumettre
     });
-});
 
-// ✅ Ferme le popup au clic sur l'overlay
-document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Ferme le popup au clic sur l'overlay
     const popupOverlay = document.getElementById("popup-main-4k-overlay");
-
     if (popupOverlay) {
         popupOverlay.addEventListener("click", function (event) {
             if (event.target === popupOverlay) {
@@ -1826,12 +1609,48 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    // ✅ Fonction pour forcer le téléchargement
+    async function forceDownload(imageUrl) {
+        try {
+            console.log("🚀 Tentative de téléchargement :", imageUrl);
+
+            // ✅ Vérifie si le téléchargement automatique est supporté
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = blobUrl;
+            a.download = "wallpaper_4K.jpg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            setTimeout(() => {
+                window.URL.revokeObjectURL(blobUrl);
+            }, 1000);
+            console.log("✅ Téléchargement automatique réussi !");
+        } catch (error) {
+            console.error("❌ Erreur lors du téléchargement :", error);
+            alert("⚠️ Erreur lors du téléchargement. Essayez d'ouvrir l'image dans un nouvel onglet.");
+            window.open(imageUrl, "_blank");
+        }
+    }
+
+    // ✅ Redirection automatique après la Thank You Page
+    window.onload = function () {
+        const returnToPage = localStorage.getItem("returnToPage");
+        if (returnToPage) {
+            console.log("🔄 Retour automatique à la page précédente :", returnToPage);
+            localStorage.removeItem("returnToPage");
+            window.location.href = returnToPage;
+        }
+    };
 });
 
-// ✅ Fonction pour fermer le popup
-function closePopupMain4K() {
-    document.getElementById("popup-main-4k-overlay").style.display = "none";
-}
+
+
 
 
 
