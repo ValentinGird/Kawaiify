@@ -1211,6 +1211,25 @@
     }
 });
 
+         document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Script de restauration du scroll chargé.");
+
+    // Vérifie si une position de scroll est enregistrée
+    const savedScrollPosition = localStorage.getItem("scrollPosition");
+
+    if (savedScrollPosition) {
+        setTimeout(() => {
+            window.scrollTo({
+                top: parseInt(savedScrollPosition),
+                behavior: "smooth" // ✅ Rend le scroll fluide
+            });
+            console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
+            localStorage.removeItem("scrollPosition"); // ✅ Nettoyage après restauration
+        }, 800); // ⏳ Ajout d'un délai pour s'assurer que la page est bien chargée
+    }
+});
+
+
          
              
       </script>
