@@ -79,16 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Sauvegarde de la position du scroll AVANT la redirection (mais ne l’écrase pas s’il existe déjà)
-    if (!localStorage.getItem("returnScrollPosition")) {
-        const currentScroll = window.scrollY;
-        localStorage.setItem("returnScrollPosition", currentScroll);
-        console.log("💾 Position du scroll enregistrée pour retour :", currentScroll);
-    } else {
-        console.log("⚠️ Position du scroll déjà enregistrée :", localStorage.getItem("returnScrollPosition"));
-    }
-
-    // ✅ Redirection après 3s
     setTimeout(() => {
         if (previousPage) {
             console.log("🔄 Redirection vers :", previousPage);
@@ -97,13 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
             window.location.href = "https://kawaiify.art";
         }
-
-        setTimeout(() => {
-            localStorage.removeItem("downloadTriggered");
-            localStorage.removeItem("pendingDownload4K");
-        }, 1500);
     }, 3000);
-
 });
 </script>
 

@@ -1256,7 +1256,6 @@
          
          
          
-   
          
          
          
@@ -1271,6 +1270,19 @@
          
          
          
+         
+         document.querySelectorAll(".image-popup").forEach(image => {
+         image.addEventListener("click", function () {
+         const imageId = this.getAttribute("id") || this.getAttribute("data-image-id");
+         
+         if (imageId) {
+            localStorage.setItem("returnToImage", imageId);
+            console.log("💾 Image enregistrée pour retour :", imageId);
+         } else {
+            console.warn("⚠️ L'image n'a pas d'ID unique.");
+         }
+         });
+         });
          
          
          
@@ -1278,92 +1290,90 @@
          
          
          document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script de gestion du scroll chargé.");
-
-    function disableUserScroll() {
-        document.body.style.overflow = "hidden"; // ❌ Bloque le scroll utilisateur
-        console.log("🛑 Scroll utilisateur désactivé.");
-    }
-
-    function enableUserScroll() {
-        document.body.style.overflow = ""; // ✅ Réactive le scroll
-        console.log("✅ Scroll utilisateur réactivé.");
-    }
-
-    function preciseScrollTo(targetScroll, attempt = 0) {
-        if (attempt > 20) { 
-            console.error("❌ Échec de la restauration du scroll après 20 tentatives.");
-            enableUserScroll(); // ✅ Redonne la main même si on n'a pas réussi
-            return;
-        }
-
-        requestAnimationFrame(() => {
-            window.scrollTo({
-                top: targetScroll,
-                behavior: "smooth"
-            });
-
-            setTimeout(() => {
-                const currentScroll = window.scrollY;
-
-                if (Math.abs(currentScroll - targetScroll) > 5) { 
-                    console.warn(`⚠️ Mauvaise position (Actuelle: ${currentScroll}, Attendue: ${targetScroll}). Nouvelle tentative...`);
-                    preciseScrollTo(targetScroll, attempt + 1); // 🔄 On retente encore
-                } else {
-                    console.log("✅ Position exacte atteinte :", currentScroll);
-                    setTimeout(() => {
-                        enableUserScroll(); // ✅ Rendre le scroll après confirmation
-                        localStorage.removeItem("returnScrollPosition"); // ✅ Supprime après réussite
-                    }, 500);
-                }
-            }, 100);
-        });
-    }
-
-    function restoreScrollAutoPilot() {
-        const savedScrollPosition = localStorage.getItem("returnScrollPosition");
-
-        if (!savedScrollPosition || savedScrollPosition === "0") {
-            console.warn("⚠️ Aucune position de scroll enregistrée.");
+         console.log("✅ Script de gestion du retour à l'image.");
+         
+         function disableUserScroll() {
+         document.body.style.overflow = "hidden"; // ❌ Bloque le scroll utilisateur
+         console.log("🛑 Scroll utilisateur désactivé.");
+         }
+         
+         function enableUserScroll() {
+         document.body.style.overflow = ""; // ✅ Réactive le scroll
+         console.log("✅ Scroll utilisateur réactivé.");
+         }
+         
+         function preciseScrollToElement(element, attempt = 0) {
+         if (!element || attempt > 20) {
+            console.error("❌ Impossible de retrouver l'image, abandon.");
             enableUserScroll();
             return;
-        }
-
-        console.log(`🔄 Restauration forcée du scroll vers : ${savedScrollPosition}`);
-
-        disableUserScroll();
-        preciseScrollTo(parseInt(savedScrollPosition, 10));
-    }
-
-    // ✅ Vérifie si l'utilisateur revient de la Thank-You page
-    let previousPage = document.referrer;
-    if (previousPage.includes("/thank-you")) {
-        console.log("🔄 Détection d'un retour depuis la Thank-You page, activation du scroll auto-piloté.");
-        setTimeout(restoreScrollAutoPilot, 1000); 
-    }
-
-    // ✅ Sauvegarde de la position du scroll AVANT d'envoyer un formulaire
-    document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function () {
-            let currentScroll = window.scrollY;
-            localStorage.setItem("returnScrollPosition", currentScroll);
-            console.log("💾 Scroll enregistré AVANT redirection vers la Thank-You page :", currentScroll);
-        });
-    });
-
-    // ✅ Sauvegarde AVANT de quitter la page (ex: si la personne ferme l’onglet)
-    window.addEventListener("beforeunload", function () {
-        localStorage.setItem("returnScrollPosition", window.scrollY);
-        console.log("💾 Scroll sauvegardé avant changement de page :", window.scrollY);
-    });
-});
-
-
-
-
-
-
-
+         }
+         
+         const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+         
+         requestAnimationFrame(() => {
+            window.scrollTo({
+                top: elementPosition,
+                behavior: "smooth"
+            });
+         
+            setTimeout(() => {
+                const currentScroll = window.scrollY;
+         
+                if (Math.abs(currentScroll - elementPosition) > 10) {
+                    console.warn(`⚠️ Mauvaise position (Actuelle: ${currentScroll}, Attendue: ${elementPosition}). Nouvelle tentative...`);
+                    preciseScrollToElement(element, attempt + 1);
+                } else {
+                    console.log("✅ Position exacte atteinte :", currentScroll);
+                    enableUserScroll();
+                    localStorage.removeItem("returnToImage"); // ✅ Supprime après réussite
+                }
+            }, 200);
+         });
+         }
+         
+         function restoreImageFocus() {
+         const imageId = localStorage.getItem("returnToImage");
+         if (!imageId) {
+            console.warn("⚠️ Aucune image enregistrée.");
+            return;
+         }
+         
+         console.log(`🔄 Recherche de l'image avec l'ID : ${imageId}`);
+         
+         let waitTime = 0;
+         const checkIfImageExists = setInterval(() => {
+            const imageElement = document.getElementById(imageId) || document.querySelector(`[data-image-id="${imageId}"]`);
+         
+            if (imageElement || waitTime > 5000) { // Attente max de 5 secondes
+                clearInterval(checkIfImageExists);
+                if (imageElement) {
+                    console.log("📌 Image trouvée, scroll vers celle-ci.");
+                    disableUserScroll();
+                    preciseScrollToElement(imageElement);
+                } else {
+                    console.error("❌ Impossible de retrouver l'image après 5s.");
+                }
+            } else {
+                waitTime += 200;
+                console.log(`⌛ En attente du chargement de l'image... (${waitTime}ms)`);
+            }
+         }, 200);
+         }
+         
+         let previousPage = document.referrer;
+         if (previousPage.includes("/thank-you")) {
+         console.log("🔄 Détection d'un retour depuis la Thank-You page, recherche de l'image cliquée.");
+         setTimeout(restoreImageFocus, 1000);
+         }
+         });
+         
+         
+         
+         
+         
+         
+         
          
          
          
