@@ -1295,101 +1295,50 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script de gestion du retour à l'image chargé.");
 
-    function disableUserScroll() {
-        document.body.style.overflow = "hidden";
-        console.log("🛑 Scroll utilisateur désactivé.");
-    }
+    function saveClickedImageId(imageElement) {
+        const imageId = imageElement.getAttribute("data-image-id");
 
-    function enableUserScroll() {
-        document.body.style.overflow = "";
-        console.log("✅ Scroll utilisateur réactivé.");
-    }
-
-    function preciseScrollToElement(element, attempt = 0) {
-        if (!element || attempt > 20) {
-            console.error("❌ Impossible de retrouver l'image après 20 tentatives, abandon.");
-            enableUserScroll();
-            return;
+        if (imageId) {
+            localStorage.setItem("returnToImage", imageId);
+            console.log("💾 Image enregistrée pour retour :", imageId);
+        } else {
+            console.warn("⚠️ L'image cliquée n'a pas d'ID unique.");
         }
-
-        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-
-        requestAnimationFrame(() => {
-            window.scrollTo({
-                top: elementPosition,
-                behavior: "smooth"
-            });
-
-            setTimeout(() => {
-                const currentScroll = window.scrollY;
-                if (Math.abs(currentScroll - elementPosition) > 10) {
-                    console.warn(`⚠️ Mauvaise position (Actuelle: ${currentScroll}, Attendue: ${elementPosition}). Nouvelle tentative...`);
-                    preciseScrollToElement(element, attempt + 1);
-                } else {
-                    console.log("✅ Position exacte atteinte :", currentScroll);
-                    enableUserScroll();
-                    localStorage.removeItem("returnToImage");
-                }
-            }, 200);
-        });
     }
 
-    function restoreImageFocus() {
-        let imageId = localStorage.getItem("returnToImage") || new URLSearchParams(window.location.search).get("focus");
-
-        if (!imageId) {
-            console.warn("⚠️ Aucune image enregistrée.");
-            return;
-        }
-
-        console.log(`🔄 Recherche de l'image avec l'ID : ${imageId}`);
-
-        let waitTime = 0;
-        const checkIfImageExists = setInterval(() => {
-            const imageElement = document.querySelector(`[data-image-id="${imageId}"]`);
-
-            if (imageElement || waitTime > 5000) {
-                clearInterval(checkIfImageExists);
-                if (imageElement) {
-                    console.log("📌 Image trouvée, scroll vers celle-ci.");
-                    disableUserScroll();
-                    preciseScrollToElement(imageElement);
-                    
-                    // ✅ Simule un clic pour rouvrir le popup
-                    console.log("🖼️ Ouverture automatique du popup pour :", imageId);
-                    imageElement.click();
-                } else {
-                    console.error("❌ Impossible de retrouver l'image après 5s.");
-                }
-            } else {
-                waitTime += 200;
-                console.log(`⌛ En attente du chargement de l'image... (${waitTime}ms)`);
-            }
-        }, 200);
-    }
-
-    let previousPage = document.referrer;
-    if (previousPage.includes("/thank-you")) {
-        console.log("🔄 Détection d'un retour depuis la Thank-You page, recherche de l'image cliquée.");
-        setTimeout(restoreImageFocus, 1000);
-    }
-});
-
-// ✅ Enregistrement de l'image cliquée avant d'ouvrir le popup
-document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Capture le clic sur une image pour enregistrer son ID
     document.querySelectorAll(".gallery-offer img").forEach(image => {
         image.addEventListener("click", function () {
-            const imageId = this.getAttribute("data-image-id");
+            saveClickedImageId(this);
+        });
+    });
 
-            if (imageId) {
-                localStorage.setItem("returnToImage", imageId);
-                console.log("💾 Image enregistrée pour retour :", imageId);
+    // ✅ Assure que l'ID est bien sauvegardé avant la soumission du formulaire
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function (event) {
+            let savedImageId = localStorage.getItem("returnToImage");
+
+            if (!savedImageId) {
+                console.warn("⚠️ Aucune image enregistrée avant soumission !");
+                
+                // Vérifier s'il y a une image active actuellement ouverte
+                let activeImage = document.querySelector(".popup-image");
+                if (activeImage) {
+                    saveClickedImageId(activeImage);
+                }
+
+                savedImageId = localStorage.getItem("returnToImage");
+            }
+
+            if (!savedImageId) {
+                console.error("❌ Aucun ID d'image trouvé avant soumission !");
             } else {
-                console.warn("⚠️ L'image n'a pas d'ID unique.");
+                console.log("✅ Image bien enregistrée avant soumission :", savedImageId);
             }
         });
     });
 });
+
 
          
          
