@@ -81,20 +81,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Attente pour restaurer le scroll avant la redirection
+    // ✅ Attente pour restaurer le scroll AVANT la redirection
     setTimeout(() => {
-        const savedScrollPosition = localStorage.getItem("scrollPosition");
+        const savedScrollPosition = localStorage.getItem("lastScrollPosition"); // Harmonisation du nom
 
-        if (savedScrollPosition) {
+        if (savedScrollPosition && savedScrollPosition !== "0") {
+            console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
             window.scrollTo({
-                top: parseInt(savedScrollPosition),
+                top: parseInt(savedScrollPosition, 10),
                 behavior: "smooth"
             });
-            console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
-            localStorage.removeItem("scrollPosition");
+        } else {
+            console.warn("⚠️ Aucune restauration du scroll nécessaire.");
         }
 
-        // ✅ Après 1s, on redirige proprement
+        // ✅ Redirection après 2s pour accélérer l'expérience utilisateur
         setTimeout(() => {
             if (previousPage) {
                 console.log("🔄 Redirection vers :", previousPage);
@@ -104,16 +105,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "https://kawaiify.art";
             }
 
-            // ✅ Nettoyage des données après redirection
+            // ✅ Nettoyage APRÈS la redirection (délai supplémentaire)
             setTimeout(() => {
                 localStorage.removeItem("downloadTriggered");
                 localStorage.removeItem("pendingDownload4K");
-            }, 500);
-        }, 1000);
+                localStorage.removeItem("lastScrollPosition"); // Suppression différée après redirection
+            }, 1500);
 
-    }, 3000);
+        }, 2000);
+
+    }, 2000);
+
 });
-
     </script>
 </body>
 </html>
