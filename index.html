@@ -1237,25 +1237,6 @@ document.addEventListener("DOMContentLoaded", function () {
          
          
          
-         // ✅ Sauvegarde la position du scroll avant de quitter la page ou soumettre un formulaire
-         document.addEventListener("DOMContentLoaded", function () {
-         console.log("✅ Script de gestion du scroll chargé.");
-         
-         // ✅ Vérifie si une position de scroll est enregistrée
-         const savedScrollPosition = localStorage.getItem("scrollPosition");
-         
-         if (savedScrollPosition && savedScrollPosition !== "0") {
-         setTimeout(() => {
-            window.scrollTo({
-                top: parseInt(savedScrollPosition),
-                behavior: "smooth"
-            });
-            console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
-            localStorage.removeItem("scrollPosition"); // ✅ Supprime après restauration
-         }, 800);
-         }
-         });
-         
          document.addEventListener("DOMContentLoaded", function () {
          const emailForms = document.querySelectorAll("form");
          
@@ -1272,30 +1253,37 @@ document.addEventListener("DOMContentLoaded", function () {
          }
          });
          
+         
+         
          document.addEventListener("DOMContentLoaded", function () {
-         console.log("✅ Script de gestion du scroll chargé.");
-         
-         const savedScrollPosition = localStorage.getItem("scrollPosition");
-         
-         if (savedScrollPosition && savedScrollPosition !== "0") {
-         console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
-         setTimeout(() => {
+    console.log("✅ Script de gestion du scroll chargé.");
+
+    // Vérifie si une position de scroll est enregistrée
+    const savedScrollPosition = localStorage.getItem("scrollPosition");
+
+    if (savedScrollPosition && savedScrollPosition !== "0") {
+        console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
+        
+        // Ajout d'un petit délai pour être sûr que le DOM est bien chargé
+        setTimeout(() => {
             window.scrollTo({
                 top: parseInt(savedScrollPosition),
                 behavior: "smooth"
             });
-         }, 800); // Petit délai pour éviter les bugs
-         
-         localStorage.removeItem("scrollPosition"); // ✅ Supprime après restauration
-         }
-         
-         // ✅ Sauvegarde la position avant de quitter la page
-         window.addEventListener("beforeunload", function () {
-         localStorage.setItem("scrollPosition", window.scrollY);
-         console.log("💾 Scroll sauvegardé :", window.scrollY);
-         });
-         });
-         
+        }, 500); 
+
+        localStorage.removeItem("scrollPosition"); // ✅ Supprime après restauration
+    }
+
+    // ✅ Sauvegarde la position du scroll avant de quitter la page
+    window.addEventListener("beforeunload", function () {
+        localStorage.setItem("scrollPosition", window.scrollY);
+        console.log("💾 Scroll sauvegardé :", window.scrollY);
+    });
+});
+
+
+
          
            
       </script>
