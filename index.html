@@ -1258,29 +1258,36 @@ document.addEventListener("DOMContentLoaded", function () {
          document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script de gestion du scroll chargé.");
 
-    // Vérifie si une position de scroll est enregistrée
-    const savedScrollPosition = localStorage.getItem("scrollPosition");
-
-    if (savedScrollPosition && savedScrollPosition !== "0") {
-        console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
-        
-        // Ajout d'un petit délai pour être sûr que le DOM est bien chargé
-        setTimeout(() => {
-            window.scrollTo({
-                top: parseInt(savedScrollPosition),
-                behavior: "smooth"
-            });
-        }, 500); 
-
-        localStorage.removeItem("scrollPosition"); // ✅ Supprime après restauration
+    // Fonction pour restaurer le scroll après le chargement complet
+    function restoreScrollPosition() {
+        const savedScrollPosition = localStorage.getItem("scrollPosition");
+        if (savedScrollPosition && savedScrollPosition !== "0") {
+            console.log("🔄 Tentative de restauration du scroll...");
+            
+            setTimeout(() => {
+                window.scrollTo({
+                    top: parseInt(savedScrollPosition),
+                    behavior: "smooth"
+                });
+                console.log("✅ Scroll restauré à la position :", savedScrollPosition);
+                localStorage.removeItem("scrollPosition"); // On efface après usage
+            }, 800); // Délai augmenté pour être sûr que tout est chargé
+        }
     }
 
-    // ✅ Sauvegarde la position du scroll avant de quitter la page
+    // Attente que tout le contenu soit bien chargé
+    window.addEventListener("load", function () {
+        console.log("✅ Page entièrement chargée.");
+        restoreScrollPosition();
+    });
+
+    // Sauvegarde la position du scroll avant de quitter la page
     window.addEventListener("beforeunload", function () {
         localStorage.setItem("scrollPosition", window.scrollY);
         console.log("💾 Scroll sauvegardé :", window.scrollY);
     });
 });
+
 
 
 
