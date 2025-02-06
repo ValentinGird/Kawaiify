@@ -1305,7 +1305,59 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-         
+
+document.addEventListener("DOMContentLoaded", function () {
+    let lastScrollPosition = localStorage.getItem("lastScrollPosition") 
+        ? parseInt(localStorage.getItem("lastScrollPosition"), 10) 
+        : 0;
+
+    function debugScroll(label) {
+        console.log(`${label} | Position actuelle du scroll:`, window.scrollY, "| Dernière position sauvegardée:", lastScrollPosition);
+    }
+
+    function saveScrollBeforePopup() {
+        lastScrollPosition = window.scrollY || lastScrollPosition; // ✅ Empêche de sauvegarder 0
+        localStorage.setItem("lastScrollPosition", lastScrollPosition); // ✅ Sauvegarde dans le localStorage
+        console.log("💾 Scroll enregistré AVANT popup :", lastScrollPosition);
+    }
+
+    function restoreScrollAfterPopup() {
+        let savedScroll = localStorage.getItem("lastScrollPosition");
+        if (!savedScroll || savedScroll === "0") {
+            console.warn("⚠️ Aucune position de scroll sauvegardée, restauration annulée !");
+            return;
+        }
+        
+        lastScrollPosition = parseInt(savedScroll, 10);
+        console.log("🔄 Tentative de restauration du scroll après popup :", lastScrollPosition);
+        setTimeout(() => {
+            window.scrollTo({
+                top: lastScrollPosition,
+                behavior: "smooth"
+            });
+            debugScroll("📌 Après restauration");
+        }, 300);
+    }
+
+    document.getElementById("popup-4k-overlay").addEventListener("click", function () {
+        saveScrollBeforePopup();
+        debugScroll("📌 Avant ouverture du popup");
+    });
+
+    document.querySelector(".popup-close").addEventListener("click", function () {
+        restoreScrollAfterPopup();
+        debugScroll("📌 Après fermeture du popup");
+    });
+});
+
+
+
+
+
+
+
+
+
            
       </script>
    </body>
