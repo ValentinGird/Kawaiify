@@ -29,16 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const previousPage = localStorage.getItem("previousPage");
     const pendingDownload = localStorage.getItem("pendingDownload4K");
 
-    function disableUserScroll() {
-        document.body.style.overflow = "hidden"; // ❌ Désactive complètement le scroll
-        console.log("🛑 Scroll utilisateur désactivé.");
-    }
-
-    function enableUserScroll() {
-        document.body.style.overflow = ""; // ✅ Réactive le scroll
-        console.log("✅ Scroll utilisateur réactivé.");
-    }
-
     function downloadWallpaper(attempt = 0) {
         if (!pendingDownload) {
             if (attempt < 5) { 
@@ -89,67 +79,27 @@ document.addEventListener("DOMContentLoaded", function () {
         if (countdown <= 0) clearInterval(interval);
     }, 1000);
 
-    // ✅ Fonction ULTRA-RIGIDE pour restaurer le scroll avec LOCKING + AUTO-PILOTAGE
-    function restoreScrollWithLockAndAutoPilot(attempt = 0) {
-        const savedScrollPosition = localStorage.getItem("lastScrollPosition");
+    // ✅ Enregistre la position du scroll pour restauration exacte au retour
+    const currentScroll = window.scrollY;
+    localStorage.setItem("returnScrollPosition", currentScroll);
+    console.log("💾 Position du scroll enregistrée pour retour :", currentScroll);
 
-        if (!savedScrollPosition || savedScrollPosition === "0") {
-            console.warn("⚠️ Aucune position de scroll enregistrée.");
-            enableUserScroll(); // ✅ Réactive le scroll si pas besoin
-            return;
+    // ✅ Redirection après 3s
+    setTimeout(() => {
+        if (previousPage) {
+            console.log("🔄 Redirection vers :", previousPage);
+            window.location.href = previousPage;
+        } else {
+            console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
+            window.location.href = "https://kawaiify.art";
         }
 
-        const targetScroll = parseInt(savedScrollPosition, 10);
-
-        console.log(`🔄 Tentative #${attempt + 1} de restauration du scroll : ${targetScroll}`);
-
-        requestAnimationFrame(() => {
-            window.scrollTo({
-                top: targetScroll,
-                behavior: "smooth"
-            });
-
-            setTimeout(() => {
-                if (window.scrollY !== targetScroll && attempt < 10) {
-                    console.warn(`⚠️ Position incorrecte (Actuelle: ${window.scrollY}, Attendue: ${targetScroll}). Retente...`);
-                    restoreScrollWithLockAndAutoPilot(attempt + 1); // 🔁 REESSAYE tant que ce n'est pas bon
-                } else {
-                    console.log("✅ Scroll restauré avec succès :", window.scrollY);
-                    setTimeout(() => {
-                        localStorage.removeItem("lastScrollPosition"); // 🔥 Suppression UNIQUEMENT quand c'est bon !
-                        console.log("🗑️ Données de scroll supprimées.");
-                        enableUserScroll(); // ✅ Réactive le contrôle utilisateur
-                    }, 1000);
-                }
-            }, 300);
-        });
-    }
-
-    // ✅ Désactive le scroll utilisateur dès l'arrivée (Auto-Pilotage)
-    disableUserScroll();
-
-    // ✅ Attente AVANT la redirection pour restaurer précisément le scroll
-    setTimeout(() => {
-        restoreScrollWithLockAndAutoPilot();
-
-        // ✅ Redirection après 3s (temps augmenté pour éviter les conflits)
         setTimeout(() => {
-            if (previousPage) {
-                console.log("🔄 Redirection vers :", previousPage);
-                window.location.href = previousPage;
-            } else {
-                console.warn("⚠️ Aucune page précédente trouvée, retour à l'accueil.");
-                window.location.href = "https://kawaiify.art";
-            }
+            localStorage.removeItem("downloadTriggered");
+            localStorage.removeItem("pendingDownload4K");
+        }, 1500);
+    }, 3000);
 
-            setTimeout(() => {
-                localStorage.removeItem("downloadTriggered");
-                localStorage.removeItem("pendingDownload4K");
-            }, 1500);
-
-        }, 3000);
-
-    }, 2000);
 });
 </script>
 
