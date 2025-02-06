@@ -948,7 +948,13 @@
          
          // ✅ Fonction pour ouvrir le popup 4K ou télécharger directement
          function openPopup4K(imageUrlHD, imageUrl4K) {
-         localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ On sauvegarde bien l'image
+         if (!imageUrl4K) {
+         console.warn("⚠️ Aucun fond d’écran 4K détecté !");
+         return;
+         }
+         localStorage.setItem("wallpaperUrl", imageUrl4K); // 🔥 Sauvegarde de l’image
+         localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ Utilisée après la soumission du formulaire
+         
          if (hasSubmittedEmail()) {
          forceDownload(imageUrl4K); // ✅ Téléchargement direct si déjà inscrit
          } else {
@@ -980,9 +986,15 @@
          
          // ✅ Capture la soumission du formulaire pour masquer définitivement le popup
          document.getElementById("popup-4k-form").addEventListener("submit", function () {
-         localStorage.setItem("emailSubmitted", "true"); // ✅ On garde en mémoire que l’email a été soumis
-         closePopup4K(); // ✅ Ferme le popup après soumission
+         const imageUrl = localStorage.getItem("pendingDownload4K");
+         
+         if (!imageUrl) {
+         console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
+         } else {
+         console.log("✅ Image enregistrée avant soumission :", imageUrl);
+         }
          });
+         
          
          
          // ✅ Ferme le popup si on clique sur l'overlay
@@ -1178,6 +1190,14 @@
          });
          });
          
+         document.querySelectorAll("form").forEach(form => {
+         form.addEventListener("submit", function () {
+         localStorage.setItem("scrollPosition", window.scrollY);
+         console.log("📍 Position du scroll enregistrée :", window.scrollY);
+         });
+         });
+         
+         
          // ✅ Stocke l'URL de la page avant la redirection
          if (!window.location.pathname.includes("thank-you.html")) {
          localStorage.setItem("previousPage", window.location.href);
@@ -1189,49 +1209,60 @@
          // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
          document.querySelectorAll("form").forEach(form => {
          form.addEventListener("submit", function () {
-            const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
-            if (!imageUrl) {
-                console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
-            } else {
-                console.log("✅ Image enregistrée avant soumission :", imageUrl);
-            }
+         const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
+         
+         if (!imageUrl) {
+            console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
+            alert("Veuillez sélectionner un fond d'écran avant de soumettre !");
+            return false; // ⛔ Empêche l'envoi du formulaire si aucune image n'est enregistrée
+         } else {
+            console.log("✅ Image enregistrée avant soumission :", imageUrl);
+            localStorage.setItem("pendingDownload4K", imageUrl); // 🔥 Sauvegarde pour la page "Thank You"
+         }
          });
          });
+         
          });
-
+         
          document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script de restauration du scroll chargé.");
-
-    if (localStorage.getItem("scrollPosition")) {
-        setTimeout(() => {
-            window.scrollTo(0, localStorage.getItem("scrollPosition"));
-            console.log("🔄 Scroll restauré à la position :", localStorage.getItem("scrollPosition"));
-            localStorage.removeItem("scrollPosition"); // ✅ Nettoyage après scroll
-        }, 500);
-    }
-});
-
+         console.log("✅ Script de restauration du scroll chargé.");
+         
+         const savedScrollPosition = localStorage.getItem("scrollPosition");
+         
+         if (savedScrollPosition) {
+         setTimeout(() => {
+            window.scrollTo({
+                top: parseInt(savedScrollPosition),
+                behavior: "smooth" // 🔥 Scroll fluide
+            });
+            console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
+            localStorage.removeItem("scrollPosition"); // ✅ Nettoyage après restauration
+         }, 800); // ⏳ Petit délai pour s'assurer que la page est bien chargée
+         }
+         });
+         
+         
          document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Script de restauration du scroll chargé.");
-
-    // Vérifie si une position de scroll est enregistrée
-    const savedScrollPosition = localStorage.getItem("scrollPosition");
-
-    if (savedScrollPosition) {
-        setTimeout(() => {
+         console.log("✅ Script de restauration du scroll chargé.");
+         
+         // Vérifie si une position de scroll est enregistrée
+         const savedScrollPosition = localStorage.getItem("scrollPosition");
+         
+         if (savedScrollPosition) {
+         setTimeout(() => {
             window.scrollTo({
                 top: parseInt(savedScrollPosition),
                 behavior: "smooth" // ✅ Rend le scroll fluide
             });
             console.log("🔄 Scroll restauré à la position :", savedScrollPosition);
             localStorage.removeItem("scrollPosition"); // ✅ Nettoyage après restauration
-        }, 800); // ⏳ Ajout d'un délai pour s'assurer que la page est bien chargée
-    }
-});
-
-
+         }, 800); // ⏳ Ajout d'un délai pour s'assurer que la page est bien chargée
+         }
+         });
          
-             
+         
+         
+           
       </script>
    </body>
 </html>
