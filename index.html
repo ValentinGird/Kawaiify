@@ -1258,28 +1258,32 @@ document.addEventListener("DOMContentLoaded", function () {
          document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script de gestion du scroll chargé.");
 
-    // Fonction pour restaurer le scroll après le chargement complet
-    function restoreScrollPosition() {
-        const savedScrollPosition = localStorage.getItem("scrollPosition");
-        if (savedScrollPosition && savedScrollPosition !== "0") {
-            console.log("🔄 Tentative de restauration du scroll...");
-            
-            setTimeout(() => {
+    // Vérifier si une position de scroll est enregistrée
+    const savedScrollPosition = localStorage.getItem("scrollPosition");
+    if (savedScrollPosition && savedScrollPosition !== "0") {
+        console.log("🔄 Tentative de restauration du scroll...");
+
+        // Attendre que le contenu soit totalement chargé avant de restaurer
+        let attempt = 0;
+        const maxAttempts = 10; // On essaie jusqu'à 10 fois
+        const scrollInterval = setInterval(() => {
+            if (document.readyState === "complete" && attempt < maxAttempts) {
+                attempt++;
                 window.scrollTo({
                     top: parseInt(savedScrollPosition),
                     behavior: "smooth"
                 });
-                console.log("✅ Scroll restauré à la position :", savedScrollPosition);
-                localStorage.removeItem("scrollPosition"); // On efface après usage
-            }, 800); // Délai augmenté pour être sûr que tout est chargé
-        }
+                console.log(`✅ Scroll restauré à la position : ${savedScrollPosition} (Tentative ${attempt})`);
+                if (attempt >= 2) { // Arrêter après quelques essais réussis
+                    clearInterval(scrollInterval);
+                    localStorage.removeItem("scrollPosition"); // Nettoyage après succès
+                }
+            } else if (attempt >= maxAttempts) {
+                console.error("❌ Impossible de restaurer le scroll après plusieurs tentatives.");
+                clearInterval(scrollInterval);
+            }
+        }, 500); // Réessaye toutes les 500ms
     }
-
-    // Attente que tout le contenu soit bien chargé
-    window.addEventListener("load", function () {
-        console.log("✅ Page entièrement chargée.");
-        restoreScrollPosition();
-    });
 
     // Sauvegarde la position du scroll avant de quitter la page
     window.addEventListener("beforeunload", function () {
@@ -1287,6 +1291,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("💾 Scroll sauvegardé :", window.scrollY);
     });
 });
+
 
 
 
