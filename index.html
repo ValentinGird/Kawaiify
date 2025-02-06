@@ -942,34 +942,22 @@
          
          // ✅ Fonction pour ouvrir le popup 4K ou télécharger directement
          function openPopup4K(imageUrlHD, imageUrl4K) {
+    localStorage.setItem("pendingDownload4K", imageUrl4K); // ✅ On enregistre l’image en attente de téléchargement
     if (hasSubmittedEmail()) {
-        forceDownload(imageUrl4K); // ✅ Si déjà inscrit, on télécharge directement en 4K
+        forceDownload(imageUrl4K); // ✅ Télécharge directement si déjà inscrit
     } else {
         const popup = document.getElementById("popup-4k");
         const overlay = document.getElementById("popup-4k-overlay");
         const popupImage = document.getElementById("popup-4k-gallery-image");
-        popupImage.style.width = "50%"; // Réduit à 50% de la largeur du conteneur
-         popupImage.style.maxWidth = "250px"; // Limite la taille maximale
-         popupImage.style.height = "auto"; // Garde le ratio de l’image
-        const galleryImage = document.getElementById("galleryImage"); // 🔥 Ajout de l'image de la galerie
+        popupImage.src = imageUrl4K;
 
         if (popup && overlay) {
             popup.style.display = "block";
             overlay.style.display = "flex";
-            
-            // ✅ Met à jour l'image du popup (déjà existant)
-            popupImage.src = imageUrl4K;
-
-            // ✅ Met à jour l'image principale de la galerie
-            if (galleryImage) {
-                galleryImage.src = imageUrlHD;
-            }
-
-            setPopupDownloadUrl(imageUrlHD, imageUrl4K); // ✅ Passe les 2 URL
-            document.body.style.overflow = "hidden";
         }
     }
 }
+
 
          
          // ✅ Fonction pour fermer le popup 4K et réactiver le scrolling
@@ -987,9 +975,10 @@
          
          // ✅ Capture la soumission du formulaire pour masquer définitivement le popup
          document.getElementById("popup-4k-form").addEventListener("submit", function () {
-         setEmailSubmitted(); // ✅ Marque l'email comme soumis
-         closePopup4K(); // ✅ Ferme le popup après soumission
-         });
+    localStorage.setItem("emailSubmitted", "true"); // ✅ On garde en mémoire que l’email a été soumis
+    closePopup4K(); // ✅ Ferme le popup après soumission
+});
+
          
          // ✅ Ferme le popup si on clique sur l'overlay
          document.getElementById("popup-4k-overlay").addEventListener("click", function (event) {
@@ -1162,78 +1151,58 @@
 
 
 
-   document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ Script de gestion du téléchargement chargé.");
 
     function saveWallpaperUrl(imageUrl) {
         if (imageUrl) {
-            console.log("💾 Image enregistrée :", imageUrl);
+            console.log("💾 Image enregistrée pour téléchargement :", imageUrl);
             localStorage.setItem("wallpaperUrl", imageUrl);
         } else {
             console.warn("⚠️ Aucun URL d'image détecté.");
         }
     }
 
-    // ✅ Capture l’image principale affichée sur la page
-    const mainImage = document.querySelector("#main-image");
-    if (mainImage) {
-        saveWallpaperUrl(mainImage.src);
-    }
-
-    // ✅ Capture le clic sur les boutons "Download in 4K"
+    // ✅ Capture le clic sur les boutons "Download in 4K" pour stocker la bonne URL
     document.querySelectorAll(".download-button-4k").forEach(button => {
         button.addEventListener("click", function () {
-            const imageUrl = this.getAttribute("data-url-4k");
-            saveWallpaperUrl(imageUrl);
+            const imageUrl4K = this.getAttribute("data-url-4k"); // Récupère l'URL de l'image 4K
+            if (imageUrl4K) {
+                saveWallpaperUrl(imageUrl4K);
+            }
         });
     });
 
     // ✅ Stocke l'URL de la page avant la redirection
     if (!window.location.pathname.includes("thank-you.html")) {
         localStorage.setItem("previousPage", window.location.href);
+localStorage.setItem("scrollPosition", window.scrollY); // ✅ On enregistre la position du scroll
+
     }
-});
 
-
-document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Capture la soumission du formulaire pour assurer le bon téléchargement
     document.querySelectorAll("form").forEach(form => {
         form.addEventListener("submit", function () {
-            // 🔥 Sauvegarde la position exacte de scroll avant la redirection
-            localStorage.setItem("scrollPosition", window.scrollY);
-        });
-    });
-});
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Sélectionne tous les boutons de téléchargement nécessitant un email
-    document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function (event) {
-            const imageUrl = document.getElementById("popup-4k-gallery-image")?.src; // URL de l’image
-            if (imageUrl) {
-                localStorage.setItem("wallpaperUrl", imageUrl); // Stocke l'image pour la récupérer plus tard
+            const imageUrl = localStorage.getItem("wallpaperUrl"); // Vérifie l'URL stockée
+            if (!imageUrl) {
+                console.warn("⚠️ Aucun fond d’écran sélectionné avant la soumission du formulaire !");
+            } else {
+                console.log("✅ Image enregistrée avant soumission :", imageUrl);
             }
-            localStorage.setItem("previousPage", window.location.href); // Stocke la page précédente
         });
     });
 });
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    // ✅ Vérifie si on revient depuis la thank-you page
-    if (window.location.hash === "#scroll-back") {
-        const scrollPosition = localStorage.getItem("scrollPosition");
-
-        if (scrollPosition) {
-            console.log("🔄 Restauration du scroll à la position :", scrollPosition);
-
-            setTimeout(() => {
-                window.scrollTo({ top: parseInt(scrollPosition), behavior: "smooth" });
-            }, 500); // 🔥 Petit délai pour s'assurer que tout est bien chargé
-
-            localStorage.removeItem("scrollPosition"); // Nettoie après utilisation
-        }
+    if (hasSubmittedEmail()) {
+        document.querySelectorAll(".download-button-4k").forEach(button => {
+            button.textContent = "📥 Download 4K Instantly!";
+            button.style.backgroundColor = "#FF69B4"; // ✅ Active visuellement
+            button.addEventListener("click", function () {
+                forceDownload(this.getAttribute("data-url-4k"));
+            });
+        });
     }
 });
 
